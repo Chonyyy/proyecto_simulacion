@@ -62,8 +62,8 @@ class Agent:
             plan = self.pbc.plan("planification_step(X)")
             action, arguments = self.bbc.react("behavioral_step(Action, Arguments)")
         
-        if (not action)  :
-            coperate = self.cc.cooperate(self, "coperate()")
+        # if (not action)  :
+        #     coperate = self.cc.cooperate(self, "coperate()")
 
         log_agent_intentions(self.knowledge_base)
         self.wi.act(self, action, arguments)

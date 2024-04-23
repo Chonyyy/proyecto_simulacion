@@ -68,6 +68,7 @@ class Environment:
             kb.add_work_place(self.map[work.id])
             kb.add_is_medical_personnel(False)
         list(kb.query('initialize_k()'))
+        print(list(kb.query('friends(X)')))
         return kb
     
     def create_family(self, home):

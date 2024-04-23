@@ -77,7 +77,7 @@ if __name__ == '__main__':
     logger.debug("=== Initializing Epidemic Model ===")
     epidemic_model = EpidemicModel()
     logger.debug("=== Initializing Environment ===")
-    env = Environment(10, epidemic_model, map)
+    env = Environment(5, epidemic_model, map)
     logger.info(f'=== Starting Simulation Loop With {sim_steps} Steps ===')
     simulate(env, sim_steps)
     plot_dissease_evolution_days(env.dissease_step_progression, len(env.dissease_step_progression))

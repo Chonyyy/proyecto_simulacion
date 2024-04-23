@@ -1,5 +1,10 @@
 %---------------------------- Knowledge -----------------------------------------------
 
+:- set_prolog_stack(global, limit(100 000 000 000 000)).
+:- set_prolog_stack(trail, limit(100 000 000 000 000)).
+:- set_prolog_stack(local, limit(100 000 000 000 000)).
+
+
 % week_day(WeekDay).
 % month_day(MonthDay).
 % hour(Hour).
@@ -46,12 +51,12 @@
 % isolation_center(45, _).
 % work_place(66).
 % home(55).
+friends([]).
 
 initialize_k():-
     assert(too_sick(false)),
     assert(wearing_mask(false)),
-    assert(social_distancing(false)),
-    assert(friends([])).
+    assert(social_distancing(false)).
 
 add_node_info(Id, Address, CapacityStatus, NodeType):-%TODO: see if this is necesary and if it works
     retractall(node(Id, _, _, _)),
@@ -157,10 +162,7 @@ add_isolation(Bool):-
 
 
 add_friends(Friends):-
-    friends(CurrentFriends),
-    once(append(CurrentFriends, Friends, NewFriends)),
-    retractall(friends(_)),
-    assert(friends(X)).
+    true. 
 
 work_is_open(WorkId):-
     not(week_day(saturday)),
