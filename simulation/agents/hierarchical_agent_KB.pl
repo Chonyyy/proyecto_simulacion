@@ -155,11 +155,12 @@ add_isolation(Bool):-
     retractall(isolation(_)),
     assert(isolation(Bool)).
 
+
 add_friends(Friends):-
     friends(CurrentFriends),
-    append(CurrentFriends, Friends, NewFriends),
+    once(append(CurrentFriends, Friends, NewFriends)),
     retractall(friends(_)),
-    assert(friends(NewFriends)).
+    assert(friends(X)).
 
 work_is_open(WorkId):-
     not(week_day(saturday)),
@@ -374,6 +375,10 @@ planification_step(Plan):-
 %     go_public_place_rutine(PlaceId, Home).
 
 %--------------------------- Auxiliary Methods -----------------------------------------
+
+elim([],[]).
+elim([H|T],S):-member(H,T),!,elim(T,S).
+elim([H|T],[H|S]):-elim(T,S).
 
 
 :-dynamic(maintain_distancing/1).

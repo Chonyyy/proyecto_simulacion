@@ -39,8 +39,8 @@ class Environment:
         self.dissease_step_progression = []
         logger.debug('=== Initializing Agents ===')
         self.initialize_citizen_agents(num_agents)
-        self.initialize_canelo_agent()
-        self.initialize_relations()
+        # self.initialize_canelo_agent()
+        # self.initialize_relations()
 
         def kill_agent(agent):
             self.dead_agents.add(agent.unique_id)
@@ -236,10 +236,10 @@ class Environment:
             self._debug_agent_k(agent.knowledge_base)
         
         infected_agents = self._count_infected_agents()
-        self.canelo.step(infected_agents)
+        # self.canelo.step(infected_agents)
         
         ocupied_nodes = [([self.agents[agent_id] for agent_id in node.agent_list], node.contact_rate) for node in self.map.graph.nodes.values() if node.agent_list]
-        self.epidemic_model.step(ocupied_nodes)
+        # self.epidemic_model.step(ocupied_nodes)
 
         self.dissease_step_progression.append(self.get_dissease_stats())
 
@@ -429,7 +429,7 @@ class WorldInterface:
             parametersList = []
             parametersList.append(parameters)
             parameters = parametersList
-            
+        
         if action == 'move':#TODO: Change to a heuristic to another when needed
             logger.info(f'Agent {agent.unique_id} is moving to {parameters[0]} from {agent.location}')
             # a = a_star(self.map, agent.location, parameters[0])
@@ -543,7 +543,7 @@ class WorldInterface:
         
     def send_message(self, agent, message):
         pass
-
+    
     def comunicate(self, sender: Agent, message, Id = None) -> None:
         """
         Communicate a message from one agent to another.

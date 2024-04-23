@@ -88,7 +88,7 @@ class EpidemicModel:
     def step_dissease(self, agent: Agent) -> None:
         """
         Advance the agent's infection stage based on the disease progression rules.
-
+        
         Args:
             agent (Agent): The agent to advance.
         """
@@ -156,8 +156,7 @@ class EpidemicModel:
                         agent_new_symptoms = self._query_symptoms(citizen.unique_id)
                         log_agent_symptoms_chages(agent_old_symptoms, agent_new_symptoms)
                     if agent_new_status != agent_old_status:
-                        logger.info(f'Agent status changed from {agent_old_status} to {agent_new_status}')
-                    
+                        logger.info(f'Agent status changed from {agent_old_status} to {agent_new_status}')            
                     
                 else:
                     for infected_citizen in [c for c in citizens if c.status in self.infection_stages]:
