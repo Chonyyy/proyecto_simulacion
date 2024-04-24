@@ -39,7 +39,7 @@ class Environment:
         self.dissease_step_progression = []
         logger.debug('=== Initializing Agents ===')
         self.initialize_citizen_agents(num_agents)
-        # self.initialize_canelo_agent()
+        self.initialize_canelo_agent()
         # self.initialize_relations()
 
         def kill_agent(agent):
@@ -67,8 +67,8 @@ class Environment:
             work.add_person(id)
             kb.add_work_place(self.map[work.id])
             kb.add_is_medical_personnel(False)
-        list(kb.query('initialize_k()'))
-        print(list(kb.query('friends(X)')))
+        # list(kb.query('initialize_k()'))
+        
         return kb
     
     def create_family(self, home):
@@ -138,12 +138,12 @@ class Environment:
         for i in range(num_agents):
             mind_map = self.generate_citizen_mind_map()
             kb = self._initialize_agents_knowledge(i)
-            
+
             agents_wi  = WorldInterface(self, self.map, mind_map, kb)
             agents_bbc = BehaviorLayer(agents_wi, kb)
             agents_pbc = LocalPlanningLayer(agents_bbc, kb)
             agent_cc = CooperativeLayer(agents_pbc, kb)
-            
+
             agent = Agent(
                 unique_id=i, 
                 mind_map=mind_map,
@@ -234,7 +234,7 @@ class Environment:
                 continue
             logger.info(f'Step of agent {agent.unique_id}')
             agent.step(step_num)
-            self._debug_agent_k(agent.knowledge_base)
+            # self._debug_agent_k(agent.knowledge_base)
         
         infected_agents = self._count_infected_agents()
         # self.canelo.step(infected_agents)

@@ -1,6 +1,7 @@
 from pyswip import Prolog
 from typing import Tuple
 import random
+from simulation.enviroment.sim_nodes import *
 class Knowledge:
     """
     Class representing the knowledge base of an agent.
@@ -14,13 +15,32 @@ class Knowledge:
         """
         self.prolog = Prolog()
         self.prolog.consult('./simulation/agents/hierarchical_agent_KB.pl')
+        self.facts = {}
 
-    def add_node_k(self, node):
-        list(self.prolog.query(f'add_map_node({node.id}, {node.addr}, {node.capacity_status}, {node.node_type})'))
-        if node.node_type in ['hospital', 'works_space', 'bus_stop', 'public_space']:
-            list(self.prolog.query(f'add_open_hours_place({node.id}, {node.oppening_hours}, {node.closing_hours})'))
-        list(self.prolog.query(f'add_place_to_use_mask({node.id}, {str(node.mask_required).lower()})'))
+    def add_node_k(self, node: SimNode):
         
+        node_info = {
+            'addr': node.addr,
+            'capacity_status': node.capacity_status,
+            'node_type': node.node_type,
+            # 'oppening_hours': node.oppening_hours,
+            # 'closing_hours': node.closing_hours,
+            'mask_required': node.mask_required
+        }#TODO: add if the place is open
+        try:
+            node_info['oppening_hours'] = node.oppening_hours,
+            node_info['closing_hours'] = node.closing_hours
+            
+        except:
+            pass
+            
+        if "map" in self.facts:
+            self.facts['map'][node.id] = node_info
+        else: 
+            self.facts['map'] = {
+                node.id: node_info
+            } 
+               
     def add_date_k(self, date):
         """
         Add a date to the knowledge base.
@@ -28,7 +48,12 @@ class Knowledge:
         Args:
             date (tuple): The date to add.
         """
-        list(self.prolog.query(f'add_date({date[0]},{date[1]},{date[2]},{date[3]})'))
+        self.facts[date] = {
+            'week_day': date[0],
+            'day': date[1],
+            'hour': date[2],
+            'min': date[3] 
+        }
         
     def add_symptom_k(self, symptom):
         """
@@ -38,6 +63,11 @@ class Knowledge:
             symptom (str): The symptom to add.
         """
         list(self.prolog.query(f'add_symptom({symptom})'))
+        
+        if 'symptoms' in self.facts:
+            self.facts['symptoms'].add(symptom)
+        else:
+            self.facts['symptoms'] = set()
     
     def add_hospital_k(self, hospital_id: int, hospital_addr: Tuple[int,int]):
         """
@@ -47,7 +77,8 @@ class Knowledge:
             hospital_id (int): The identifier of the hospital.
             hospital_addr (str): The address of the hospital.
         """
-        list(self.prolog.query(f'add_hospital({hospital_id}, {hospital_addr})'))
+        # list(self.prolog.query(f'add_hospital({hospital_id}, {hospital_addr})'))
+        raise not NotImplementedError()
         
     def add_home(self, home_id: int):
         """
@@ -56,8 +87,8 @@ class Knowledge:
         Args:
             home_id (int): The identifier of the home.
         """
-        list(self.prolog.query(f'add_home({home_id})'))
-    
+        self.facts['home'] = home_id
+            
     def add_work_place(self, node):
         """
         Add a workplace to the knowledge base.
@@ -65,10 +96,12 @@ class Knowledge:
         Args:
             wp_id (int): The identifier of the workplace.
         """
-        list(self.prolog.query(f'add_work_place({node.id}, {node.addr})'))
-        list(self.prolog.query(f'add_open_hours_place({node.id}, {node.opening_hours}, {node.closing_hours})'))
-        a = list(self.prolog.query(f'open_hours_place({node.id}, B, C)'))
-        pass
+        self.facts['work_place'] = {
+            'id': node.id,
+            'addr':node.addr,
+            'opening_hours': node.opening_hours,
+            'closing_hours': node.closing_hours
+        }
     
     def add_open_place(self, id: int, open: bool):
         """
@@ -78,7 +111,8 @@ class Knowledge:
             id (int): The identifier of the place.
             open (bool): Whether the place is open.
         """
-        list(self.prolog.query(f'add_open_place({id}, {str(open).lower()})'))
+        # list(self.prolog.query(f'add_open_place({id}, {str(open).lower()})'))
+        raise NotImplementedError()
     
     def add_open_hours(self, id: int, opening_hours: int, closing_hours: int):
         """
@@ -89,7 +123,8 @@ class Knowledge:
             opening_hours (int): The opening hours of the place.
             closing_hours (int): The closing hours of the place.
         """
-        list(self.prolog.query(f'add_open_hours_place({id}, {opening_hours}, {closing_hours})'))
+        # list(self.prolog.query(f'add_open_hours_place({id}, {opening_hours}, {closing_hours})'))
+        raise NotImplementedError()
     
     def add_dissease_symptoms(self, symptom_list: list):
         """
@@ -98,16 +133,18 @@ class Knowledge:
         Args:
             symptom_list (list): The list of symptoms.
         """
-        list(self.prolog.query(f'add_dissease_symptoms({symptom_list})'))
+        # list(self.prolog.query(f'add_dissease_symptoms({symptom_list})'))
+        raise NotImplementedError()
         
     def add_current_location(self, location_id: int):
         """
         Add current location id
 
         Args:
-            location_id (int): The id of thenode the agent is currently in
+            location_id (int): The id of the node the agent is currently in
         """
-        list(self.prolog.query(f'add_location({location_id})'))
+        # list(self.prolog.query(f'add_location({location_id})'))
+        self.facts['location'] = location_id
     
     def add_is_medical_personnel(self, medical_personnel: bool):
         """
@@ -116,7 +153,8 @@ class Knowledge:
         Args:
             medical_personnel (bool): Whether the agent is medical personnel.
         """
-        list(self.prolog.query(f'add_if_is_medical_personal({str(medical_personnel).lower()})'))
+        # list(self.prolog.query(f'add_if_is_medical_personal({str(medical_personnel).lower()})'))
+        self.facts['is_medic'] = medical_personnel
     
     def add_mask_necessity(self, mask_necessity: bool):
         """
@@ -125,7 +163,8 @@ class Knowledge:
         Args:
             mask_necessity (bool): Whether a mask is necessary.
         """
-        list(self.prolog.query(f'add_mask_necessity({mask_necessity})'))
+        # list(self.prolog.query(f'add_mask_necessity({mask_necessity})'))
+        self.facts['mask_necesity'] = mask_necessity
     
     def add_mask_requirement(self, place_id: int, requirement: bool):
         """
@@ -135,29 +174,41 @@ class Knowledge:
             place_id (int): The identifier of the place.
             requirement (bool): Whether a mask is required.
         """
-        list(self.prolog.query(f'add_place_to_use_mask({place_id}, {requirement})'))
-    
-    def add_quarantine(self, requirement: bool):
-        list(self.prolog.query(f'add_quarantine({requirement})'))
+        # list(self.prolog.query(f'add_place_to_use_mask({place_id}, {requirement})'))
+        if 'map' in self.facts and place_id in self.facts['map']:
+            self.facts['maps'][place_id]['mask_required'] = requirement
     
     def add_social_distancing(self, requirement: bool):
-        list(self.prolog.query(f'add_social_distancing({requirement})'))
+        # list(self.prolog.query(f'add_social_distancing({requirement})'))
+        self.facts['social_distancing'] = requirement
     
     def add_tests_and_diagnosis(self, requirement: bool):
-        list(self.prolog.query(f'add_tests_and_diagnosis({requirement})'))
-    
-    def add_contact_tracing(self, requirement: bool):
-        list(self.prolog.query(f'add_contact_tracing({requirement})'))
+        # list(self.prolog.query(f'add_tests_and_diagnosis({requirement})'))
+        raise NotImplementedError()
     
     def add_isolation(self, requirement: bool):
-        list(self.prolog.query(f'add_isolation({requirement})'))
+        # list(self.prolog.query(f'add_isolation({requirement})'))
+        raise NotImplementedError()
     
     def add_friends(self, friend_list: list):
-        if friend_list:
-            list(self.prolog.query(f'add_friends({friend_list})'))
+        # if friend_list:
+        #     list(self.prolog.query(f'add_friends({friend_list})'))
+        if 'friends' in self.facts:
+            self.facts['friends'].extend(friend_list)
+        else:
+            self.facts['friends'] = set()
+    
+    def add_wearing_mask(self, wearing_mask: bool):
+        self.facts['wearing_mask'] = wearing_mask
+        
+    def add_location(self, location: int):
+        self.facts['location'] = location
     
     def feedback(self, location, wearing_mask):
-        self.query(f'feedback({location}, {wearing_mask})')
+        if location:
+            self.add_location(location)
+        if wearing_mask:
+            self.add_wearing_mask(wearing_mask)
     
     def query(self, queryString):
         """
@@ -170,7 +221,15 @@ class Knowledge:
             list: The results of the query.
         """
         return list(self.prolog.query(queryString))
-        
+
+    def retract_goal(self, goal_type, target_node=None):
+        if goal_type in self.goals:
+            del self.goals[goal_type]
+
+    def assert_goal(self, goal_type, target_node=None):
+        self.goals[goal_type] = target_node
+
+
 class KnowledgeCanelo:
     """
     Class representing the knowledge base of canelo.
