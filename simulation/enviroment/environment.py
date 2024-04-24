@@ -237,7 +237,7 @@ class Environment:
             # self._debug_agent_k(agent.knowledge_base)
         
         infected_agents = self._count_infected_agents()
-        # self.canelo.step(infected_agents)
+        self.canelo.step(infected_agents)
         
         ocupied_nodes = [([self.agents[agent_id] for agent_id in node.agent_list], node.contact_rate) for node in self.map.graph.nodes.values() if node.agent_list]
         # self.epidemic_model.step(ocupied_nodes)
@@ -576,7 +576,7 @@ class WorldInterfaceCanelo:
         self.list_agents = list_agents
         self.agent_kb = knowledge_base
 
-    def act(self, agent: Canelo, action: str, action_place: str) -> None:
+    def act(self, agent: Canelo, action: str) -> None:
         """
         Perform an action for an agent.
 
@@ -585,25 +585,25 @@ class WorldInterfaceCanelo:
             action (str): The action to perform.
             parameters (list): The parameters for the action.
         """
-        if action_place == 'use_mask_pp':
+        if action == 'use_mask_pp':
             logger.info(f'Canelo is transmitting use mask in public places')
             for agent in self.list_agents:
-                self.comunicate( agent, action_place)
+                self.comunicate( agent, action)
         
-        elif action_place == 'temporary_closure_pp':
+        elif action == 'temporary_closure_pp':
             logger.info(f'Canelo is transmitting temporaly closure in public places')
             for agent in self.list_agents:
-                self.comunicate( agent, action_place)
+                self.comunicate( agent, action)
         
-        elif action_place == 'use_mask_work':
+        elif action == 'use_mask_work':
             logger.info(f'Canelo is transmitting use mask in work')
             for agent in self.list_agents:
-                self.comunicate( agent, action_place, list(agent.knowledge_base.query('work_place(X,_)'))[0]['X'])
+                self.comunicate( agent, action, list(agent.knowledge_base.query('work_place(X,_)'))[0]['X'])
         
-        elif action_place == 'temporary_closure_work':
+        elif action == 'temporary_closure_work':
             logger.info(f'Canelo is transmitting temporaly closure in work')
             for agent in self.list_agents:
-                self.comunicate( agent, action_place, list(agent.knowledge_base.query('work_place(X,_)'))[0]['X'])
+                self.comunicate( agent, action, list(agent.knowledge_base.query('work_place(X,_)'))[0]['X'])
         
         
         if action == 'mask_use':

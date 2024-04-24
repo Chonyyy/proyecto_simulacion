@@ -220,7 +220,7 @@ class Knowledge:
         Returns:
             list: The results of the query.
         """
-        return list(self.prolog.query(queryString))
+        # return list(self.prolog.query(queryString))
 
     def retract_goal(self, goal_type, target_node=None):
         if goal_type in self.goals:
@@ -241,8 +241,9 @@ class KnowledgeCanelo:
         """
         Initialize the knowledge base.
         """
-        self.knowledge = Prolog()
-        self.knowledge.consult('./simulation/agents/canelo.pl')
+        # self.knowledge = Prolog()
+        # self.knowledge.consult('./simulation/agents/canelo.pl')
+        pass
         
     def query(self, queryString):
         """
@@ -311,18 +312,19 @@ class BehaviorLayer:
         Returns:
             tuple: The action and arguments to perform.
         """
-        query = f"{queryString}"
-        action1 = []
+        # query = f"{queryString}"
+        # action1 = []
         
-        for x in self.knowledge.query(query):
-            action1.append(x['Action'])
-            action1.append(x['Arguments'])
+        # for x in self.knowledge.query(query):
+        #     action1.append(x['Action'])
+        #     action1.append(x['Arguments'])
             
-        try:
-            action = list(self.knowledge.query(query))[0]
-            return action['Action'], action['Arguments']
-        except:
-            return None, None
+        # try:
+        #     action = list(self.knowledge.query(query))[0]
+        #     return action['Action'], action['Arguments']
+        # except:
+        #     return None, None
+        pass
         
     def search_friend(self, agent, plan):
         message, place = self._split_string(plan) if plan else None, None
