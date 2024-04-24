@@ -237,7 +237,7 @@ class Environment:
                 continue
             logger.info(f'Step of agent {agent.unique_id}')
             agent.step(step_num)
-            # self._debug_agent_k(agent.knowledge_base)
+            self._debug_agent_k(agent.knowledge_base)
         
         infected_agents = self._count_infected_agents()
         self.canelo.step(infected_agents)
@@ -249,126 +249,9 @@ class Environment:
 
     def _debug_agent_k(self, agent_k:Knowledge):
         logger.debug(f'Knowlege Base Facts:')
-        facts = []
-        try:
-            self._log_fact_type('home', agent_k.query(f'home(HomeID)'))
-        except Exception as e:
-            logger.error(f"query 'home' resulted in error: {e}")
-
-        try:
-            self._log_fact_type('week_day', agent_k.query(f'week_day(DayOfTheWeek)'))
-        except Exception as e:
-            logger.error(f"query 'week_day' resulted in error: {e}")
-
-        try:
-            self._log_fact_type('month_day', agent_k.query(f'month_day(DayOfTheMonth)'))
-        except Exception as e:
-            logger.error(f"query 'month_day' resulted in error: {e}")
-
-        try:
-            self._log_fact_type('hour', agent_k.query(f'hour(Hour)'))
-        except Exception as e:
-            logger.error(f"query 'hour' resulted in error: {e}")
-
-        try:
-            self._log_fact_type('min', agent_k.query(f'min(Min)'))
-        except Exception as e:
-            logger.error(f"query 'min' resulted in error: {e}")
-
-        try:
-            self._log_fact_type('work_place', agent_k.query(f'work_place(WorkId,_)'))
-        except Exception as e:
-            logger.error(f"query 'work_place' resulted in error: {e}")
-
-        try:
-            self._log_fact_type('open_place', agent_k.query(f'open_place(PlaceId, IsOpen)'))
-        except Exception as e:
-            logger.error(f"query 'open_place' resulted in error: {e}")
-
-        try:
-            self._log_fact_type('open_hours_place', agent_k.query(f'open_hours_place(ID,OpeningHour,ClosingHour)'))
-        except Exception as e:
-            logger.error(f"query 'open_hours_place' resulted in error: {e}")
-
-        try:
-            self._log_fact_type('disease_symptoms', agent_k.query(f'disease_symptoms(Symptoms)'))
-        except Exception as e:
-            logger.error(f"query 'disease_symptoms' resulted in error: {e}")
-
-        try:
-            self._log_fact_type('my_symptoms', agent_k.query(f'my_symptoms(MySymptoms)'))
-        except Exception as e:
-            logger.error(f"query 'my_symptoms' resulted in error: {e}")
-
-        try:
-            self._log_fact_type('is_medical_personal', agent_k.query(f'is_medical_personal(IsMedic)'))
-        except Exception as e:
-            logger.error(f"query 'is_medical_personal' resulted in error: {e}")
-
-        try:
-            self._log_fact_type('mask_necessity', agent_k.query(f'mask_necessity(MaskNec)'))
-        except Exception as e:
-            logger.error(f"query 'mask_necessity' resulted in error: {e}")
-
-        try:
-            self._log_fact_type('mask_requirement', agent_k.query(f'mask_requirement(NodeId,Requirement)'))
-        except Exception as e:
-            logger.error(f"query 'mask_requirement' resulted in error: {e}")
-
-        try:
-            self._log_fact_type('public_space', agent_k.query(f'public_space(ID,Address)'))
-        except Exception as e:
-            logger.error(f"query 'public_space' resulted in error: {e}")
-
-        try:
-            self._log_fact_type('hospital', agent_k.query(f'hospital(ID,Address)'))
-        except Exception as e:
-            logger.error(f"query 'hospital' resulted in error: {e}")
-
-        try:
-            self._log_fact_type('hospital_overrun', agent_k.query(f'hospital_overrun(ID,IsOverrun)'))
-        except Exception as e:#TODO: Debug this
-            logger.error(f"query 'hospital_overrun' resulted in error: {e}")
-
-        try:
-            self._log_fact_type('public_transportation_working', agent_k.query(f'public_transportation_working(Id,IsItWorking)'))
-        except Exception as e:
-            logger.error(f"query 'public_transportation_working' resulted in error: {e}")
-
-        try:
-            self._log_fact_type('public_transportation_schedule', agent_k.query(f'public_transportation_schedule(ID,Schedule)'))
-        except Exception as e:
-            logger.error(f"query 'public_transportation_schedule' resulted in error: {e}")
-
-        try:
-            self._log_fact_type('hospital_acepting_patients', agent_k.query(f'hospital_acepting_patients(Id,IsAccepting)'))
-        except Exception as e:
-            logger.error(f"query 'hospital_acepting_patients' resulted in error: {e}")
-
-        try:
-            self._log_fact_type('sleeping', agent_k.query(f'sleeping(IsAgentSleeping)'))
-        except Exception as e:
-            logger.error(f"query 'sleeping' resulted in error: {e}")
-
-        try:
-            self._log_fact_type('position', agent_k.query(f'location(PositionId)'))
-        except Exception as e:
-            logger.error(f"query 'position' resulted in error: {e}")
-
-        try:
-            self._log_fact_type('isolation_center', agent_k.query(f'isolation_center(Id,Address)'))
-        except Exception as e:
-            logger.error(f"query 'isolation_center' resulted in error: {e}")
-
-        try:
-            self._log_fact_type('goal', agent_k.query(f'goal(Goal,Parameters)'))
-        except Exception as e:
-            logger.error(f"query 'goal' resulted in error: {e}")
-        
-        try:
-            self._log_fact_type('friends', agent_k.query(f'friends(X)'))
-        except Exception as e:
-            logger.error(f"query 'friends' resulted in error: {e}")
+        for fact in agent_k.facts.keys():
+            logger.debug(f'{fact}:')
+            logger.debug(f'{agent_k[fact]}')
 
 
     def _count_infected_agents(self):

@@ -198,7 +198,7 @@ class Knowledge:
         if 'friends' in self.facts:
             self.facts['friends'].union(friend_list)
         else:
-            self.facts['friends'] = set()
+            self.facts['friends'] = set(friend_list)
 
     def add_wearing_mask(self, wearing_mask: bool):
         self.facts['wearing_mask'] = wearing_mask
