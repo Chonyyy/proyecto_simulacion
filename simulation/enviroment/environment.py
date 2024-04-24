@@ -22,7 +22,7 @@ class Environment:
         agents (List[Agent]): The list of agents in the environment.
         epidemic_model (EpidemicModel): The epidemic model for the simulation.
     """
-    def __init__(self, num_agents: int, epidemic_model: EpidemicModel, map: Terrain):
+    def __init__(self, num_agents: int, epidemic_model: EpidemicModel, map: Terrain, ):
         """
         Initialize the environment.
 
@@ -39,8 +39,8 @@ class Environment:
         self.dissease_step_progression = []
         logger.debug('=== Initializing Agents ===')
         self.initialize_citizen_agents(num_agents)
-        self.initialize_canelo_agent()
-        # self.initialize_relations()
+        # self.initialize_canelo_agent()
+        self.initialize_relations()
 
         def kill_agent(agent):
             self.dead_agents.add(agent.unique_id)
@@ -49,6 +49,40 @@ class Environment:
             # agent.knowledge_base = None
 
         self.epidemic_model.kill_agent = kill_agent
+
+    def initialize_citizen_agents(self, num_agents: int) -> None:
+        """
+        Initialize agents within the environment.
+
+        Args:
+            num_agents (int): The number of agents to initialize.
+        """
+        infected_agents = random.randint(0, int(num_agents/2))
+
+        for i in range(num_agents):
+            mind_map = self.generate_citizen_mind_map()
+            kb = self._initialize_agents_knowledge(i)
+
+            agents_wi  = WorldInterface(self, self.map, mind_map, kb)
+            agents_bbc = BehaviorLayer(agents_wi, kb, mind_map)
+            agents_pbc = LocalPlanningLayer(agents_bbc, kb, mind_map)
+            agent_cc = CooperativeLayer(agents_pbc, kb, mind_map)
+
+            agent = Agent(
+                unique_id=i, 
+                mind_map=mind_map,
+                lp_component=agents_pbc,
+                bb_component=agents_bbc,
+                c_component=agent_cc,
+                wi_component=agents_wi,
+                knowledge_base=kb
+                )
+            
+            if i < infected_agents:
+                self.epidemic_model._infect_citizen(agent)
+
+            location = random.choice(list(self.map.keys()))
+            self.add_agent(agent, location)
 
     def _initialize_agents_knowledge(self, id):
         kb = Knowledge()
@@ -67,7 +101,7 @@ class Environment:
             work.add_person(id)
             kb.add_work_place(self.map[work.id])
             kb.add_is_medical_personnel(False)
-        # list(kb.query('initialize_k()'))
+        #TODO: Keep Initializing the KB
         
         return kb
     
@@ -127,38 +161,6 @@ class Environment:
         
         self.canelo = agent
         
-    def initialize_citizen_agents(self, num_agents: int) -> None:
-        """
-        Initialize agents within the environment.
-
-        Args:
-            num_agents (int): The number of agents to initialize.
-        """
-        infected_agents = random.randint(0, int(num_agents/2))
-        for i in range(num_agents):
-            mind_map = self.generate_citizen_mind_map()
-            kb = self._initialize_agents_knowledge(i)
-
-            agents_wi  = WorldInterface(self, self.map, mind_map, kb)
-            agents_bbc = BehaviorLayer(agents_wi, kb)
-            agents_pbc = LocalPlanningLayer(agents_bbc, kb)
-            agent_cc = CooperativeLayer(agents_pbc, kb)
-
-            agent = Agent(
-                unique_id=i, 
-                mind_map=mind_map,
-                lp_component=agents_pbc,
-                bb_component=agents_bbc,
-                c_component=agent_cc,
-                wi_component=agents_wi,
-                knowledge_base=kb
-                )
-            
-            if i < infected_agents:
-                self.epidemic_model._infect_citizen(agent)
-
-            location = random.choice(list(self.map.keys()))
-            self.add_agent(agent, location)
 
     def add_agent(self, agent: Agent, pos: int) -> None:
         """

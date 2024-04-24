@@ -2,6 +2,8 @@ from pyswip import Prolog
 from typing import Tuple
 import random
 from simulation.enviroment.sim_nodes import *
+from simulation.enviroment.graph import Graph
+
 class Knowledge:
     """
     Class representing the knowledge base of an agent.
@@ -13,9 +15,10 @@ class Knowledge:
         """
         Initialize the knowledge base.
         """
-        self.prolog = Prolog()
-        self.prolog.consult('./simulation/agents/hierarchical_agent_KB.pl')
+        # self.prolog = Prolog()
+        # self.prolog.consult('./simulation/agents/hierarchical_agent_KB.pl')
         self.facts = {}
+        self.initializing_k()
 
     def add_node_k(self, node: SimNode):
         
@@ -23,14 +26,11 @@ class Knowledge:
             'addr': node.addr,
             'capacity_status': node.capacity_status,
             'node_type': node.node_type,
-            # 'oppening_hours': node.oppening_hours,
-            # 'closing_hours': node.closing_hours,
             'mask_required': node.mask_required
         }#TODO: add if the place is open
         try:
             node_info['oppening_hours'] = node.oppening_hours,
             node_info['closing_hours'] = node.closing_hours
-            
         except:
             pass
             
@@ -40,7 +40,7 @@ class Knowledge:
             self.facts['map'] = {
                 node.id: node_info
             } 
-               
+
     def add_date_k(self, date):
         """
         Add a date to the knowledge base.
@@ -48,13 +48,13 @@ class Knowledge:
         Args:
             date (tuple): The date to add.
         """
-        self.facts[date] = {
+        self.facts['date'] = {
             'week_day': date[0],
             'day': date[1],
             'hour': date[2],
             'min': date[3] 
         }
-        
+
     def add_symptom_k(self, symptom):
         """
         Add a symptom to the knowledge base.
@@ -68,7 +68,7 @@ class Knowledge:
             self.facts['symptoms'].add(symptom)
         else:
             self.facts['symptoms'] = set()
-    
+
     def add_hospital_k(self, hospital_id: int, hospital_addr: Tuple[int,int]):
         """
         Add a hospital to the knowledge base.
@@ -79,7 +79,7 @@ class Knowledge:
         """
         # list(self.prolog.query(f'add_hospital({hospital_id}, {hospital_addr})'))
         raise not NotImplementedError()
-        
+
     def add_home(self, home_id: int):
         """
         Add a home to the knowledge base.
@@ -88,7 +88,7 @@ class Knowledge:
             home_id (int): The identifier of the home.
         """
         self.facts['home'] = home_id
-            
+
     def add_work_place(self, node):
         """
         Add a workplace to the knowledge base.
@@ -100,9 +100,10 @@ class Knowledge:
             'id': node.id,
             'addr':node.addr,
             'opening_hours': node.opening_hours,
-            'closing_hours': node.closing_hours
+            'closing_hours': node.closing_hours,
+            'is_open': node.is_open
         }
-    
+
     def add_open_place(self, id: int, open: bool):
         """
         Add an open place to the knowledge base.
@@ -113,7 +114,7 @@ class Knowledge:
         """
         # list(self.prolog.query(f'add_open_place({id}, {str(open).lower()})'))
         raise NotImplementedError()
-    
+
     def add_open_hours(self, id: int, opening_hours: int, closing_hours: int):
         """
         Add open hours to the knowledge base.
@@ -125,7 +126,7 @@ class Knowledge:
         """
         # list(self.prolog.query(f'add_open_hours_place({id}, {opening_hours}, {closing_hours})'))
         raise NotImplementedError()
-    
+
     def add_dissease_symptoms(self, symptom_list: list):
         """
         Add disease symptoms to the knowledge base.
@@ -135,7 +136,7 @@ class Knowledge:
         """
         # list(self.prolog.query(f'add_dissease_symptoms({symptom_list})'))
         raise NotImplementedError()
-        
+
     def add_current_location(self, location_id: int):
         """
         Add current location id
@@ -145,7 +146,7 @@ class Knowledge:
         """
         # list(self.prolog.query(f'add_location({location_id})'))
         self.facts['location'] = location_id
-    
+
     def add_is_medical_personnel(self, medical_personnel: bool):
         """
         Add medical personnel information to the knowledge base.
@@ -155,7 +156,7 @@ class Knowledge:
         """
         # list(self.prolog.query(f'add_if_is_medical_personal({str(medical_personnel).lower()})'))
         self.facts['is_medic'] = medical_personnel
-    
+
     def add_mask_necessity(self, mask_necessity: bool):
         """
         Add mask necessity information to the knowledge base.
@@ -165,7 +166,7 @@ class Knowledge:
         """
         # list(self.prolog.query(f'add_mask_necessity({mask_necessity})'))
         self.facts['mask_necesity'] = mask_necessity
-    
+
     def add_mask_requirement(self, place_id: int, requirement: bool):
         """
         Add mask requirement information to the knowledge base.
@@ -177,58 +178,59 @@ class Knowledge:
         # list(self.prolog.query(f'add_place_to_use_mask({place_id}, {requirement})'))
         if 'map' in self.facts and place_id in self.facts['map']:
             self.facts['maps'][place_id]['mask_required'] = requirement
-    
+
     def add_social_distancing(self, requirement: bool):
         # list(self.prolog.query(f'add_social_distancing({requirement})'))
         self.facts['social_distancing'] = requirement
-    
+
     def add_tests_and_diagnosis(self, requirement: bool):
         # list(self.prolog.query(f'add_tests_and_diagnosis({requirement})'))
         raise NotImplementedError()
-    
+
     def add_isolation(self, requirement: bool):
         # list(self.prolog.query(f'add_isolation({requirement})'))
         raise NotImplementedError()
-    
+
     def add_friends(self, friend_list: list):
         # if friend_list:
         #     list(self.prolog.query(f'add_friends({friend_list})'))
         if 'friends' in self.facts:
-            self.facts['friends'].extend(friend_list)
+            self.facts['friends'].union(friend_list)
         else:
             self.facts['friends'] = set()
-    
+
     def add_wearing_mask(self, wearing_mask: bool):
         self.facts['wearing_mask'] = wearing_mask
-        
+
     def add_location(self, location: int):
         self.facts['location'] = location
-    
+
     def feedback(self, location, wearing_mask):
         if location:
             self.add_location(location)
         if wearing_mask:
             self.add_wearing_mask(wearing_mask)
+
+    def initializing_k(self):
+        self.facts['goal'] = 'none'
+        self.facts['goal_parameters'] = []
+        self.facts['wearing_mask'] = False
+        self.facts['too_sick'] = False
+        self.facts['mask_necessity'] = False
+        self.facts['medical_check'] = False
+
+    def update_goals(self):
+        # removes already achieved goals
+        if self.facts['goal'] == 'wear_mask' and self.facts['wearing_mask']:
+            self.facts['goal'] = 'none'
+        if self.facts['goal'] == 'remove_mask' and not self.facts['wearing_mask']:
+            self.facts['goal'] = 'none'
+        if self.facts['goal'] == 'move' and self.facts['location'] == self.facts['goal_parameters'][0]:
+            self.facts['goal'] = 'none'
+            self.facts['goal_parameters'] = []
     
-    def query(self, queryString):
-        """
-        Query the knowledge base.
-
-        Args:
-            queryString (str): The query string.
-
-        Returns:
-            list: The results of the query.
-        """
-        return list(self.prolog.query(queryString))
-
-    def retract_goal(self, goal_type, target_node=None):
-        if goal_type in self.goals:
-            del self.goals[goal_type]
-
-    def assert_goal(self, goal_type, target_node=None):
-        self.goals[goal_type] = target_node
-
+    def __getitem__(self, index):
+        return self.facts[index]
 
 class KnowledgeCanelo:
     """
@@ -265,7 +267,7 @@ class BehaviorLayer:
         world_model (Graph): The world model of the agent.
         knowledge (Knowledge): The knowledge base of the agent.
     """
-    def __init__(self, world_model, knowledge: Knowledge):
+    def __init__(self, world_model, knowledge: Knowledge, mind_map: Graph):
         """
         Initialize the behavior layer.
 
@@ -275,6 +277,7 @@ class BehaviorLayer:
         """
         self.world_model = world_model
         self.knowledge = knowledge
+        self.mind_map = mind_map
         try:
             self.add_map_to_k()
         except:
@@ -301,7 +304,7 @@ class BehaviorLayer:
             else:
                 pass
 
-    def react(self, queryString):
+    def react(self):
         """
         React to a query string.
 
@@ -311,23 +314,23 @@ class BehaviorLayer:
         Returns:
             tuple: The action and arguments to perform.
         """
-        query = f"{queryString}"
-        action1 = []
-        
-        for x in self.knowledge.query(query):
-            action1.append(x['Action'])
-            action1.append(x['Arguments'])
-            
-        try:
-            action = list(self.knowledge.query(query))[0]
-            return action['Action'], action['Arguments']
-        except:
-            return None, None
-        
+        kb = self.knowledge
+        mm = self.mind_map
+        kb.update_goals()
+        if (kb['goal'] == 'wear_mask' and kb['mask_necessity'] and mm[kb['location']].mask_required and (not kb['wearing_mask'])):
+            return ('wear_mask', [])
+        if (kb['goal'] == 'remove_mask'and kb['wearing_mask']):
+            return ('remove_mask', [])
+        if (kb['medical_check']):
+            return ('medical_check', [])
+        if (kb['goal'] == 'move' and kb['location'] != kb['goal_parameters'][0]):
+            return ('move', kb['goal_parameters'][0], kb['social_distancing'])
+        return ('idle', [])
+
     def search_friend(self, agent, plan):
         message, place = self._split_string(plan) if plan else None, None
         self.world_model.comunicate(agent, message, place)
-        
+
     def _split_string(self, s):
         parts = s.split('(', 1)
         outside_parentheses = parts[0]
@@ -342,7 +345,7 @@ class LocalPlanningLayer:
         behavior_layer_based (BehaviorLayer): The behavior layer based on which the local planning is performed.
         prolog (Knowledge): The knowledge base of the agent.
     """
-    def __init__(self, behavior_layer_based: BehaviorLayer, knowledge: Knowledge):
+    def __init__(self, behavior_layer_based: BehaviorLayer, knowledge: Knowledge, mind_map: Graph):
         """
         Initialize the local planning layer.
 
@@ -353,18 +356,44 @@ class LocalPlanningLayer:
         self.behavior_layer_based = behavior_layer_based
         self.knowledge = knowledge
         self.plans = {} 
+        self.mind_map = mind_map
 
-    def plan(self, queryString):
+    def plan(self):
         """
         Plan based on a query string.
 
         Args:
             queryString (str): The query string.
         """
-        query = f"{queryString}"
-        plan = list(self.knowledge.query(query))
-        return plan[0]['X'] if plan != [] else []
+        kb = self.knowledge
+        mm = self.mind_map
+        date = kb['date']
+        kb.update_goals()
+        if (kb['too_sick']):#(too_sick(true), hospital(Id,_), open_place(Id, true), hospital_overrun(Id, false)
+            self.hospital_routine()
+        if (self._work_is_open(kb['work_place'], date['week_day'], date['hour']) and (not kb['too_sick'])):# -> work_day_routine(WorkId), Plan = work_day_routine(WorkId));
+            self.work_day_routine(kb['work_place'])
+        if (date['week_day'] in ['saturday', 'sunday']):#((public_space(Id, _),open_place(Id, true), go_public_place_rutine(Id));  Plan = no_pweek_day(W), (W == saturday; W == sunday)) -> go_public_place_rutine(Id), Plan = lan.
+            self.entertainment_routine()
+
+    def entertainment_routine(sef):
+        raise NotImplementedError()
+
+    def work_day_routine(self):
+        raise NotImplementedError()
+
+    def hospital_routine(self):
+        raise NotImplementedError()
+
+    def _open_hospitals(self, mind_map):
+        raise NotImplementedError()
+
+    def _work_is_open(self, work_info, week_day, hour):
+        return (not (week_day in ['saturday', 'sunday'])) and (work_info['opening_hours'] <= hour) and (hour < work_info['closing_hours']) and work_info['is_open']
     
+    def _open_public_places(self, mind_map):
+        raise NotImplementedError()
+
     def plan_coperative(self, agent, plan):
         self.behavior_layer_based.search_friend(agent, plan)
 
@@ -376,7 +405,7 @@ class CooperativeLayer:
         local_planning_layer (LocalPlanningLayer): The local planning layer of the agent.
         prolog (Knowledge): The knowledge base of the agent.
     """
-    def __init__(self, local_planning_layer, knowledge: Knowledge):
+    def __init__(self, local_planning_layer, knowledge: Knowledge, mind_map: Graph):
         """
         Initialize the cooperative layer.
 
@@ -386,6 +415,7 @@ class CooperativeLayer:
         """
         self.local_planning_layer: LocalPlanningLayer = local_planning_layer
         self.knowledge = knowledge
+        self.mind_map = mind_map
 
     def cooperate(self,agent, queryString):
         """
@@ -394,7 +424,7 @@ class CooperativeLayer:
         Args:
             queryString (str): The query string.
         """
-        self.local_planning_layer.plan_coperative(agent, self.generate_plan())
+        return ('idle', [])
     
     def generate_plan(self):
         plan = self.local_planning_layer.plan('planification_step(X)')
@@ -402,5 +432,4 @@ class CooperativeLayer:
     
     def evaluate_plan():
         pass
-        
-    
+

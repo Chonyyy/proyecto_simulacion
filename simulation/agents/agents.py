@@ -41,9 +41,6 @@ class Agent:
         self.cc = c_component
         self.wi = wi_component
 
-    def initialize_k(self):
-        pass
-
     def process_perception(self, world_perception: Dict[Hashable, CPNode], step_num):
         k = self.knowledge_base
         k.add_date_k(format_day(step_num))
@@ -59,16 +56,18 @@ class Agent:
     def step(self, step_num):
         perception = self.wi.percieve(self, step_num)
         self.process_perception(perception, step_num)
-        action, arguments = self.bbc.react(f"behavioral_step(Action, Arguments,{self.location}, a)")
-        if not action:
-            
-            plan = self.pbc.plan("planification_step(X)")
-            action, arguments = self.bbc.react(f"behavioral_step(Action, Arguments,{self.location},a)")
-        
+        action, arguments = self.bbc.react()#TODO: Im am here
+        if action == 'idle':
+            self.pbc.plan()
+            action, arguments = self.bbc.react()
+        if action == 'idle':
+            self.cc.cooperate(self, "coperate()")
+            self.pbc.plan()
+            action, arguments = self.bbc.react()
         # if (not action)  :
         #     coperate = self.cc.cooperate(self, "coperate()")
 
-        log_agent_intentions(self.knowledge_base)
+        # log_agent_intentions(self.knowledge_base)
         self.wi.act(self, action, arguments)
         self.knowledge_base.feedback(self.location, self.masked)
 

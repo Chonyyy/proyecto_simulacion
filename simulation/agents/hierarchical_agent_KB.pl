@@ -14,65 +14,64 @@ work_is_open(WorkId):-
 %---------------------------- Patterns of Behaviour -----------------------------------------------
 
 
-check_goals():-
-    ((location(Id), goal(move, Id)) ->
-        (retractall(goal(move, Id)))
-    );
-    ((goal(work), hour(H), work_place(WorkId, _), open_hours_place(WorkId,_,F), H >= F) ->
-        retractall(goal(work)));
+% check_goals():-
+%     ((location(Id), goal(move, Id)) ->
+%         (retractall(goal(move, Id)))
+%     );
+%     ((goal(work), hour(H), work_place(WorkId, _), open_hours_place(WorkId,_,F), H >= F) ->
+%         retractall(goal(work)));
 
-    (goal(wear_mask), wearing_mask(true) ->
-        retractall(goal(wear_mask)));
+%     (goal(wear_mask), wearing_mask(true) ->
+%         retractall(goal(wear_mask)));
 
-    ((goal(medical_check), location(Id), open_hours_place(Id,_,C), hour(H), C == H) ->
-        retractall(goal(medical_check)));
+%     ((goal(medical_check), location(Id), open_hours_place(Id,_,C), hour(H), C == H) ->
+%         retractall(goal(medical_check)));
 
-    ((goal(have_fun),  location(Id), open_hours_place(Id,_,C), hour(H), C == H)  ->
-        retractall(goal(wear_mask)));
+%     ((goal(have_fun),  location(Id), open_hours_place(Id,_,C), hour(H), C == H)  ->
+%         retractall(goal(wear_mask)));
 
-    (goal(remove_mask), wearing_mask(false) ->
-        retractall(goal(remove_mask)));
-    true.
+%     (goal(remove_mask), wearing_mask(false) ->
+%         retractall(goal(remove_mask)));
+%     true.
 
-move(NodeId, Action, Arguments):-
-    social_distancing(SocialDistancing),
-    Action = move,
-    Arguments = [NodeId, SocialDistancing].
+% move(NodeId, Action, Arguments):-
+%     social_distancing(SocialDistancing),
+%     Action = move,
+%     Arguments = [NodeId, SocialDistancing].
 
-work(Action, Arguments):-
-    Action = work,
-    Arguments = [].
+% work(Action, Arguments):-
+%     Action = work,
+%     Arguments = [].
 
-wear_mask(Action, Arguments):-
-    Action = wear_mask,
-    Arguments = [].
+% wear_mask(Action, Arguments):-
+%     Action = wear_mask,
+%     Arguments = [].
 
-remove_mask(Action, Arguments):-
-    Action = remove_mask,
-    Arguments = [].
+% remove_mask(Action, Arguments):-
+%     Action = remove_mask,
+%     Arguments = [].
     
-behavioral_step(Action, Arguments, Location, Goal, Mask_necessity, Mask_requirement):-
-    % scheduling
-    % check_schedule(),
+% behavioral_step(Action, Arguments, Location, Goal, Mask_necessity, Mask_requirement):-
+%     % scheduling
+%     % check_schedule(),
     
-    % check archieved goals
-    % check_goals(),
-    % (preconditions) - (actions)
-    (Goal == wear_mask, Mask_necessity == true, mask_requirement(Location, true), wearing_mask(false)->
-        wear_mask(Action, Arguments));
+%     % check archieved goals
+%     % check_goals(),
+%     % (preconditions) - (actions)
+%     (Goal == wear_mask, Mask_necessity == true, mask_requirement(Location, true), wearing_mask(false)->%[X]
+%         wear_mask(Action, Arguments));
     
-    (goal(remove_mask), wearing_mask(true)->
-        remove_mask(Action, Arguments));
+%     (goal(remove_mask), wearing_mask(true)->%[X]
+%         remove_mask(Action, Arguments));
 
-    (goal(work), work_place(Location, _)->
-        work(Action, Arguments));
+%     (goal(work), work_place(Location, _)->
+%         work(Action, Arguments));
 
-    (goal(medical_check)-> Action = medical_check);
+%     (goal(medical_check)-> Action = medical_check);
+%     (goal(move, NodeId)-> %, not(location(NodeId))
+%         (move(NodeId, Action, Arguments))).
 
-    (goal(move, NodeId)-> %, not(location(NodeId))
-        (move(NodeId, Action, Arguments))).
-
-    % check archieved goals
+%     % check archieved goals
 
 
 %---------------------------- Local Plans --------------------------------------------------------
@@ -91,10 +90,6 @@ behavioral_step(Action, Arguments, Location, Goal, Mask_necessity, Mask_requirem
 %         % assert(goal(GoalType, Param)), retractall(schedule(add, GoalType, H, M)));
 %     true.
 
-remove_schedule(GoalType, H, M):-
-    schedule(remove, GoalType, H, M),
-    retractall(schedule(remove, _, H, M)),
-    assert(schedule(remove, GoalType, H, M)).
 
 goal_move(TagetNode):-
     retractall(goal(move, _)).
@@ -159,8 +154,8 @@ planification_step(Plan):-
     work_place(WorkId, _),
     ((too_sick(true), hospital(Id,_), open_place(Id, true), hospital_overrun(Id, false))-> hospital_rutine(Id), Plan = hospital_rutine(Id));
     ((work_is_open(WorkId), too_sick(false)) -> work_day_routine(WorkId), Plan = work_day_routine(WorkId));
-    ((public_space(Id, _),open_place(Id, true), week_day(W), (W == saturday; W == sunday)) -> go_public_place_rutine(Id), Plan = go_public_place_rutine(Id)); 
-    Plan = no_plan.
+    ((public_space(Id, _),open_place(Id, true), go_public_place_rutine(Id)); 
+    Plan = no_pweek_day(W), (W == saturday; W == sunday)) -> go_public_place_rutine(Id), Plan = lan.
 
 
 %---------------------------- Cooperation Knowledge -----------------------------------------------

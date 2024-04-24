@@ -1,8 +1,12 @@
-2024-04-23 23:16:23,900 - INFO - === Simulation Execution Started ===
-2024-04-23 23:16:23,901 - DEBUG - === Initializing City ===
-2024-04-23 23:16:23,901 - DEBUG - === Initializing Epidemic Model ===
-2024-04-23 23:16:23,904 - DEBUG - === Initializing Environment ===
-2024-04-23 23:16:23,904 - DEBUG - === Initializing Agents ===
-2024-04-23 23:16:23,917 - INFO - === Starting Simulation Loop With 4464 Steps ===
-2024-04-23 23:16:23,917 - INFO - === Step: ('Monday', 0, 0, 0) ===
-2024-04-23 23:16:23,917 - INFO - Step of agent 4
+2024-04-24 12:46:39,578 - INFO - === Simulation Execution Started ===
+2024-04-24 12:46:39,581 - DEBUG - === Initializing City ===
+2024-04-24 12:46:39,581 - DEBUG - === Initializing Epidemic Model ===
+2024-04-24 12:46:39,592 - DEBUG - === Initializing Environment ===
+2024-04-24 12:46:39,593 - DEBUG - === Initializing Agents ===
+2024-04-24 12:46:39,615 - INFO - === Starting Simulation Loop With 4464 Steps ===
+2024-04-24 12:46:39,615 - INFO - === Step: ('Monday', 0, 0, 0) ===
+2024-04-24 12:46:39,616 - INFO - Step of agent 3
+2024-04-24 12:46:39,618 - INFO - Step of agent 4
+2024-04-24 12:46:39,619 - INFO - Step of agent 1
+2024-04-24 12:46:39,619 - INFO - Step of agent 2
+2024-04-24 12:46:39,620 - INFO - Step of agent 0
