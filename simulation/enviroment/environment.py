@@ -128,7 +128,8 @@ class Environment:
                 friends_list = posible_friends.remove(agent_id)
             else:
                 friends_list = posible_friends
-            agent.knowledge_base.add_friends(friends_list)
+                if friends_list:
+                    agent.knowledge_base.add_friends(friends_list)
 
     def initialize_relations(self):
         terrain = self.map
@@ -440,7 +441,7 @@ class WorldInterface:
                 path = agent._last_path
             else:
                 map = self.agent_mind_map
-                if parameters[1].value == 'true':
+                if parameters[1] == 'true':
                     problem = AgentPathProblem(map[agent.location], map[parameters[0]], map, 'minimum_contact_path')          
                 else:
                     problem = AgentPathProblem(map[agent.location], map[parameters[0]], map)

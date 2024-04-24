@@ -19,6 +19,7 @@ class Knowledge:
         # self.prolog.consult('./simulation/agents/hierarchical_agent_KB.pl')
         self.facts = {}
         self.initializing_k()
+        
 
     def add_node_k(self, node: SimNode):
         
@@ -218,6 +219,8 @@ class Knowledge:
         self.facts['too_sick'] = False
         self.facts['mask_necessity'] = False
         self.facts['medical_check'] = False
+        self.facts['social_distancing'] = False
+        
 
     def update_goals(self):
         # removes already achieved goals
@@ -318,14 +321,14 @@ class BehaviorLayer:
         mm = self.mind_map
         kb.update_goals()
         if (kb['goal'] == 'wear_mask' and kb['mask_necessity'] and mm[kb['location']].mask_required and (not kb['wearing_mask'])):
-            return ('wear_mask', [])
+            return 'wear_mask', []
         if (kb['goal'] == 'remove_mask'and kb['wearing_mask']):
-            return ('remove_mask', [])
+            return 'remove_mask', []
         if (kb['medical_check']):
-            return ('medical_check', [])
+            return 'medical_check', []
         if (kb['goal'] == 'move' and kb['location'] != kb['goal_parameters'][0]):
-            return ('move', kb['goal_parameters'][0], kb['social_distancing'])
-        return ('idle', [])
+            return 'move', (kb['goal_parameters'][0], kb['social_distancing'])
+        return 'idle', []
 
     def search_friend(self, agent, plan):
         message, place = self._split_string(plan) if plan else None, None
@@ -376,14 +379,52 @@ class LocalPlanningLayer:
         if (date['week_day'] in ['saturday', 'sunday']):#((public_space(Id, _),open_place(Id, true), go_public_place_rutine(Id));  Plan = no_pweek_day(W), (W == saturday; W == sunday)) -> go_public_place_rutine(Id), Plan = lan.
             self.entertainment_routine()
 
-    def entertainment_routine(sef):
-        raise NotImplementedError()
+    def entertainment_routine(self):
+        kb = self.knowledge
+        
+        public_place = random.choice(kb.facts['public_places'])
+        kb.facts['goal'] = 'move'
+        kb.facts['goal_parameters'] = [public_place]
+        
+        if kb.facts['location'] == public_place:
+            kb.facts['goal'] = 'have_fun'
+            kb.facts['goal_parameters'] = []
+        
+        time_to_go_home = self.mind_map[public_place].closing_hours
+        if time_to_go_home == kb.facts['date']['hour']:
+            home = kb.facts['home'] 
+            kb.facts['goal'] = 'move'
+            kb.facts['goal_parameters'] = [home]
 
-    def work_day_routine(self):
-        raise NotImplementedError()
+    def work_day_routine(self, work):
+        kb = self.knowledge 
+        kb.facts['goal'] = 'move'
+        kb.facts['goal_parameters'] = [work['id']]
+        
+        if kb.facts['location'] == work:
+            kb.facts['goal'] = 'work'
+            kb.facts['goal_parameters'] = []
+        
+        time_to_go_home = kb.facts['work_place']['closing_hours']
+        if time_to_go_home == kb.facts['date']['hour']:
+            home = kb.facts['home'] 
+            kb.facts['goal'] = 'work'
+            kb.facts['goal_parameters'] = [home]
 
-    def hospital_routine(self):
-        raise NotImplementedError()
+    def hospital_routine(self, hospital):
+        kb = self.knowledge
+        kb.facts['goal'] = 'move'
+        kb.facts['goal_parameters'] = [hospital]
+        
+        if kb.facts['location'] == hospital:
+            kb.facts['goal'] = 'recibe_atencion_medica'
+            kb.facts['goal_parameters'] = []
+        
+        time_to_go_home = self.mind_map[hospital].closing_hours
+        if time_to_go_home == kb.facts['date']['hour']:
+            home = kb.facts['home'] 
+            kb.facts['goal'] = 'move'
+            kb.facts['goal_parameters'] = [home]
 
     def _open_hospitals(self, mind_map):
         raise NotImplementedError()

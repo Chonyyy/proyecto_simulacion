@@ -34,7 +34,11 @@ class Agent:
         self.knowledge_base = knowledge_base
         self.mind_map = mind_map if mind_map is not None else {}
         self.symptoms = []
-
+        self.hospitals = [node.id for node in mind_map.nodes.values() if node.node_type == 'hospital']
+        self.public_places = [node.id for node in mind_map.nodes.values() if node.node_type == 'public_space']
+        self.knowledge_base.facts['hospitals'] = self.hospitals
+        self.knowledge_base.facts['public_places'] = self.public_places
+        
         # Agent Control Unit
         self.bbc = bb_component
         self.pbc = lp_component
