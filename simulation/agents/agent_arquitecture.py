@@ -246,8 +246,9 @@ class KnowledgeCanelo:
         """
         Initialize the knowledge base.
         """
-        self.knowledge = Prolog()
-        self.knowledge.consult('./simulation/agents/canelo.pl')
+        # self.knowledge = Prolog()
+        # self.knowledge.consult('./simulation/agents/canelo.pl')
+        pass
         
     def query(self, queryString):
         """
