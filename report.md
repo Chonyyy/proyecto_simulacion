@@ -1,3 +1,9 @@
+# Simulación de epidemias
+
+autores:
+> - María de Lourdes Choy C411
+> - Alejandro Yero Valdes C411
+
 # Introducción
 
 En el mundo actual, la propagación de enfermedades se ha convertido en un desafío global que requiere una atención urgente. La importancia de detener esta propagación no solo radica en la protección de la salud de las personas, sino también en la preservación de la estabilidad social y económica de las comunidades. En este trabajo, exploraremos las diferentes estrategias y medidas que se pueden implementar para prevenir y controlar la propagación de enfermedades, destacando la necesidad de una acción coordinada a nivel local.
@@ -95,10 +101,12 @@ El sistema experto evalúa estas reglas con respecto al estado actual de la simu
 En nuestra simulación, utilizamos el algoritmo A* implementado en clases prácticas para resolver dos problemas muy similares, haciendo un cambio de las funciones g(n) y h(n). Uno de estos fue encontrar el camino de longitud mínima, el cuál se utiliza por defecto por los agentes, y otro que intenta minimizar la exposición a la enfermedad priorizando moverse por nodos con menos densidad poblacional.
 
 ## Resultados Experimentales
----
-== IN DEVELOPMENT 😢==
+
+ok
 
 # Conclusiones
+
+ok
 
 # Bibliografía
 

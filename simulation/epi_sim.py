@@ -1,12 +1,13 @@
 from simulation.enviroment.environment import Environment
 from simulation.enviroment.map import Terrain
 from simulation.epidemic.epidemic_model import EpidemicModel
-
 from typing import Tuple
 import random
 import logging
 import matplotlib.pyplot as plt
 import pickle
+from simulation.enviroment.maps import TEST_CITY_1
+from ai.genetic_algorythm import GA
 
 logging.basicConfig(filename="simulation.log",
                     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -117,6 +118,12 @@ class Simulation:
         with open(filename, 'rb') as f:
             self.terrain = pickle.load(f)
 
+    def train_canelo(self):
+        ga = GA()
+        ga(fitness_func)
+        
+        
+    
     def serialize_epidemic_model(self, filename):
         """
         Serialize the epidemic_model object and save it to a file.
@@ -205,3 +212,29 @@ class Simulation:
         month_day = step_num // 6 // 24
         
         return week_day, month_day, hour, min
+
+def simulate(env, steps_num):
+        for step in range(steps_num):
+            env.step(step)
+       
+
+def fitness_func(ga_instance, solution = None, solution_idx = None):
+    sim_days = 31
+    sim_hours = sim_days * 24
+    sim_steps = sim_hours * 6
+
+    map = TEST_CITY_1
+    epidemic_model = EpidemicModel()
+    env = Environment(5, epidemic_model, map, solution)
+    simulate(env, sim_steps)
+    sum = 0
+    a = env.dissease_step_progression[-1]
+    
+    for x in a:
+        if x == 'susceptible':
+            continue
+        if x == 'recovered':
+            continue
+        sum += a[x]
+        
+    return sum

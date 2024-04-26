@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import Optional, Tuple
 from simulation.epi_sim import Simulation
-from fastapi.responses import FileResponse
+from fastapi.responses import StreamingResponse
 import matplotlib.pyplot as plt
 import numpy as np
 import io
@@ -83,7 +83,7 @@ async def start_simulation():
     simulation.simulate()
     running = False
     done = True
-    return {"message": "Simulation started"}
+    return {"message": "Simulation ended"}
 
 @app.get("/simulate/status")
 async def get_simulation_status():
@@ -109,27 +109,63 @@ async def stats():
     sim_stats = simulation.get_stats()
     return sim_stats
 
+@app.get("/train canelo")
+async def train_canelo():
+    global simulation
+    global done
+    if simulation is None:
+        raise HTTPException(status_code=400, detail="Define a simulation first")
+    if not done:
+        raise HTTPException(status_code=400, detail="Run the simulation first")
+    
+    #TODO
+    
+    sim_stats = simulation.get_stats()
+    return sim_stats
+
+
 @app.get("/plots/test")
 async def test_plot():
     # Generate some data for plotting
-    x = np.linspace(0, 10, 100)
-    y = np.sin(x)
+    global simulation
+    global done
+    if simulation is None:
+        raise HTTPException(status_code=400, detail="Define a simulation first")
+    if not done:
+        raise HTTPException(status_code=400, detail="Run the simulation first")
+    
+    sim_stats:dict = simulation.get_stats()['days_evolution']
+    days = []
+    infected_stats = []
+    susceptible_stats = []
+    inmune_stats = []
+    dead_stats = []
+    
+    for i, stage_dist in sim_stats:
+        days.append(i)
+        infected_stats.append(sum_infected(stage_dist))
+        susceptible_stats.append(stage_dist['susceptible'])
+        inmune_stats.append(stage_dist['recovered'])
+        dead_stats.append(stage_dist['dead'])
+
+    x = days
+    y = infected_stats
 
     # Create a plot
-    plt.figure(figsize=(8, 6))
+    plt.figure()
     plt.plot(x, y)
     plt.title("Test Plot")
-    plt.xlabel("X-axis")
-    plt.ylabel("Y-axis")
+    plt.xlabel("Days")
+    plt.ylabel("Infected Amount")
     plt.grid(True)
-    
+
     # Save the plot to a BytesIO object
     buf = io.BytesIO()
     plt.savefig(buf, format='png')
     buf.seek(0)
 
-    # Return the plot as a FileResponse
-    return FileResponse(buf, media_type="image/png")
+    # Return the plot as a StreamingResponse
+    return StreamingResponse(buf, media_type="image/png")
 
 @app.get("/dump/{var_name}/{filename}")
 async def dump_file(var_name:str, filename: str):
@@ -145,20 +181,10 @@ async def dump_file(var_name:str, filename: str):
     else:
         raise HTTPException(status_code=400, detail="Invalid variable name")
 
-@app.get("/load/{var_name}/{filename}")
-async def load_file(filename: str):
-    global simulation
-    if simulation is None:
-        raise HTTPException(status_code=400, detail="Define a simulation first")
-    if var_name == "environment":
-        simulation.deserialize_environment(filename)
-    if var_name == "terrain":
-        simulation.deserialize_terrain(filename)
-    if var_name == "epidemic_model":
-        simulation.deserialize_epidemic_model(filename)
-    else:
-        raise HTTPException(status_code=400, detail="Invalid variable name")
 
+def sum_infected(stage_dist):
+    return sum([value for key, value in stage_dist.items() if key not in ['recovered', 'dead', 'susceptible']])
+    
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
