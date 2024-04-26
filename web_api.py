@@ -2,6 +2,14 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import Optional
 from simulation.epi_sim import Simulation
+import logging
+
+logging.basicConfig(filename="simulation.log",
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    filemode='w')
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
+
 
 # Asumiendo que la clase Simulation ya está definida como en el ejemplo anterior
 
@@ -11,6 +19,7 @@ app = FastAPI()
 simulation = None
 running = False
 done = False
+
 
 class SimulationParameters(BaseModel):
     simulation_days: int = 31

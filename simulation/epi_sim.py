@@ -11,11 +11,6 @@ import matplotlib.pyplot as plt
 
 matplotlib.use('TkAgg')
 
-logging.basicConfig(filename="simulation.log",
-                    format='%(asctime)s - %(levelname)s - %(message)s',
-                    filemode='w')
-logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
 
 class Simulation:
     def __init__(self,
