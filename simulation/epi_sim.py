@@ -34,7 +34,11 @@ class Simulation:
                 works_capacity: int = 10,
                 work_hours: Tuple = (8, 20),
                 amount_of_agents: int = 10,
-                optimization_goal: str = 'minimize_infected'
+                optimization_goal: str = 'minimize_infected',
+                num_generations: int = 10, 
+                num_parents_mating: int = 2,
+                sol_per_pop: int = 2, 
+                mutation_percent_genes: int = 2
                 ):
         self.steps = simulation_days * 24 * 6
         self.days = simulation_days
@@ -67,7 +71,12 @@ class Simulation:
         self.canelo_parameters = []
         self.optimization_goal = optimization_goal
         
-        self.genetic_a = GA()
+        self.num_generations = num_generations
+        self.num_parents_mating = num_parents_mating
+        self.sol_per_pop = sol_per_pop
+        self.mutation_percent_genes = mutation_percent_genes
+        
+        self.genetic_a = GA(self.num_generations, self.num_parents_mating, self.sol_per_pop, self.mutation_percent_genes)
     
     def fitness_func(self):
         def minimize_infected(ga_instance, solution = None, solution_idx = None):
@@ -95,7 +104,7 @@ class Simulation:
         self.terrain = None
         self.epidemic_model = None
         self.environment = None
-        self.genetic_a = GA()
+        self.genetic_a = GA(self.num_generations, self.num_parents_mating, self.sol_per_pop, self.mutation_percent_genes)
 
     def simulate(self):
         self.initialize_simulation()

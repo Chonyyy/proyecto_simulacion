@@ -2,22 +2,21 @@ import pygad
 import numpy as np
 
 class GA: 
-    def __init__(self,num_generations, num_parents_mating, fitness_func, sol_per_pop, mutation_percent_genes):
+    def __init__(self,num_generations, num_parents_mating, sol_per_pop, mutation_percent_genes):
         self.elements = ['mask_use', 'social_distancing', 'tests_and_diagnosis', 'contact_tracing', 'vaccination', 'quarantine', 'isolation']
         self.num_generations = num_generations
         self.num_parents_mating = num_parents_mating
-        self.fitness_func = fitness_func
         self.sol_per_pop = sol_per_pop
         self.mutation_percent_genes = mutation_percent_genes
         self.solution_dict = {}
         self.solution_list = []
         self.ga_instance = None
         
-    def __call__(self):
+    def __call__(self, fitness_func):
         gene_space = [{'low': 0, 'high': 1}] * len(self.elements) 
         self.ga_instance = pygad.GA(num_generations=self.num_generations,
                             num_parents_mating=self.num_parents_mating,
-                            fitness_func=self.fitness_func,
+                            fitness_func=fitness_func,
                             sol_per_pop=self.sol_per_pop,
                             num_genes=len(self.elements),
                             gene_space=gene_space,
