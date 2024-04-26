@@ -245,6 +245,7 @@ class Environment:
         
         ocupied_nodes = [([self.agents[agent_id] for agent_id in node.agent_list], node.contact_rate) for node in self.map.graph.nodes.values() if node.agent_list]
         self.epidemic_model.step(ocupied_nodes)
+        self.epidemic_model.debug_k()
 
         self.dissease_step_progression.append(self.get_dissease_stats())
 

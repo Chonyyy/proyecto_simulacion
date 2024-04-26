@@ -125,6 +125,21 @@ class EpidemicModel:
 
         if agent.status in self.infection_stages:
             agent.symptoms = self._query_symptoms(agent.unique_id)
+            
+    def debug_k(self):
+        vac_stat = list(self.disease_k.query(f'vaccination_status(Person, VaccinationStatus)'))
+        age_g = list(self.disease_k.query(f'age_group(Person, AgeGroup)'))
+        stage = list(self.disease_k.query(f'stage(Person, Stage)'))
+        sympt = list(self.disease_k.query(f'symptoms(Person, Symptoms)'))
+        print(f'vaccination status facts:')
+        print(vac_stat)
+        print(f'age group facts:')
+        print(age_g)
+        print(f'stage facts:')
+        print(stage)
+        print('symptoms facts:')
+        print(sympt)
+        pass
 
     def spread_disease(self, agent: Agent) -> None:
         """

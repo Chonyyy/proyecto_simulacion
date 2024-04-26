@@ -76,13 +76,11 @@ class Simulation:
     
     def fitness_func(self):
         def minimize_infected(ga_instance, solution = None, solution_idx = None):
-
-            map = self.terrain
-            epidemic_model = EpidemicModel()
-            env = Environment(5, epidemic_model, map, solution)
-            self.simulate(env)
+            self.initialize_simulation()
+            self.simulate()
             sum = 0
-            a = env.dissease_step_progression[-1]
+            a = self.get_stats[-1][1]
+            self.reset_sim()
 
             for x in a:
                 if x == 'susceptible':
@@ -162,10 +160,10 @@ class Simulation:
         with open(filename, 'rb') as f:
             self.terrain = pickle.load(f)
 
-    def train_canelo(self):
-        ga = GA()
-        ga(fitness_func)
-        
+    # def train_canelo(self):
+    #     ga = GA()
+    #     ga(fitness_func)
+    #     return ga.get_solution_list
         
     
     def serialize_epidemic_model(self, filename):
@@ -257,28 +255,28 @@ class Simulation:
         
         return week_day, month_day, hour, min
 
-def simulate(env, steps_num):
-        for step in range(steps_num):
-            env.step(step)
+# def simulate(env, steps_num):
+#         for step in range(steps_num):
+#             env.step(step)
        
 
-def fitness_func(ga_instance, solution = None, solution_idx = None):
-    sim_days = 31
-    sim_hours = sim_days * 24
-    sim_steps = sim_hours * 6
+# def fitness_func(ga_instance, solution = None, solution_idx = None):
+#     sim_days = 31
+#     sim_hours = sim_days * 24
+#     sim_steps = sim_hours * 6
 
-    map = TEST_CITY_1
-    epidemic_model = EpidemicModel()
-    env = Environment(5, epidemic_model, map, solution)
-    simulate(env, sim_steps)
-    sum = 0
-    a = env.dissease_step_progression[-1]
+#     map = TEST_CITY_1
+#     epidemic_model = EpidemicModel()
+#     env = Environment(5, epidemic_model, map, solution)
+#     simulate(env, sim_steps)
+#     sum = 0
+#     a = env.dissease_step_progression[-1]
     
-    for x in a:
-        if x == 'susceptible':
-            continue
-        if x == 'recovered':
-            continue
-        sum += a[x]
+#     for x in a:
+#         if x == 'susceptible':
+#             continue
+#         if x == 'recovered':
+#             continue
+#         sum += a[x]
         
-    return sum
+#     return sum

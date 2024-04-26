@@ -110,20 +110,16 @@ async def stats():
     sim_stats = simulation.get_stats()
     return sim_stats
 
-@app.get("/train canelo")
+@app.get("/traincanelo")
 async def train_canelo():
     global simulation
     global done
-    if simulation is None:
-        raise HTTPException(status_code=400, detail="Define a simulation first")
-    if not done:
-        raise HTTPException(status_code=400, detail="Run the simulation first")
-    
-    #TODO
-    
-    sim_stats = simulation.get_stats()
-    return sim_stats
-
+    # if simulation is None:
+    #     raise HTTPException(status_code=400, detail="Define a simulation first")
+    # if not done:
+    #     raise HTTPException(status_code=400, detail="Run the simulation first")
+    solution = simulation.train_canelo()
+    return solution
 
 @app.get("/plots/test")
 async def test_plot():
