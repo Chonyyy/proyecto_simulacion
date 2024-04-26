@@ -10,7 +10,7 @@ class GA:
         solution_list = []
         # Configuración del algoritmo genético
         gene_space = [{'low': 0, 'high': 1}] * len(self.elements) 
-        ga_instance = pygad.GA(num_generations=10,
+        ga_instance = pygad.GA(num_generations=2,
                             num_parents_mating=2,
                             fitness_func=fitness_func,
                             sol_per_pop=2,

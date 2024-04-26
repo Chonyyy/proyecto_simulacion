@@ -4,6 +4,12 @@ from gpt4all import GPT4All
 # from simulation.main import function, factorial, contar_palabras, filtrar_lista, calcular_media, es_primo, maximo_lista, suma
 import io
 import sys
+from simulation.epi_sim import Simulation
+
+s = Simulation()
+s.initialize_simulation()
+s.simulate()
+
 
 model = GPT4All("/home/chony/LLM/Mistral-7B-Instruct-v0.1-GGUF/mistral-7b-instruct-v0.1.Q4_K_S.gguf")
 
@@ -131,3 +137,4 @@ if prompt := st.chat_input("What is up?"):
         st.session_state.messages.append({"role": "assistent", "content": response})
     
     
+

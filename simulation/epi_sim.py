@@ -64,7 +64,7 @@ class Simulation:
     def simulate(self):
         self.initialize_simulation()
         for step in range(self.steps):
-            date = self.format_day(step)
+            date = self._format_day(step)
             print(f'=== Step: {date} ===')
             self.environment.step(step)
 
@@ -83,6 +83,7 @@ class Simulation:
         self._initialize_houses()
         self._initialize_recreational()
         self._initialize_hospitals()
+        self._initialize_works()
 
     def _initialize_grid(self):
         '''
