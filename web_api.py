@@ -14,6 +14,7 @@ simulation = None
 running = False
 done = False
 
+
 class SimulationParameters(BaseModel):
     simulation_days: int = 31
     grid_size: int = 10
