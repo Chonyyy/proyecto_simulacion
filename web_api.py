@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Tuple
 from simulation.epi_sim import Simulation
 from fastapi import FileResponse
 import matplotlib.pyplot as plt
@@ -37,7 +37,8 @@ async def initialize_simulation(params: SimulationParameters):
     global running
     if simulation is not None:
         raise HTTPException(status_code=400, detail="Delete current simulation to initialize another one")
-    simulation = Simulation(**params.dict())
+    # simulation = Simulation(**params.dict())# Deprecated
+    simulation = Simulation(**params.model_dump())
     simulation.initialize_simulation()
     return {"message": "Simulation initialized"}
 
@@ -98,8 +99,19 @@ async def get_simulation_status():
         return {"status": "running"}
 
 @app.get("/statistics")
-async def stats():
-    raise NotImplementedError()
+async def stats(stat: Optional[str] = None, range: Optional[Tuple] = None):
+    global simulation
+    global done
+    if simulation is None:
+        raise HTTPException(status_code=400, detail="Define a simulation first")
+    if not done:
+        raise HTTPException(status_code=400, detail="Run the simulation first")
+    sim_stats = simulation.get_stats()
+    if stat is None:
+        return sim_stats
+    else:
+        return sim_stats[stat][start:end]
+
 
 @app.get("/plots/test")
 async def test_plot():
