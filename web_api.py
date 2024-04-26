@@ -97,7 +97,15 @@ async def get_simulation_status():
 
 @app.get("/statistics")
 async def stats():
-    raise NotImplementedError()
+    global simulation
+    global done
+    if not simulation:
+        raise HTTPException(status_code=400, detail="Theres no simulation initialized")
+    if not done:
+        raise HTTPException(status_code=400, detail="Theres no finished simulation")
+    
+    days = simulation.days
+    stats = simulation
 
 if __name__ == "__main__":
     import uvicorn

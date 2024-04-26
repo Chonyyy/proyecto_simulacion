@@ -1,11 +1,15 @@
 from simulation.enviroment.environment import Environment
 from simulation.enviroment.map import Terrain
 from simulation.epidemic.epidemic_model import EpidemicModel
+from ai.genetic_algorythm import GA
 
 from typing import Tuple
 import random
 import logging
+import matplotlib
 import matplotlib.pyplot as plt
+
+matplotlib.use('TkAgg')
 
 logging.basicConfig(filename="simulation.log",
                     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -29,9 +33,11 @@ class Simulation:
                 works_amount: int = 4,
                 works_capacity: int = 10,
                 work_hours: Tuple = (8, 20),
-                amount_of_agents: int = 10
+                amount_of_agents: int = 10,
+                optimization_goal: str = 'minimize_infected'
                 ):
         self.steps = simulation_days * 24 * 6
+        self.days = simulation_days
         self.terrain: Terrain = None
         self.epidemic_model: EpidemicModel = None
         self.environment: Environment = None
@@ -55,11 +61,41 @@ class Simulation:
         self.works_amount = works_amount
         self.works_capacity = works_capacity
         self.work_opening_hours, self.work_closing_hours = work_hours
+        
+        self.dissease_progression = None
+        
+        self.canelo_parameters = []
+        self.optimization_goal = optimization_goal
+        
+        self.genetic_a = GA()
+    
+    def fitness_func(self):
+        def minimize_infected(ga_instance, solution = None, solution_idx = None):
+
+            map = self.terrain
+            epidemic_model = EpidemicModel()
+            env = Environment(5, epidemic_model, map, solution)
+            self.simulate(env)
+            sum = 0
+            a = env.dissease_step_progression[-1]
+
+            for x in a:
+                if x == 'susceptible':
+                    continue
+                if x == 'recovered':
+                    continue
+                sum += a[x]
+
+            return sum
+
+        if self.optimization_goal == 'minimize_infected':
+            return minimize_infected
 
     def reset_sim(self):
         self.terrain = None
         self.epidemic_model = None
         self.environment = None
+        self.genetic_a = GA()
 
     def simulate(self):
         self.initialize_simulation()
@@ -67,6 +103,11 @@ class Simulation:
             date = self._format_day(step)
             print(f'=== Step: {date} ===')
             self.environment.step(step)
+        self.dissease_progression = self.environment.dissease_step_progression
+        
+    def train_canelo(self):
+        self.genetic_a(self.fitness_func())
+        self.canelo_parameters = self.genetic_a
 
     def initialize_simulation(self):
         self._initialize_terrain()
