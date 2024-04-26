@@ -2,8 +2,10 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import Optional
 from simulation.epi_sim import Simulation
-
-# Asumiendo que la clase Simulation ya está definida como en el ejemplo anterior
+from fastapi import FileResponse
+import matplotlib.pyplot as plt
+import numpy as np
+import io
 
 app = FastAPI()
 
@@ -98,6 +100,28 @@ async def get_simulation_status():
 @app.get("/statistics")
 async def stats():
     raise NotImplementedError()
+
+@app.get("/plots/test")
+async def test_plot():
+    # Generate some data for plotting
+    x = np.linspace(0, 10, 100)
+    y = np.sin(x)
+
+    # Create a plot
+    plt.figure(figsize=(8, 6))
+    plt.plot(x, y)
+    plt.title("Test Plot")
+    plt.xlabel("X-axis")
+    plt.ylabel("Y-axis")
+    plt.grid(True)
+    
+    # Save the plot to a BytesIO object
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+
+    # Return the plot as a FileResponse
+    return FileResponse(buf, media_type="image/png")
 
 if __name__ == "__main__":
     import uvicorn
