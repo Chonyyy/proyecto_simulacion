@@ -110,8 +110,7 @@ async def stats(stat: Optional[str] = None, range: Optional[Tuple] = None):
     if stat is None:
         return sim_stats
     else:
-        return sim_stats[stat][start:end]
-
+        return sim_stats[stat][range[0], range[1]]
 
 @app.get("/plots/test")
 async def test_plot():
@@ -134,6 +133,34 @@ async def test_plot():
 
     # Return the plot as a FileResponse
     return FileResponse(buf, media_type="image/png")
+
+@app.get("/dump/{var_name}/{filename}")
+async def dump_file(var_name:str, filename: str):
+    global simulation
+    if simulation is None:
+        raise HTTPException(status_code=400, detail="Define a simulation first")
+    if var_name == "environment":
+        simulation.serialize_environment(filename)
+    if var_name == "terrain":
+        simulation.serialize_terrain(filename)
+    if var_name == "epidemic_model":
+        simulation.serialize_epidemic_model(filename)
+    else:
+        raise HTTPException(status_code=400, detail="Invalid variable name")
+
+@app.get("/load/{var_name}/{filename}")
+async def load_file(filename: str):
+    global simulation
+    if simulation is None:
+        raise HTTPException(status_code=400, detail="Define a simulation first")
+    if var_name == "environment":
+        simulation.deserialize_environment(filename)
+    if var_name == "terrain":
+        simulation.deserialize_terrain(filename)
+    if var_name == "epidemic_model":
+        simulation.deserialize_epidemic_model(filename)
+    else:
+        raise HTTPException(status_code=400, detail="Invalid variable name")
 
 if __name__ == "__main__":
     import uvicorn

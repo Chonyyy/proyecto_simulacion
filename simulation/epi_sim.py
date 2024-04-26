@@ -6,6 +6,7 @@ from typing import Tuple
 import random
 import logging
 import matplotlib.pyplot as plt
+import pickle
 
 logging.basicConfig(filename="simulation.log",
                     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -87,6 +88,48 @@ class Simulation:
         self.epidemic_model = EpidemicModel()
         self.environment = Environment(self.amount_of_agents, self.epidemic_model, self.terrain)
         #TODO: Initialize the Canelo Agent from this class
+
+    def serialize_environment(self, filename):
+        """
+        Serialize the environment object and save it to a file.
+        """
+        with open(filename, 'wb') as f:
+            pickle.dump(self.environment, f)
+
+    def deserialize_environment(self, filename):
+        """
+        Deserialize the environment object from a file.
+        """
+        with open(filename, 'rb') as f:
+            self.environment = pickle.load(f)
+
+    def serialize_terrain(self, filename):
+        """
+        Serialize the terrain object and save it to a file.
+        """
+        with open(filename, 'wb') as f:
+            pickle.dump(self.terrain, f)
+
+    def deserialize_terrain(self, filename):
+        """
+        Deserialize the terrain object from a file.
+        """
+        with open(filename, 'rb') as f:
+            self.terrain = pickle.load(f)
+
+    def serialize_epidemic_model(self, filename):
+        """
+        Serialize the epidemic_model object and save it to a file.
+        """
+        with open(filename, 'wb') as f:
+            pickle.dump(self.epidemic_model, f)
+
+    def deserialize_epidemic_model(self, filename):
+        """
+        Deserialize the epidemic_model object from a file.
+        """
+        with open(filename, 'rb') as f:
+            self.epidemic_model = pickle.load(f)
 
     def _initialize_terrain(self):
         '''
