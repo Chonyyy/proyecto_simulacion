@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import Optional, Tuple
 from simulation.epi_sim import Simulation
-from fastapi import FileResponse
+from fastapi.responses import FileResponse
 import matplotlib.pyplot as plt
 import numpy as np
 import io
@@ -99,7 +99,7 @@ async def get_simulation_status():
         return {"status": "running"}
 
 @app.get("/statistics")
-async def stats(stat: Optional[str] = None, range: Optional[Tuple] = None):
+async def stats():
     global simulation
     global done
     if simulation is None:
@@ -107,10 +107,7 @@ async def stats(stat: Optional[str] = None, range: Optional[Tuple] = None):
     if not done:
         raise HTTPException(status_code=400, detail="Run the simulation first")
     sim_stats = simulation.get_stats()
-    if stat is None:
-        return sim_stats
-    else:
-        return sim_stats[stat][range[0], range[1]]
+    return sim_stats
 
 @app.get("/plots/test")
 async def test_plot():

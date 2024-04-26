@@ -60,7 +60,7 @@ class Simulation:
     def get_stats(self):
         dissease_progression = self.environment.dissease_step_progression
         days_evolution = []
-        for step in dissease_progression:
+        for step, _ in enumerate(dissease_progression):
             # Check if step is the start of a day
             if step % 144 == 0:
                 day = step // 144
