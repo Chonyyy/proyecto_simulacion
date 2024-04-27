@@ -20,6 +20,11 @@ La arquitectura InterRRaP (Interactive Rational Planning) se centra en la intera
 
 - **Componente Cooperativo**: Traza planes y objetivos cooperativos, facilita la cooperación entre agentes, permitiendo que los agentes interactúen entre sí, compartan información y tomen decisiones colectivas.  
 
+## por que usar InteRRaP
+
+La arquitectura de agentes InteRRaP es particularmente ajustada para simulaciones de control de epidemias debido a varias razones fundamentales.
+La arquitectura de agentes permite representar a cada individuo humano de una población como una entidad distinta o agente, atribuyéndole rasgos y comportamientos específicos. Esto es crucial en la simulación de epidemias, ya que permite modelar la interacción entre individuos, la transmisión de enfermedades y la progresión de la enfermedad dentro de los agentes, proporcionando una representación detallada y granular de la dinámica de la epidemia. Permite implementar intervenciones y modificaciones de comportamientos de manera flexible y eficiente.
+
 ## Base de conocimiento
 
 El conocimiento es uno de los principales aspectos de nuestra arquitecura de agente. En nuestra implementación utilizamos Prolog para crear una base de conocimientos herárquica que contiene tres capas que corresponden a cada uno de los componentes mencionados anteriormente, lo que permite una representación formal y lógica del conocimiento del agente.
@@ -70,7 +75,15 @@ Existen varios factores que pueden aumentar el riesgo de infección y de progres
 
 ## Búsqueda
 
-Usamos A star para hallar el camino mas corto de un punto a otro y, cuando los agentes quieran evitar el contacto minimizar la exposicion de estos
+El uso del algoritmo A* para hallar el camino más corto entre dos puntos es una elección estratégica en este contexto, especialmente cuando se busca minimizar la exposición de los agentes a enfermedades infecciosas. Aquí se argumenta más a favor de esta estrategia:
+
+1. **Eficiencia y Precisión**: A* es conocido por su eficiencia y precisión en la búsqueda de caminos más cortos. Utiliza una función heurística para guiar la búsqueda, lo que permite que el algoritmo se ejecute más rápido que otros métodos como Dijkstra, sin comprometer la precisión en la búsqueda del camino más corto. Esta eficiencia es crucial en entornos donde se requiere una respuesta rápida, como en la movilidad de agentes en la epidemia.
+
+2. **Adaptabilidad a Entornos Complejos**: A* puede adaptarse a entornos complejos, como nodos infectados o con muchos agentes, donde la topología del espacio y las restricciones de movimiento pueden ser significativas. Esto es especialmente relevante en el contexto de la simulación de control de epidemias, donde los agentes deben navegar por entornos que pueden incluir áreas de alto riesgo de infección.
+
+3. **Minimización de la Exposición a Enfermedades**: Aunque A* se utiliza principalmente para encontrar el camino más corto, su eficiencia y precisión pueden ser adaptadas para minimizar la exposición a enfermedades infecciosas. Por ejemplo, se pueden modificar los parámetros del algoritmo para priorizar caminos que minimicen la exposición a áreas de alto riesgo de infección, como las salas de pacientes infectados. Esto se logra ajustando la función heurística para que tenga en cuenta no solo la distancia al objetivo sino también la probabilidad de exposición a la enfermedad en diferentes partes del entorno.
+
+4. **Flexibilidad para Adaptarse a Cambios**: A* es un algoritmo flexible que puede adaptarse a cambios en el entorno o en las condiciones de la epidemia. Por ejemplo, si la propagación de la enfermedad cambia o si se implementan nuevas estrategias de control, el algoritmo puede ser reajustado para reflejar estos cambios.
 
 ## Interfaz de Usuario y Procesamiento del Lenguaje Natural
 
@@ -90,9 +103,31 @@ si la tasa de infección es alta y la capacidad hospitalaria es baja, entonces s
 
 El sistema experto evalúa estas reglas con respecto al estado actual de la simulación y las decisiones previas tomadas, generando recomendaciones para el agente institucional. Para realizar este sistema experto utilizamos el algoritmo genético sobre una serie de parámetros que este agente utiliza para tomar desiciones.
 
-## Búsqueda
+El algoritmo genético PyGAD es una biblioteca de Python diseñada para optimizar una amplia gama de problemas mediante técnicas de algoritmos genéticos. A continuación, se presenta un resumen técnico de cómo funciona PyGAD y por qué sería el mejor para una simulación de control de epidemias donde la función de fitness se enfoca en minimizar la cantidad de agentes infectados.
 
-En nuestra simulación, utilizamos el algoritmo A* implementado en clases prácticas para resolver dos problemas muy similares, haciendo un cambio de las funciones g(n) y h(n). Uno de estos fue encontrar el camino de longitud mínima, el cuál se utiliza por defecto por los agentes, y otro que intenta minimizar la exposición a la enfermedad priorizando moverse por nodos con menos densidad poblacional.
+### Cómo funciona PyGAD
+
+1. **Definición de la función de fitness**: PyGAD requiere que se defina una función de fitness que evalúe la calidad de una solución dada. En el contexto de esta simulación, esta función de fitness calcula la cantidad de agentes infectados en una simulación dada, y el objetivo es minimizar este número.
+
+2. **Inicialización de la población**: PyGAD genera una población inicial de soluciones (agentes) con valores aleatorios dentro de un rango definido. Cada solución representa un conjunto de parámetros o estrategias que podrían ser utilizadas en la simulación de control de epidemias.
+
+3. **Selección de padres**: A partir de la población inicial, PyGAD selecciona soluciones para la reproducción basándose en su fitness. Las soluciones con mejor fitness tienen más probabilidades de ser seleccionadas.
+
+4. **Crossover y mutación**: Las soluciones seleccionadas se cruzan para generar nuevas soluciones, combinando partes de las soluciones padres. Luego, se aplica una mutación a estas nuevas soluciones para introducir variaciones y explorar nuevas áreas del espacio de soluciones.
+
+5. **Evaluación de la nueva población**: Las nuevas soluciones se evalúan utilizando la función de fitness definida, y se seleccionan las mejores soluciones para formar la nueva población.
+
+6. **Repetición**: Este proceso de selección, crossover, mutación y evaluación se repite durante un número definido de generaciones, permitiendo que la población evolucione hacia soluciones de mayor fitness.
+
+### Por qué PyGAD es el mejor para una simulación de control de epidemias
+
+- **Flexibilidad**: PyGAD es altamente flexible y puede ser utilizado para optimizar una amplia gama de problemas, lo que lo hace adecuado para simulaciones de control de epidemias que pueden requerir la optimización de múltiples parámetros o estrategias.
+
+- **Capacidad para manejar complejidad**: La capacidad de PyGAD para explorar el espacio de soluciones mediante la mutación y el crossover permite manejar la complejidad inherente a los sistemas de control de epidemias, donde la interacción entre múltiples factores puede afectar la propagación de la enfermedad.
+
+- **Adaptabilidad**: PyGAD puede adaptarse a cambios en el entorno de la epidemia o en las políticas de control mediante la reevaluación de la función de fitness y la evolución de la población hacia soluciones más efectivas.
+
+- **Eficiencia**: A través de la selección de padres basada en la fitness, PyGAD puede converger rápidamente hacia soluciones óptimas, lo que es crucial en el contexto de una epidemia donde el tiempo es un factor crítico.
 
 ## Resultados Experimentales
 ---
