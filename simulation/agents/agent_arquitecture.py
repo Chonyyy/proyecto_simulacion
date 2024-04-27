@@ -379,10 +379,14 @@ class LocalPlanningLayer:
         kb.update_goals()
         if (kb['too_sick']):#(too_sick(true), hospital(Id,_), open_place(Id, true), hospital_overrun(Id, false)
             self.hospital_routine()
-        if (self._work_is_open(kb['work_place'], date['week_day'], date['hour']) and (not kb['too_sick'])):# -> work_day_routine(WorkId), Plan = work_day_routine(WorkId));
+        elif (self._work_is_open(kb['work_place'], date['week_day'], date['hour']) and (not kb['too_sick'])):# -> work_day_routine(WorkId), Plan = work_day_routine(WorkId));
             self.work_day_routine(kb['work_place'])
-        if (date['week_day'] in ['saturday', 'sunday']):#((public_space(Id, _),open_place(Id, true), go_public_place_rutine(Id));  Plan = no_pweek_day(W), (W == saturday; W == sunday)) -> go_public_place_rutine(Id), Plan = lan.
+        elif (date['week_day'] in ['saturday', 'sunday']):#((public_space(Id, _),open_place(Id, true), go_public_place_rutine(Id));  Plan = no_pweek_day(W), (W == saturday; W == sunday)) -> go_public_place_rutine(Id), Plan = lan.
             self.entertainment_routine()
+        elif (kb['location'] != kb['home']):
+            kb.facts['goal'] = 'move'
+            kb.facts['goal_parameters'] = [kb['home']]
+
 
     def entertainment_routine(self):
         kb = self.knowledge
@@ -406,14 +410,14 @@ class LocalPlanningLayer:
         kb.facts['goal'] = 'move'
         kb.facts['goal_parameters'] = [work['id']]
         
-        if kb.facts['location'] == work:
+        if kb.facts['location'] == work['id']:
             kb.facts['goal'] = 'work'
             kb.facts['goal_parameters'] = []
         
         time_to_go_home = kb.facts['work_place']['closing_hours']
         if time_to_go_home == kb.facts['date']['hour']:
             home = kb.facts['home'] 
-            kb.facts['goal'] = 'work'
+            kb.facts['goal'] = 'move'
             kb.facts['goal_parameters'] = [home]
 
     def hospital_routine(self, hospital):
@@ -435,7 +439,7 @@ class LocalPlanningLayer:
         raise NotImplementedError()
 
     def _work_is_open(self, work_info, week_day, hour):
-        return (not (week_day in ['saturday', 'sunday'])) and (work_info['opening_hours'] <= hour) and (hour < work_info['closing_hours']) and work_info['is_open']
+        return (not (week_day in ['saturday', 'sunday'])) and (work_info['opening_hours'] <= hour) and (hour <= work_info['closing_hours']) and work_info['is_open']
     
     def _open_public_places(self, mind_map):
         raise NotImplementedError()

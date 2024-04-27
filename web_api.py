@@ -1,14 +1,11 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Tuple
 from simulation.epi_sim import Simulation
-import logging
-
-logging.basicConfig(filename="simulation.log",
-                    format='%(asctime)s - %(levelname)s - %(message)s',
-                    filemode='w')
-logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
+from fastapi.responses import StreamingResponse
+import matplotlib.pyplot as plt
+import numpy as np
+import io
 
 
 # Asumiendo que la clase Simulation ya está definida como en el ejemplo anterior
@@ -44,7 +41,7 @@ async def initialize_simulation(params: SimulationParameters):
     global running
     if simulation is not None:
         raise HTTPException(status_code=400, detail="Delete current simulation to initialize another one")
-    simulation = Simulation(**params.dict())
+    simulation = Simulation(**params.model_dump())
     simulation.initialize_simulation()
     return {"message": "Simulation initialized"}
 
@@ -108,13 +105,70 @@ async def get_simulation_status():
 async def stats():
     global simulation
     global done
-    if not simulation:
-        raise HTTPException(status_code=400, detail="Theres no simulation initialized")
+    if simulation is None:
+        raise HTTPException(status_code=400, detail="Define a simulation first")
     if not done:
-        raise HTTPException(status_code=400, detail="Theres no finished simulation")
+        raise HTTPException(status_code=400, detail="Run the simulation first")
+    sim_stats = simulation.get_stats()
+    return sim_stats
+
+@app.get("/traincanelo")
+async def train_canelo():
+    global simulation
+    global done
+    # if simulation is None:
+    #     raise HTTPException(status_code=400, detail="Define a simulation first")
+    # if not done:
+    #     raise HTTPException(status_code=400, detail="Run the simulation first")
+    solution = simulation.train_canelo()
+    return solution
+
+@app.get("/plots/test")
+async def test_plot():
+    # Generate some data for plotting
+    global simulation
+    global done
+    if simulation is None:
+        raise HTTPException(status_code=400, detail="Define a simulation first")
+    if not done:
+        raise HTTPException(status_code=400, detail="Run the simulation first")
     
-    days = simulation.days
-    stats = simulation
+    sim_stats:dict = simulation.get_stats()['days_evolution']
+    days = []
+    infected_stats = []
+    susceptible_stats = []
+    inmune_stats = []
+    dead_stats = []
+    
+    for i, stage_dist in sim_stats:
+        days.append(i)
+        infected_stats.append(sum_infected(stage_dist))
+        susceptible_stats.append(stage_dist['susceptible'])
+        inmune_stats.append(stage_dist['recovered'])
+        dead_stats.append(stage_dist['dead'])
+
+    x = days
+    y = infected_stats
+
+    # Create a plot
+    plt.figure()
+    plt.plot(x, y)
+    plt.title("Test Plot")
+    plt.xlabel("Days")
+    plt.ylabel("Infected Amount")
+    plt.grid(True)
+
+    # Save the plot to a BytesIO object
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+
+    # Return the plot as a StreamingResponse
+    return StreamingResponse(buf, media_type="image/png")
+
+
+def sum_infected(stage_dist):
+    return sum([value for key, value in stage_dist.items() if key not in ['recovered', 'dead', 'susceptible']])
 
 if __name__ == "__main__":
     import uvicorn

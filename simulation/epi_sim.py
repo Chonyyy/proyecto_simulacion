@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 
 matplotlib.use('TkAgg')
 
+logger = logging.getLogger(__name__)
 
 class Simulation:
     def __init__(self,
@@ -95,6 +96,20 @@ class Simulation:
         if self.optimization_goal == 'minimize_infected':
             return minimize_infected
 
+    def get_stats(self):
+        dissease_progression = self.environment.dissease_step_progression
+        days_evolution = []
+        for step, _ in enumerate(dissease_progression):
+            # Check if step is the start of a day
+            if step % 144 == 0:
+                day = step // 144
+                logger.info(f'=== Day {day} ===')
+                days_evolution.append((day, dissease_progression[step]))
+
+        return {
+            "days_evolution": days_evolution
+        }
+
     def reset_sim(self):
         self.terrain = None
         self.epidemic_model = None
@@ -105,7 +120,8 @@ class Simulation:
         self.initialize_simulation()
         for step in range(self.steps):
             date = self._format_day(step)
-            print(f'=== Step: {date} ===')
+            logger.info(f'=== Date: {date} ===')
+            print(f'=== Date: {date} ===')
             self.environment.step(step)
         self.dissease_progression = self.environment.dissease_step_progression
         
@@ -193,32 +209,3 @@ class Simulation:
         month_day = step_num // 6 // 24
         
         return week_day, month_day, hour, min
-
-    def sirr_plot(self, start_day: int = 0, end_day: int = None):
-        '''
-        Returns the  susceptible-infected-recovered-dead plot to show in the streamlit app 
-        '''
-        if end_day is None:
-            end_day = self.steps // 6 // 24
-        x = range(end_day - start_day)
-        y = [[self.environment.dissease_step_progression[day * 6 * 24][state] for day in range(end_day)] for state in self.environment.states]
-        addition = [0] * len(y[0])
-        for i, data in enumerate(y):
-            plt.bar(x, data, color=self.environment.colors[i], bottom=addition)
-            addition = [sum(x) for x in zip(addition, data)]
-        plt.show()#TODO: change this so its showed in streamlit
-
-    def dissease_progression_plot(self, start_day: int = 0, end_day: int = None):
-        '''
-        Returns the dissease progression plot to show in the streamlit app 
-        '''
-        if end_day is None:
-            end_day = self.steps // 6 // 24
-        x = range(end_day - start_day)
-        y = [[self.environment.dissease_step_progression[day * 6 * 24][state] for day in range(end_day)] for state in self.environment.states]
-        addition = [0] * len(y[0])
-        for i, data in enumerate(y):
-            plt.bar(x, data, color=self.environment.colors[i], bottom=addition)
-            addition = [sum(x) for x in zip(addition, data)]
-        plt.show()#TODO: change this so its showed in streamlit
-

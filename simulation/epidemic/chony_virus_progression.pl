@@ -8,7 +8,7 @@
 % Facts
 
 infection_stages([asymptomatic, symptomatic, critical, terminal]).
-base_transmition_rate(0.5).
+base_transmition_rate(1.0).
 mask_effectiveness(0.4).
 
 % Vaccination effects
