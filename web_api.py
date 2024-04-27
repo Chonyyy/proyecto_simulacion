@@ -36,7 +36,7 @@ class SimulationParameters(BaseModel):
     works_amount: int = 4
     works_capacity: int = 10
     work_hours: tuple = (8, 20)
-    amount_of_agents: int = 10
+    amount_of_agents: int = 20
 
 @app.post("/simulation/initialize")
 async def initialize_simulation(params: SimulationParameters):
