@@ -20,14 +20,26 @@ if "messages" not in st.session_state:
     st.session_state.messages.append({
         "role": "user",
         "content": """
-                    Dado que he solicitado que las respuestas a mis preguntas sean exclusivamente llamadas a funciones específicas, sin incluir texto adicional o comentarios, y considerando las funciones que has mencionado (function, factorial, contar_palabras, filtrar_lista, calcular_media), me gustaría que me proporcionaras una respuesta que cumpla con estos criterios.
+                   Bienvenido a Epidoc,su app para simular el comportamiento de epidemias. Se muestra una entrada de texto donde puede proporcionar la siguiente informacion sobre como quiere que se desarrolle la epidemia:
 
-                    En particular, me interesa obtener el factorial de 5. Entiendo que el factorial de un número es el producto de todos los números enteros positivos desde 1 hasta ese número. Por lo tanto, espero que la respuesta sea una llamada a la función `factorial` con el argumento 5.
+- **Días de simulación**: Un número entero que indica la cantidad de días que durará la simulación (por ejemplo, 31).
+- **Tamaño de la cuadrícula**: Un número entero que representa las dimensiones de la cuadrícula de la simulación (por ejemplo, 10).
+- **Capacidad por bloque**: Un número entero que señala la capacidad máxima de cada bloque (por ejemplo, 100).
+- **Cantidad de casas**: Un número entero que indica el total de casas en la simulación (por ejemplo, 10).
+- **Capacidad de cada casa**: Un número entero que determina cuántas entidades pueden ocupar cada casa (por ejemplo, 5).
+- **Cantidad de hospitales**: Un número entero que señala el número de hospitales disponibles (por ejemplo, 4).
+- **Capacidad de cada hospital**: Un número entero que define la capacidad de cada hospital (por ejemplo, 50).
+- **Horario de los hospitales**: Un par de números enteros que representan las horas de operación (por ejemplo, (8, 20)).
+- **Cantidad de áreas recreativas**: Un número entero que indica el número de áreas recreativas (por ejemplo, 4).
+- **Capacidad de cada área recreativa**: Un número entero que determina la capacidad de cada área recreativa (por ejemplo, 20).
+- **Horario de las áreas recreativas**: Un par de números enteros que representan las horas de operación (por ejemplo, (8, 20)).
+- **Cantidad de lugares de trabajo**: Un número entero que indica el número de lugares de trabajo (por ejemplo, 4).
+- **Capacidad de cada lugar de trabajo**: Un número entero que determina la capacidad de cada lugar de trabajo (por ejemplo, 10).
+- **Horario de los lugares de trabajo**: Un par de números enteros que representan las horas de operación (por ejemplo, (8, 20)).
+- **Cantidad de agentes**: Un número entero que define el número total de agentes en la simulación (por ejemplo, 20).
 
-                    Además, me gustaría que esta respuesta se ajuste a la estructura de las respuestas anteriores que has proporcionado, donde cada respuesta es una llamada a una función específica sin texto adicional.
-
-                    Por favor, proporciona una respuesta que cumpla con estos requisitos,que tus respuestas sean solamente funciones de python.$
-                    """
+No tiene que proporcionar todos los datos pero se agradece. Si tiene alguna pregunta o necesita asistencia, no dude en contactarnos. ¡Gracias por utilizar nuestra aplicación!
+"""
     })
     st.session_state.messages.append({
         "role": "user",

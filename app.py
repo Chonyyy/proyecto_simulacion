@@ -77,6 +77,27 @@ Input:{el input del usuario}
 Output:
 
 '''
+help_text= """
+                   Bienvenido a Epidoc,su app para simular el comportamiento de epidemias. Se muestra una entrada de texto donde puede proporcionar la siguiente información sobre como quiere que se desarrolle la epidemia:
+
+- **Días de simulación**: Un número entero que indica la cantidad de días que durará la simulación (por ejemplo, 31).
+- **Tamaño de la cuadrícula**: Un número entero que representa las dimensiones de la cuadrícula de la simulación (por ejemplo, 10).
+- **Capacidad por bloque**: Un número entero que señala la capacidad máxima de cada bloque (por ejemplo, 100).
+- **Cantidad de casas**: Un número entero que indica el total de casas en la simulación (por ejemplo, 10).
+- **Capacidad de cada casa**: Un número entero que determina cuántas entidades pueden ocupar cada casa (por ejemplo, 5).
+- **Cantidad de hospitales**: Un número entero que señala el número de hospitales disponibles (por ejemplo, 4).
+- **Capacidad de cada hospital**: Un número entero que define la capacidad de cada hospital (por ejemplo, 50).
+- **Horario de los hospitales**: Un par de números enteros que representan las horas de operación (por ejemplo, (8, 20)).
+- **Cantidad de áreas recreativas**: Un número entero que indica el número de áreas recreativas (por ejemplo, 4).
+- **Capacidad de cada área recreativa**: Un número entero que determina la capacidad de cada área recreativa (por ejemplo, 20).
+- **Horario de las áreas recreativas**: Un par de números enteros que representan las horas de operación (por ejemplo, (8, 20)).
+- **Cantidad de lugares de trabajo**: Un número entero que indica el número de lugares de trabajo (por ejemplo, 4).
+- **Capacidad de cada lugar de trabajo**: Un número entero que determina la capacidad de cada lugar de trabajo (por ejemplo, 10).
+- **Horario de los lugares de trabajo**: Un par de números enteros que representan las horas de operación (por ejemplo, (8, 20)).
+- **Cantidad de agentes**: Un número entero que define el número total de agentes en la simulación (por ejemplo, 20).
+
+No tiene que proporcionar todos los datos pero se agradece. Si tiene alguna pregunta o necesita asistencia, no dude en contactarnos. ¡Gracias por utilizar nuestra aplicación!
+"""
 def substring_in_brances(input):
     answer=''
     flag=False
@@ -120,13 +141,14 @@ def get_dict_params(llm_extracted_params):
 
 
 # Streamlit
-st.title("EpiDoc")
+st.set_page_config("Epidoc", "🤖", "wide")
+st.title("EpiDoc🦠")
 
 # input
-user_query = st.text_input("Describa como quisiera simular una epidermia:")
+user_query = st.text_input("Describa como quisiera simular una epidermia, para obtener informacón sobre que datos puede darnos presiones el botón de ayuda en la barra lateral:")
 
 # Buttom
-if st.button("Obtener respuesta"):
+if st.button("Iniciar simulación ▶️"):
     if user_query:
         # get  LLM-answer
         response = get_llm_response(prompt2 +' '+ user_query)
@@ -144,8 +166,16 @@ if st.button("Obtener respuesta"):
         
     else:
         st.write("Por favor, escribe una consulta para obtener una respuesta.")
+        
+#side bar
+st.sidebar.title('EpiDoc helper!')
+help_button=st.sidebar.button('ℹ️ Ayuda🆘')
+#text help
+if help_button:
+    st.sidebar.write(help_text)
+
 
 # Usar Streamlit para mostrar la gráfica
-st.write("Aquí está nuestra gráfica:")
+# st.write("Aquí está nuestra gráfica:")
 
     
