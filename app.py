@@ -8,6 +8,8 @@ import json
 import matplotlib.pyplot as plt
 import requests
 import web_api
+from PIL import Image
+from io import BytesIO
 #requests requests fuctions
 
 # URL base de la API FastAPI
@@ -41,6 +43,9 @@ def get_statistics():
     response=requests.get(f"{base_url}/statistics")
     return response.json()
 
+def get_plot():
+    response=requests.get(f"{base_url}/plots/test")
+    return response
 
 #model and prompts
 model = GPT4All("C:/Users/sherl/.cache/lm-studio/models/TheBloke/Mistral-7B-Instruct-v0.2-GGUF/mistral-7b-instruct-v0.2.Q4_K_S.gguf")
@@ -109,8 +114,7 @@ def substring_in_brances(input):
             break
         elif flag and char !='"':
             answer+=char
-   
-    print(answer)        
+           
     return answer
 #nedded functions
 def get_llm_response(query):
@@ -143,39 +147,41 @@ def get_dict_params(llm_extracted_params):
 # Streamlit
 st.set_page_config("Epidoc", "🤖", "wide")
 st.title("EpiDoc🦠")
+start_tab, grafic_tab = st.tabs(["🎁 Inicio", "📝 Gráfica", "estadisticas"])
 
-# input
-user_query = st.text_input("Describa como quisiera simular una epidermia, para obtener informacón sobre que datos puede darnos presiones el botón de ayuda en la barra lateral:")
+with start_tab:
 
-# Buttom
-if st.button("Iniciar simulación ▶️"):
-    if user_query:
-        # get  LLM-answer
-        response = get_llm_response(prompt2 +' '+ user_query)
-        params=get_dict_params(response)
-        
-        
-        #sim...
-        res=delete_simulation()
-        res = initialize_simulation(params)
-        res=start_simulation()
-        statistics=get_statistics()
-        st.write(statistics)
-        
-       
-        
-    else:
-        st.write("Por favor, escribe una consulta para obtener una respuesta.")
-        
-#side bar
-st.sidebar.title('EpiDoc helper!')
-help_button=st.sidebar.button('ℹ️ Ayuda🆘')
-#text help
+    # input
+    user_query = st.text_input("Describa como quisiera simular una epidermia, para obtener informacón sobre que datos puede proporsionar presiones el botón de ayuda en la barra lateral:")
+
+    # Buttom
+    if st.button("Iniciar simulación ▶️"):
+        if user_query:
+            # get  LLM-answer
+            response = get_llm_response(prompt2 +' '+ user_query)
+            params=get_dict_params(response)
+            #sim...
+            delete_simulation()
+            initialize_simulation(params)
+            start_simulation()
+            statistics=get_statistics()
+            st.write(statistics)
+           
+            with grafic_tab:
+                img=get_plot()
+                image = Image.open(BytesIO(img.content))
+                st.image(image, caption='Gráfico de Infectados por Día')
+        else:
+            st.write("Por favor, escribe una consulta para obtener una respuesta.")
+            
+    #side bar
+    st.sidebar.title('EpiDoc helper!')
+    help_button=st.sidebar.button('ℹ️ Ayuda🆘')
+    #text help
 if help_button:
     st.sidebar.write(help_text)
 
 
-# Usar Streamlit para mostrar la gráfica
-# st.write("Aquí está nuestra gráfica:")
+
 
     
