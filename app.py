@@ -58,29 +58,31 @@ Extract information properly.
 Reply with a JSON object with the following structure:
 {{
     "simulation_days":"exacly one int object of the query user, wich describe the duration in days"
-    "block_capacity":"exacly one int of capacity of the envairoment"
+    "grid_size":"exacly the int that is the dimensions of the simulation grid"
+    "block_capacity":"exacly the int of capacity of the envairoment"
     "house_amount":"exacly the amount of houses in the envairoment"
-    
-    "house_capacity":"exacly capacity of the houses"
-    "hospital_amount":"exacly amount of hospitals in the envairoment"
+    "house_capacity":"exacly the int wich is the  capacity of the houses"
+    "hospital_amount":"exacly one int that say the amount of hospitals in the envairoment"
     "hospital_capacity":"exacly the amount of people can be in the hospital at the same time"
     "recreational_amount":"exacly the amount of recreatrionals centers of the envairoment"
-    "recreational_capacity":"exacly the amount of agents can be in the recreational center at the same time"
+    "recreational_capacity":"exacly one int of the amount of agents can be in the recreational center at the same time"
+    "works_amount":"exacly the number of workplaces, one int"
+    "works_capacity":"exacly one integer determining the capacity of each workplace"
+    
 }}
 Reply should be only the Json object with the appropiate fields.
 #EXAMPLES
 Input: Quiero una epidermia que dure 342 dias en una ciudad cuya capacidad es 456, deben haber 32 casas,
-cada casa acepta 5 personas y hay 45 hospitales cuyas capacidades son 9,existen 97 centros de recreacion y aceptan 20 
-personas cada uno
-Output:{simulation_days:342, block_capacity:456, house_amount:32,house_capacity:5,hospital_amount:45,hospital_capacity:9,recreational_amount:97, recreational_capacity:20}
-Input: Genara una epidermia durante 67 dias en una capacidad de 89, con 42 casas con capacidad 2.Deben haber 32 hospitales donde caben 43 personas.Las recreaciones se hacen en 67 centros cuyas capacidades son 90.
-Output:{simulation_days:67, block_capacity:89, house_amount:42,house_capacity:2,hospital_amount:32,hospital_capacity:43,recreational_amount:67, recreational_capacity:90}
-Input: Genara una epidermia durante un anno  en una capacidad de 8, donde hayan 2 casas y caben 5 personas en cada una. Existen 54 centros donde los ciudadanos pueden divertirse y caben en cada uno 76 personas y hay 32 hospitales con capacidad 21
-Output:{dsimulation_days:365, block_capacity:8, house_amount:2,house_capacity:5,hospital_amount325,hospital_capacity:21,recreational_amount:54, recreational_capacity:76}
+cada casa acepta 5 personas y hay 45 hospitales cuyas capacidades son 9,Habran 32 puestos de trabajo,existen 97 centros de recreacion 
+y aceptan 20 personas cada uno.La dimension de de la cuadrícula de la simulación es 54.La capacidad de los centros de trabajo es 43 
+Output:{grid_size:54,simulation_days:342,block_capacity:456,house_amount:32,house_capacity:5,hospital_amount:45,hospital_capacity:9,recreational_amount:97, recreational_capacity:20,works_amoun:32, works_capacity:43}
+Input: Genara una epidermia durante 67 dias, en una capacidad de 89,la cuadrícula de la simulación tendra como dimension 76,con 42 casas con capacidad 2.Deben haber 32 hospitales donde caben 43 personas.Quiero poner 54 puestos de trabajo, con capacidad 18.Las recreaciones se hacen en 67 centros cuyas capacidades son 90 .
+Output:{grid_size:76,simulation_days:67, block_capacity:89,house_amount:42,house_capacity:2,hospital_amount:32,hospital_capacity:43,recreational_amount:67, recreational_capacity:90,works_amoun:54,works_capacity:18}
+Input: Genara una epidermia durante un anno  en una capacidad de 8, donde hayan 2 casas y caben 5 personas en cada una.Insertare 5 puestos de trabajo .La cuadrícula es tamanno 89. Tendra 200 personas.Existen 54 centros donde los ciudadanos pueden divertirse y caben en cada uno 76 personas, los trabajos seran en centros cuyas capacidades seran 100 y hay 32 hospitales con capacidad 21 .
+Output:{grid_size:89,simulation_days:365, block_capacity:8, house_amount:2,house_capacity:5,hospital_amount325,hospital_capacity:21,recreational_amount:54, recreational_capacity:76,works_amoun:5,works_capacity:100}
 Reply should be only the Json object with the appropiate fields.
 Input:{el input del usuario}
 Output:
-
 '''
 help_text= """
                    Bienvenido a Epidoc,su app para simular el comportamiento de epidemias. Se muestra una entrada de texto donde puede proporcionar la siguiente información sobre como quiere que se desarrolle la epidemia:
@@ -129,8 +131,8 @@ def get_llm_response(query):
     return response
 #parser in a dict the sim's params, return a dict, maybe i need conmtrol output for the llm if not well!
 def get_dict_params(llm_extracted_params):
+    print(llm_extracted_params)
     input_string= substring_in_brances(llm_extracted_params)
-    
     # Split the string into key-value pairs
     key_value_pairs = input_string.split(',')
     
