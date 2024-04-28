@@ -103,6 +103,12 @@ help_text= """
 
 No tiene que proporcionar todos los datos pero se agradece. Si tiene alguna pregunta o necesita asistencia, no dude en contactarnos. ¡Gracias por utilizar nuestra aplicación!
 """
+text="""
+"La simulación se ha ejecutado correctamente. Ahora puede consultar cómo 
+evolucionó con el paso de los días. En la sección Gráfica, puede apreciar una
+tabla con el número de infectados por día y en la sección de Resultados puede ver,
+según el día, los datos correspondientes al paso de la epidemia simulada."
+"""
 def substring_in_brances(input):
     answer=''
     flag=False
@@ -147,7 +153,15 @@ def get_dict_params(llm_extracted_params):
 # Streamlit
 st.set_page_config("Epidoc", "🤖", "wide")
 st.title("EpiDoc🦠")
-start_tab, grafic_tab = st.tabs(["🎁 Inicio", "📝 Gráfica", "estadisticas"])
+#side bar
+st.sidebar.title('EpiDoc helper!')
+help_button=st.sidebar.button('ℹ️ Ayuda🆘')
+#text help
+if help_button:
+    st.sidebar.write(help_text)
+
+    
+start_tab, grafic_tab, results_tab = st.tabs(["🎁 Inicio", "📈 Gráfica", "🎈 Resultados"])
 
 with start_tab:
 
@@ -157,29 +171,26 @@ with start_tab:
     # Buttom
     if st.button("Iniciar simulación ▶️"):
         if user_query:
-            # get  LLM-answer
-            response = get_llm_response(prompt2 +' '+ user_query)
-            params=get_dict_params(response)
-            #sim...
-            delete_simulation()
-            initialize_simulation(params)
-            start_simulation()
-            statistics=get_statistics()
-            st.write(statistics)
-           
-            with grafic_tab:
-                img=get_plot()
-                image = Image.open(BytesIO(img.content))
-                st.image(image, caption='Gráfico de Infectados por Día')
+           with st.spinner("Espera mientras se envia su consulta a un grupo de monos con pc encerrados en una oficina..."):
+                # get  LLM-answer
+                response = get_llm_response(prompt2 +' '+ user_query)
+                params=get_dict_params(response)
+                #sim...
+                delete_simulation()
+                initialize_simulation(params)
+                start_simulation()
+                st.write(text)
+                with results_tab:
+                    statistics=get_statistics()
+                    st.write(statistics)
+                with grafic_tab:
+                    img=get_plot()
+                    image = Image.open(BytesIO(img.content))
+                    st.image(image, caption='Gráfico de Infectados por Día')
         else:
             st.write("Por favor, escribe una consulta para obtener una respuesta.")
             
-    #side bar
-    st.sidebar.title('EpiDoc helper!')
-    help_button=st.sidebar.button('ℹ️ Ayuda🆘')
-    #text help
-if help_button:
-    st.sidebar.write(help_text)
+
 
 
 
