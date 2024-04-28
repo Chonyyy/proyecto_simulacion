@@ -49,7 +49,6 @@ def get_plot():
 
 #model and prompts
 model = GPT4All("C:/Users/sherl/.cache/lm-studio/models/TheBloke/Mistral-7B-Instruct-v0.2-GGUF/mistral-7b-instruct-v0.2.Q4_K_S.gguf")
-# model = GPT4All("/home/chony/Documentos/GPT4All/mistral-7b-instruct-v0.1.Q4_0.gguf")
 
 
 #extrayendo todos los datos necesarios
@@ -71,16 +70,18 @@ Reply with a JSON object with the following structure:
     "works_capacity":"exacly one integer determining the capacity of each workplace"
     
 }}
-Reply should be only the Json object with the appropiate fields.
+Reply should be only the Json object with the appropiate fields,if there is missing information in the query, generate a valid number greater than zero.
 #EXAMPLES
 Input: Quiero una epidermia que dure 342 dias en una ciudad cuya capacidad es 456, deben haber 32 casas,
 cada casa acepta 5 personas y hay 45 hospitales cuyas capacidades son 9,Habran 32 puestos de trabajo,existen 97 centros de recreacion 
-y aceptan 20 personas cada uno.La dimension de de la cuadrícula de la simulación es 54.La capacidad de los centros de trabajo es 43 
+y aceptan 20 personas cada uno.La capacidad de los centros de trabajo es 43 
 Output:{grid_size:54,simulation_days:342,block_capacity:456,house_amount:32,house_capacity:5,hospital_amount:45,hospital_capacity:9,recreational_amount:97, recreational_capacity:20,works_amoun:32, works_capacity:43}
-Input: Genara una epidermia durante 67 dias, en una capacidad de 89,la cuadrícula de la simulación tendra como dimension 76,con 42 casas con capacidad 2.Deben haber 32 hospitales donde caben 43 personas.Quiero poner 54 puestos de trabajo, con capacidad 18.Las recreaciones se hacen en 67 centros cuyas capacidades son 90 .
+Input: Genara una epidermia durante 67 dias, en una capacidad de 89,la cuadrícula de la simulación tendra como dimension 76,con 42 casas con capacidad 2.Deben haber 32 hospitales donde caben 43 personas.Quiero poner 54 puestos de trabajo.Las recreaciones se hacen en 67 centros cuyas capacidades son 90 .
 Output:{grid_size:76,simulation_days:67, block_capacity:89,house_amount:42,house_capacity:2,hospital_amount:32,hospital_capacity:43,recreational_amount:67, recreational_capacity:90,works_amoun:54,works_capacity:18}
-Input: Genara una epidermia durante un anno  en una capacidad de 8, donde hayan 2 casas y caben 5 personas en cada una.Insertare 5 puestos de trabajo .La cuadrícula es tamanno 89. Tendra 200 personas.Existen 54 centros donde los ciudadanos pueden divertirse y caben en cada uno 76 personas, los trabajos seran en centros cuyas capacidades seran 100 y hay 32 hospitales con capacidad 21 .
+Input: Genara una epidermia durante un anno  en una capacidad de 8, donde hayan 2 casas y caben 5 personas en cada una.Insertare 5 puestos de trabajo .La cuadrícula es tamanno 89. Tendra 200 personas.Existen 54 centros donde los ciudadanos pueden divertirse, los trabajos seran en centros cuyas capacidades seran 100 y hay 32 hospitales con capacidad 21 .
 Output:{grid_size:89,simulation_days:365, block_capacity:8, house_amount:2,house_capacity:5,hospital_amount325,hospital_capacity:21,recreational_amount:54, recreational_capacity:76,works_amoun:5,works_capacity:100}
+Input:quiero una simiulacion con 5 casas y 20 agentes, donde solo hayan 3 lugares de trabajo
+Output:{simulation_days:36,grid_size:80, block_capacity:100, house_amount:5,house_capacity:5,hospital_amount35,hospital_capacity:21,recreational_amount:12, recreational_capacity:50,works_amoun:3,works_capacity:100}
 Reply should be only the Json object with the appropiate fields.
 Input:{el input del usuario}
 Output:
@@ -114,9 +115,10 @@ según el día, los datos correspondientes al paso de la epidemia simulada."
 """
 def substring_in_brances(input):
     answer=''
+    filted=""
+    pivot=""
     flag=False
     for char in input:
-        
         if char=="{":
             flag=True
         elif char=="}":
@@ -124,7 +126,20 @@ def substring_in_brances(input):
         elif flag and char !='"':
             answer+=char
            
-    return answer
+    for i in range(len(answer)):
+       
+        if answer[i]==",":
+            flag=False
+        if flag:
+            pivot+=answer[i]
+        else:
+            pivot+=answer[i]
+            filted+=pivot
+            pivot=' '
+            flag=True
+        
+    return filted
+
 #nedded functions
 def get_llm_response(query):
     # Usa el modelo cargado para generar una respuesta
@@ -132,10 +147,15 @@ def get_llm_response(query):
     return response
 #parser in a dict the sim's params, return a dict, maybe i need conmtrol output for the llm if not well!
 def get_dict_params(llm_extracted_params):
-    print(llm_extracted_params)
     input_string= substring_in_brances(llm_extracted_params)
+    print("analizado")
+    print(input_string)
     # Split the string into key-value pairs
     key_value_pairs = input_string.split(',')
+    if key_value_pairs[len(key_value_pairs)-1]=="":
+        key_value_pairs=key_value_pairs[:-1] 
+    print('key-value')
+    print(key_value_pairs)
     
     # Initialize an empty dictionary
     output_dict = {}
