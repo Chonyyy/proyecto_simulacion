@@ -1,3 +1,10 @@
+# Simulación de Control de Enfermedades
+
+Autores:
+- María de Lourdes Choy C412
+- Alejandro Yero Valdes C412
+- Sherlyn Ballesteros Cruz ---
+
 # Introducción
 
 En el mundo actual, la propagación de enfermedades se ha convertido en un desafío global que requiere una atención urgente. La importancia de detener esta propagación no solo radica en la protección de la salud de las personas, sino también en la preservación de la estabilidad social y económica de las comunidades. En este trabajo, exploraremos las diferentes estrategias y medidas que se pueden implementar para prevenir y controlar la propagación de enfermedades, destacando la necesidad de una acción coordinada a nivel local.
@@ -20,7 +27,7 @@ La arquitectura InterRRaP (Interactive Rational Planning) se centra en la intera
 
 - **Componente Cooperativo**: Traza planes y objetivos cooperativos, facilita la cooperación entre agentes, permitiendo que los agentes interactúen entre sí, compartan información y tomen decisiones colectivas.
 
-## Por qué usar InteRRaP
+## Por qué utilizar InteRRaP
 
 La arquitectura de agentes InteRRaP es particularmente ajustada para simulaciones de control de epidemias debido a varias razones fundamentales. La arquitectura de agentes permite representar a cada individuo humano de una población como una entidad distinta o agente, atribuyéndole rasgos y comportamientos específicos. Esto es crucial en la simulación de epidemias, ya que permite modelar la interacción entre individuos, la transmisión de enfermedades y la progresión de la enfermedad dentro de los agentes, proporcionando una representación detallada y granular de la dinámica de la epidemia. Permite implementar intervenciones y modificaciones de comportamientos de manera flexible y eficiente.
 
@@ -40,15 +47,15 @@ Este agente juega un papel crucial en la simulación, actuando como un punto foc
 
 ### Características y Propósito
 
-Canelo es diseñado para actuar como un líder o coordinador dentro de la simulación. Su propósito principal es tomar decisiones basadas en la información colectiva de todos los agentes y transmitir estas decisiones a los demás agentes para guiar sus acciones. Esto incluye decisiones sobre la implementación de medidas de salud pública, como el uso de mascarillas, la cuarentena, y la adopción de prácticas de distanciamiento social.
+Está diseñado para actuar como un líder o coordinador dentro de la simulación. Su propósito principal es tomar decisiones basadas en la información colectiva de todos los agentes y transmitir estas decisiones a los demás agentes para guiar sus acciones. Esto incluye decisiones sobre la implementación de medidas de salud pública, como el uso de mascarillas, la cuarentena, y la adopción de prácticas de distanciamiento social.
 
 ### Funcionamiento
 
-El funcionamiento de Canelo se basa en su capacidad para procesar y analizar la información colectiva de los agentes utilizando un *Sistema experto*. Canelo utiliza una Interfaz del Mundo personalizada para obtener información actualizada sobre el entorno y el estado de otros agentes. Con esta información, Canelo puede tomar decisiones informadas sobre las medidas que deben implementarse para controlar la propagación de la enfermedad.
+Su funcionamiento se basa en su capacidad para procesar y analizar la información colectiva de los agentes utilizando un *Sistema experto*. Utiliza una Interfaz del Mundo personalizada para obtener información actualizada sobre el entorno y el estado de otros agentes. Con esta información, puede tomar decisiones informadas sobre las medidas que deben implementarse para controlar la propagación de la enfermedad.
 
 ### Comunicación y Coordinación
 
-Una de las características clave de Canelo es su capacidad para comunicarse y coordinar con los otros agentes. Utiliza la **Capa de Cooperativa** para transmitir sus decisiones a los demás agentes, facilitando la coordinación de acciones para alcanzar objetivos comunes.
+Una de las características clave es su capacidad para comunicarse y coordinar con los otros agentes. Utiliza la **Capa de Cooperativa** para transmitir sus decisiones a los demás agentes, facilitando la coordinación de acciones para alcanzar objetivos comunes.
 
 # Entorno
 
@@ -86,11 +93,26 @@ El uso del algoritmo A* para hallar el camino más corto entre dos puntos es una
 
 ## Interfaz de Usuario y Procesamiento del Lenguaje Natural
 
-Para mejorar la interacción con la simulación, desarrollamos una interfaz de usuario que permite a estos interactuar con la simulación mediante comandos de lenguaje natural. Utilizamos técnicas de procesamiento del lenguaje natural (NLP) para interpretar los comandos del usuario y mapearlos a acciones en la simulación.
+Para mejorar la interacción con la simulación, se desarrolla una interfaz de usuario que permite a estos interactuar con la simulación mediante comandos de lenguaje natural. Se utilizan técnicas de procesamiento del lenguaje natural (NLP) para interpretar los comandos del usuario y mapearlos a acciones en la simulación.
+
+Se utiliza la biblioteca Streamlit para crear una aplicación web interactiva llamada "EpiDoc" que simula el comportamiento de una epidemia. Aquí hay un resumen de las principales funcionalidades:  
+
+- Se definen varias funciones que realizan diferentes tareas, como inicializar los parametros la simulación, eliminar los parametros de la simulación, reiniciar la simulación, iniciar la simulación, obtener el estado de la simulación, obtener estadísticas, obtener gráficos, entre otras.  
+
+- Se definen textos informativos para guiar al usuario en el uso de la aplicación.  
+
+- Se definen funciones para procesar y analizar las consultas de los usuarios, así como para extraer parámetros específicos de las consultas.  
+
+- Se crea la interfaz de usuario de la aplicación utilizando Streamlit. La aplicación consta de una barra lateral con un botón de ayuda, pestañas para las secciones de inicio, gráficos y resultados, un campo de entrada de texto para que el usuario describa la simulación de la epidemia, y botones para iniciar la simulación y mostrar los resultados.  
+
+- Cuando el usuario presiona el botón "Iniciar simulación", se envía la consulta del usuario al modelo de lenguaje, se procesa la respuesta para obtener los parámetros de la simulación, se inicializa la simulación y se muestran los resultados en las pestañas correspondientes.  
+
+![Descripción de la imagen](URL_de_la_imagen "Leyenda de la imagen")
+
 
 ### Sistema Experto
 
-Se implementa un sistema experto utilizando Prolog para guiar las decisiones del agente institucional (Canelo) en la implementación de medidas para contener la enfermedad. El sistema experto se basa en reglas lógicas que reflejan las recomendaciones de salud pública y epidemiología.
+Se implementa un sistema experto para guiar las decisiones del agente institucional en la implementación de medidas para contener la enfermedad. El sistema experto se basa en reglas lógicas que reflejan las recomendaciones de salud pública y epidemiología.
 
 ### Funcionamiento
 
@@ -128,7 +150,7 @@ El algoritmo genético PyGAD es una biblioteca de Python diseñada para optimiza
 
 - **Eficiencia**: A través de la selección de padres basada en la fitness, PyGAD puede converger rápidamente hacia soluciones óptimas, lo que es crucial en el contexto de una epidemia donde el tiempo es un factor crítico.
 
-## Resultados Experimentales
+# Resultados Experimentales
 
 ### Para 20 agentes en un rango de 10 dias estos fueron los resultados
 
@@ -255,7 +277,7 @@ Los resultados experimentales presentados en la simulación muestran una serie d
 
 # Conclusiones
 
-k
+Los resultados experimentales proporcionan una valiosa visión de cómo las intervenciones de control de epidemias pueden afectar la propagación y la gestión de enfermedades en diferentes contextos. Sin embargo, es importante recordar que estos resultados son específicos de la simulación y pueden no reflejar completamente la complejidad y la variabilidad de las epidemias en el mundo real. La adaptación de las estrategias de control de epidemias debe considerar una variedad de factores, incluyendo la dinámica de la enfermedad, las características de la población, y las capacidades de respuesta de los sistemas de salud.
 
 # Recomendaciones y futuros cambios
 
@@ -266,4 +288,4 @@ Se recomienda realizar un estudio más profundo de Prolog para comprender mejor 
 [1] https://towardsdatascience.com/introducing-geneal-a-genetic-algorithm-python-library-db69abfc212c  
 [2] https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1009149  
 [3] https://github.com/diogomatoschaves/geneal  
-[4] https://jmvidal.cse.sc.edu/library/muller93a.pdf  
+[4] https://jmvidal.cse.sc.edu/library/muller93a.pdf
