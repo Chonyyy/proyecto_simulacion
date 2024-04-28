@@ -4,9 +4,9 @@ En el mundo actual, la propagación de enfermedades se ha convertido en un desaf
 
 # Simulación
 
-Nuestra simulación se centra en modelar la propagación de una enfermedad ficticia en un entorno simulado, utilizando una combinación de agentes, conocimiento interno, y reglas de progresión de la enfermedad. Tenemos dos tipos de agentes, unos que representan a individuos dentro de la simulacion, con características como ubicación, estado de salud, y uso de mascarillas, y otro que representa una intitución rectora en la ciudad. La simulación permite la interacción entre agentes y el entorno, modelando comportamientos complejos y dinámicos. 
+La simulación se centra en modelar la propagación de una enfermedad ficticia en un entorno simulado, utilizando una combinación de agentes, conocimiento interno y reglas de progresión de la enfermedad. Se tienen dos tipos de agentes, unos que representan a individuos dentro de la simulación, con características como ubicación, estado de salud y uso de mascarillas, y otro que representa una institución rectora en la ciudad. La simulación permite la interacción entre agentes y el entorno, modelando comportamientos complejos y dinámicos.
 
-También cuenta con la implementación de medidas de salud pública, como pudiesen ser el uso de mascarillas obligatorio en distintos lugares, implementación de cuarentenas, aislamientos o toques de queda, promoción de distanciamoento social, entre otros, a través de la interacción entre agentes y la actualización dinámica de su conocimiento interno.
+También cuenta con la implementación de medidas de salud pública, como el uso de mascarillas obligatorio en distintos lugares, implementación de cuarentenas, aislamientos o toques de queda, promoción de distanciamiento social, entre otros, a través de la interacción entre agentes y la actualización dinámica de su conocimiento interno.
 
 ## Arquitectura
 
@@ -14,26 +14,25 @@ La arquitectura InterRRaP (Interactive Rational Planning) se centra en la intera
 
 - **Interfaz del Mundo**: Actúa como un intermediario entre los agentes y el entorno simulado, facilitando la interacción entre ellos. Esta interfaz no solo permite a los agentes percibir y actuar sobre su entorno, sino que también actualiza el estado del entorno en respuesta a las acciones de los agentes. A este componente se le corresponde un mapa mental que representa el conocimiento del terreno del agente, el cual se actualiza en cada paso del agente con las percepciones.
 
-- **Componente de Comportamiento**: Gestiona el conocimiento reactivo del agente, procesa la información del entorno y toma desiciones sobre que acciones específicas realiza el agente.  
+- **Componente de Comportamiento**: Gestiona el conocimiento reactivo del agente, procesa la información del entorno y toma decisiones sobre qué acciones específicas realiza el agente.
 
-- **Componente de Planificación**: Se encarga de la planificación a corto plazo, tomando decisiones basadas en el conocimiento interno del agente y su percepción del entorno, los comportamientos rutinarios tambien se manejan en esta capa.  
+- **Componente de Planificación**: Se encarga de la planificación a corto plazo, tomando decisiones basadas en el conocimiento interno del agente y su percepción del entorno, los comportamientos rutinarios también se manejan en esta capa.
 
-- **Componente Cooperativo**: Traza planes y objetivos cooperativos, facilita la cooperación entre agentes, permitiendo que los agentes interactúen entre sí, compartan información y tomen decisiones colectivas.  
+- **Componente Cooperativo**: Traza planes y objetivos cooperativos, facilita la cooperación entre agentes, permitiendo que los agentes interactúen entre sí, compartan información y tomen decisiones colectivas.
 
-## por que usar InteRRaP
+## Por qué usar InteRRaP
 
-La arquitectura de agentes InteRRaP es particularmente ajustada para simulaciones de control de epidemias debido a varias razones fundamentales.
-La arquitectura de agentes permite representar a cada individuo humano de una población como una entidad distinta o agente, atribuyéndole rasgos y comportamientos específicos. Esto es crucial en la simulación de epidemias, ya que permite modelar la interacción entre individuos, la transmisión de enfermedades y la progresión de la enfermedad dentro de los agentes, proporcionando una representación detallada y granular de la dinámica de la epidemia. Permite implementar intervenciones y modificaciones de comportamientos de manera flexible y eficiente.
+La arquitectura de agentes InteRRaP es particularmente ajustada para simulaciones de control de epidemias debido a varias razones fundamentales. La arquitectura de agentes permite representar a cada individuo humano de una población como una entidad distinta o agente, atribuyéndole rasgos y comportamientos específicos. Esto es crucial en la simulación de epidemias, ya que permite modelar la interacción entre individuos, la transmisión de enfermedades y la progresión de la enfermedad dentro de los agentes, proporcionando una representación detallada y granular de la dinámica de la epidemia. Permite implementar intervenciones y modificaciones de comportamientos de manera flexible y eficiente.
 
 ## Base de conocimiento
 
-El conocimiento es uno de los principales aspectos de nuestra arquitecura de agente. En nuestra implementación utilizamos Prolog para crear una base de conocimientos herárquica que contiene tres capas que corresponden a cada uno de los componentes mencionados anteriormente, lo que permite una representación formal y lógica del conocimiento del agente.
+El conocimiento es uno de los principales aspectos de la arquitectura de agente. En la implementación se utiliza una base de conocimientos herárquica que contiene tres capas que corresponden a cada uno de los componentes mencionados anteriormente, lo que permite una representación formal y lógica del conocimiento del agente.
 
-La base de conocimientos incluye información relevante sobre el estado de salud del agente, su ubicación, si usa mascarilla, y otros aspectos cruciales para la toma de decisiones del agente. Esta se actualiza dinámicamente a medida que el agente interactúa con el entorno y con otros agentes. Por ejemplo, si un agente se mueve a una nueva ubicación nueva información previamente no accesible se incorpora a su base de conocimientos, permitiendo al agente actualizar su comprensión del entorno y tomar decisiones informadas.
+La base de conocimientos incluye información relevante sobre el estado de salud del agente, su ubicación, si usa mascarilla, y otros aspectos cruciales para la toma de decisiones del agente. Esta se actualiza dinámicamente a medida que el agente interactúa con el entorno y con otros agentes. Por ejemplo, si un agente se mueve a una nueva ubicación, nueva información previamente no accesible se incorpora a su base de conocimientos, permitiendo al agente actualizar su comprensión del entorno y tomar decisiones informadas.
 
 ## Agentes ciudadanos
 
-Estos agentes representan a ciudadanos dentro de la simulación. Cada agente tiene características como su ubicación, estado de salud, y si usa mascarilla. Los agentes interactúan con el entorno y entre sí, tomando desiciones basadas en una combinación de su conocimiento interno y la percepción del entorno, lo que permite modelar comportamientos complejos y dinámicos. Estas pueden incluir moverse a diferentes ubicaciones, trabajar, usar o quitar mascarilla, entre otras acciones.
+Estos agentes representan a ciudadanos dentro de la simulación. Cada agente tiene características como su ubicación, estado de salud, y si usa mascarilla. Los agentes interactúan con el entorno y entre sí, tomando decisiones basadas en una combinación de su conocimiento interno y la percepción del entorno, lo que permite modelar comportamientos complejos y dinámicos. Estas pueden incluir moverse a diferentes ubicaciones, trabajar, usar o quitar mascarilla, entre otras acciones.
 
 ## Agente Institución
 
@@ -45,7 +44,7 @@ Canelo es diseñado para actuar como un líder o coordinador dentro de la simula
 
 ### Funcionamiento
 
-El funcionamiento de Canelo se basa en su capacidad para procesar y analizar la información colectiva de los agentes utilizando un *Sistema experto en Prolog*. Canelo utiliza una Interfaz del Mundo personalizada para obtener información actualizada sobre el entorno y el estado de otros agentes. Con esta información, Canelo puede tomar decisiones informadas sobre las medidas que deben implementarse para controlar la propagación de la enfermedad.
+El funcionamiento de Canelo se basa en su capacidad para procesar y analizar la información colectiva de los agentes utilizando un *Sistema experto*. Canelo utiliza una Interfaz del Mundo personalizada para obtener información actualizada sobre el entorno y el estado de otros agentes. Con esta información, Canelo puede tomar decisiones informadas sobre las medidas que deben implementarse para controlar la propagación de la enfermedad.
 
 ### Comunicación y Coordinación
 
@@ -53,23 +52,23 @@ Una de las características clave de Canelo es su capacidad para comunicarse y c
 
 # Entorno
 
-El Entorno es una representación abstracta del espacio en el que los agentes se mueven y interactúan. Este entorno simulado es esencial para modelar la dinámica de la enfermedad y las interacciones entre agentes en un contexto urbano. El entorno se modela utilizando un Grafo. Cada nodo representa una ubicación específica dentro del entorno simulado, como un hospital, un lugar público, un espacio de trabajo, una cuadra o una parada de autobus. Las aristas representan las conexiones entre estos nodos, indicando las rutas posibles que los agentes pueden tomar para moverse entre diferentes ubicaciones. A cada nodo tambien se le calcula una probabilidad de contacto base que depende de la capacidad del nodo y la cantidad de agentes que hayan en este.
+El Entorno es una representación abstracta del espacio en el que los agentes se mueven y interactúan. Este entorno simulado es esencial para modelar la dinámica de la enfermedad y las interacciones entre agentes en un contexto urbano. El entorno se modela utilizando un Grafo. Cada nodo representa una ubicación específica dentro del entorno simulado, como un hospital, un lugar público, un espacio de trabajo, una cuadra o una parada de autobús. Las aristas representan las conexiones entre estos nodos, indicando las rutas posibles que los agentes pueden tomar para moverse entre diferentes ubicaciones. A cada nodo también se le calcula una probabilidad de contacto base que depende de la capacidad del nodo y la cantidad de agentes que hayan en este.
 
 # Modelado de la Progresión del Virus
 
-En nuestra simulación, la epidemia es modelada utilizando un agente reactivo que tiene, que su base de conocimientos(también implementada en Prolog) las reglas e información necesaria acerca del progreso de la enfermedad en un ciudadano.
+En la simulación, la epidemia es modelada utilizando un agente reactivo que tiene en su base de conocimientos implementada en Prolog, las reglas e información necesaria acerca del progreso de la enfermedad en un ciudadano.
 
 ## Cómo se propaga la enfermedad
 
-En cada iteración de la simulación se calculan los contactos(cuando decimos contacto, nos referimos solamente a aquellos que propagan la enfermedad) que tienen agentes que se encuentran en un mismo lugar(nodo). Cada nodo tiene una probabilidad de contacto base y usar distintas medidas higienicas puede reducir esta probabilidad de contacto. Si un agente tiene contacto con otro infectado, la enfermedad se propaga con una probabilidad.
+En cada iteración de la simulación se calculan los contactos (cuando decimos contacto, nos referimos solamente a aquellos que propagan la enfermedad) que tienen agentes que se encuentran en un mismo lugar (nodo). Cada nodo tiene una probabilidad de contacto base y usar distintas medidas higiénicas puede reducir esta probabilidad de contacto. Si un agente tiene contacto con otro infectado, la enfermedad se propaga con una probabilidad.
 
 ## Progresión de la Enfermedad
 
-La progresión de la enfermedad describe cómo un agente infectado puede pasar de una etapa de infección a otra, desde asintomomático hasta terminal. Este proceso se modela a través de una serie de reglas que describen las condiciones bajo las cuales un agente puede progresar de una etapa a otra.
+La progresión de la enfermedad describe cómo un agente infectado puede pasar de una etapa de infección a otra, desde asintomático hasta terminal. Este proceso se modela a través de una serie de reglas que describen las condiciones bajo las cuales un agente puede progresar de una etapa a otra.
 
 ### Factores de Riesgo
 
-Existen varios factores que pueden aumentar el riesgo de infección y de progresión de la enfermedad, como pudiera ser la edad del ciudadano o la densidad poblacional de un nodo, la cantidad de agentes en este de acuerdo a la capacidad. La capacidad de un nodo no determina el maximo de agentes que pueden estar en este, pero a partir de este punto se tiene la máxima probabilidad de contacto.
+Existen varios factores que pueden aumentar el riesgo de infección y de progresión de la enfermedad, como pudiera ser la edad del ciudadano o la densidad poblacional de un nodo, la cantidad de agentes en este de acuerdo a la capacidad. La capacidad de un nodo no determina el máximo de agentes que pueden estar en este, pero a partir de este punto se tiene la máxima probabilidad de contacto.
 
 # IA
 
@@ -91,7 +90,7 @@ Para mejorar la interacción con la simulación, desarrollamos una interfaz de u
 
 ### Sistema Experto
 
-En nuestra simulación, implementamos un sistema experto utilizando Prolog para guiar las decisiones del agente institucional (Canelo) en la implementación de medidas para contener la enfermedad. El sistema experto se basa en reglas lógicas que reflejan las recomendaciones de salud pública y epidemiología.
+Se implementa un sistema experto utilizando Prolog para guiar las decisiones del agente institucional (Canelo) en la implementación de medidas para contener la enfermedad. El sistema experto se basa en reglas lógicas que reflejan las recomendaciones de salud pública y epidemiología.
 
 ### Funcionamiento
 
@@ -130,7 +129,7 @@ El algoritmo genético PyGAD es una biblioteca de Python diseñada para optimiza
 - **Eficiencia**: A través de la selección de padres basada en la fitness, PyGAD puede converger rápidamente hacia soluciones óptimas, lo que es crucial en el contexto de una epidemia donde el tiempo es un factor crítico.
 
 ## Resultados Experimentales
----
+
 ### Para 20 agentes en un rango de 30 dias estos fueron los resultados:
 
 | Día | Susceptible | Asintomático | Sintomático | Crítico | Terminal | Muerto | Recuperado |
