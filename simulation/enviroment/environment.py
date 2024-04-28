@@ -58,7 +58,7 @@ class Environment:
         Args:
             num_agents (int): The number of agents to initialize.
         """
-        infected_agents = random.randint(0, int(num_agents/2))
+        infected_agents = random.randint(1, int(num_agents/2))
 
         for i in range(num_agents):
             mind_map = self.generate_citizen_mind_map()

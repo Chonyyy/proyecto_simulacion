@@ -152,10 +152,14 @@ async def test_plot():
 
     # Create a plot
     plt.figure()
-    plt.plot(x, y)
-    plt.title("Test Plot")
+    plt.plot(days, infected_stats, label='Infected', color='red')
+    plt.plot(days, susceptible_stats, label='Susceptible', color='blue')
+    plt.plot(days, inmune_stats, label='Immune', color='green')
+    plt.plot(days, dead_stats, label='Dead', color='black')
+    plt.title("Epidemic Simulation")
     plt.xlabel("Days")
-    plt.ylabel("Infected Amount")
+    plt.ylabel("Population")
+    plt.legend()
     plt.grid(True)
 
     # Save the plot to a BytesIO object
