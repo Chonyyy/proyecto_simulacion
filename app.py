@@ -38,6 +38,9 @@ def start_simulation():
 def get_simulation_status():
     response =requests.get(f"{base_url}/simulate/status")
     return response.json()
+def get_statistics():
+    response=requests.get(f"{base_url}/statistics")
+    return response.json()
 
 
 #model and prompts
@@ -115,19 +118,7 @@ def get_llm_response(query):
     return response
 #parser in a dict the sim's params, return a dict, maybe i need conmtrol output for the llm if not well!
 def get_dict_params(llm_extracted_params):
-    
-    # result = re.search(r'\{(.*?)\}', llm_extracted_params)
-    # # Verificamos si encontramos un resultado
-
-    # if result:
-    #     print("yey")
-    # else:
-    #     print("noo")
-    # input_string= result.group(1)
     input_string= substring_in_brances(llm_extracted_params)
-   
-    # # Remove the "Input:" and "Output:" parts from the string
-    # input_string = input_string.replace('Input:\"Output:{', '').replace('}\"', '')
     
     # Split the string into key-value pairs
     key_value_pairs = input_string.split(',')
@@ -180,8 +171,8 @@ if st.button("Obtener respuesta"):
         res=delete_simulation()
         res = initialize_simulation(params)
         res=start_simulation()
-        esratistics=get_simulation_status()
-        st.write(res)
+        statistics=get_statistics()
+        st.write(statistics)
         
        
         
