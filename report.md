@@ -25,17 +25,17 @@ La arquitectura InterRRaP (Interactive Rational Planning) se centra en la intera
 
 - **Componente de Planificación**: Se encarga de la planificación a corto plazo, tomando decisiones basadas en el conocimiento interno del agente y su percepción del entorno, los comportamientos rutinarios también se manejan en esta capa.
 
-- **Componente Cooperativo**: Traza planes y objetivos cooperativos, facilita la cooperación entre agentes, permitiendo que los agentes interactúen entre sí, compartan información y tomen decisiones colectivas.
+- **Componente Cooperativo**: Traza planes y objetivos cooperativos, facilita la cooperación entre agentes, permitiendo que estos interactúen entre sí, compartan información y tomen decisiones colectivas.
 
 ## Por qué utilizar InteRRaP
 
-La arquitectura de agentes InteRRaP es particularmente ajustada para simulaciones de control de epidemias debido a varias razones fundamentales. La arquitectura de agentes permite representar a cada individuo humano de una población como una entidad distinta o agente, atribuyéndole rasgos y comportamientos específicos. Esto es crucial en la simulación de epidemias, ya que permite modelar la interacción entre individuos, la transmisión de enfermedades y la progresión de la enfermedad dentro de los agentes, proporcionando una representación detallada y granular de la dinámica de la epidemia. Permite implementar intervenciones y modificaciones de comportamientos de manera flexible y eficiente.
+La arquitectura de agentes InteRRaP es particularmente ajustada para simulaciones de control de epidemias debido a varias razones fundamentales. La arquitectura permite representar a cada individuo humano de una población como una entidad distinta o agente, atribuyéndole rasgos y comportamientos específicos. Esto es crucial en la simulación de epidemias, ya que permite modelar la interacción entre individuos, la transmisión de enfermedades y la progresión de la enfermedad dentro de los agentes, proporcionando una representación detallada y granular de la dinámica de la epidemia. Permite implementar intervenciones y modificaciones de comportamientos de manera flexible y eficiente.
 
 ## Base de conocimiento
 
-El conocimiento es uno de los principales aspectos de la arquitectura de agente. En la implementación se utiliza una base de conocimientos herárquica que contiene tres capas que corresponden a cada uno de los componentes mencionados anteriormente, lo que permite una representación formal y lógica del conocimiento del agente.
+El conocimiento es uno de los principales aspectos de la arquitectura de agente. En la implementación se utiliza una base de conocimientos jerárquica que contiene tres capas que corresponden a cada uno de los componentes mencionados anteriormente, lo que permite una representación formal y lógica del conocimiento del agente.
 
-La base de conocimientos incluye información relevante sobre el estado de salud del agente, su ubicación, si usa mascarilla, y otros aspectos cruciales para la toma de decisiones del agente. Esta se actualiza dinámicamente a medida que el agente interactúa con el entorno y con otros agentes. Por ejemplo, si un agente se mueve a una nueva ubicación, nueva información previamente no accesible se incorpora a su base de conocimientos, permitiendo al agente actualizar su comprensión del entorno y tomar decisiones informadas.
+La base de conocimientos incluye información relevante sobre el estado de salud del agente, su ubicación, si usa mascarilla, y otros aspectos cruciales para la toma de decisiones del mismo. Esta se actualiza dinámicamente a medida que el agente interactúa con el entorno y con otros agentes. Por ejemplo, si un agente se mueve a una nueva ubicación, nueva información previamente no accesible se incorpora a su base de conocimientos, permitiendo al agente actualizar su comprensión del entorno y tomar decisiones informadas.
 
 ## Agentes ciudadanos
 
@@ -107,7 +107,7 @@ Se utiliza la biblioteca Streamlit para crear una aplicación web interactiva ll
 
 - Cuando el usuario presiona el botón "Iniciar simulación", se envía la consulta del usuario al modelo de lenguaje, se procesa la respuesta para obtener los parámetros de la simulación, se inicializa la simulación y se muestran los resultados en las pestañas correspondientes.  
 
-![Descripción de la imagen](URL_de_la_imagen "Leyenda de la imagen")
+![Descripción de la imagen](/home/chony/Descargas/Telegram Desktop/photo_2024-04-28_17-51-04.jpg "Leyenda de la imagen")
 
 
 ### Sistema Experto
