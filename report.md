@@ -130,7 +130,7 @@ El algoritmo genético PyGAD es una biblioteca de Python diseñada para optimiza
 
 ## Resultados Experimentales
 
-### Para 20 agentes en un rango de 30 dias estos fueron los resultados:
+### Para 20 agentes en un rango de 10 dias estos fueron los resultados
 
 | Día | Susceptible | Asintomático | Sintomático | Crítico | Terminal | Muerto | Recuperado |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -145,28 +145,8 @@ El algoritmo genético PyGAD es una biblioteca de Python diseñada para optimiza
 | 8 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
 | 9 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
 | 10 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
-| 11 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
-| 12 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
-| 13 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
-| 14 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
-| 15 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
-| 16 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
-| 17 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
-| 18 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
-| 19 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
-| 20 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
-| 21 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
-| 22 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
-| 23 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
-| 24 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
-| 25 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
-| 26 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
-| 27 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
-| 28 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
-| 29 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
-| 30 | 1 | 0 | 0 | 0 | 0 | 4 | 15 |
 
-### Para 20 agentes en un rango de 30 dias estos fueron los resultados:
+### Para 50 agentes en un rango de 10 dias estos fueron los resultados
 
 | Día | Susceptible | Asintomático | Sintomático | Crítico | Terminal | Muerto | Recuperado |
 |-----|-------------|--------------|-------------|---------|----------|-------|------------|
@@ -181,29 +161,105 @@ El algoritmo genético PyGAD es una biblioteca de Python diseñada para optimiza
 | 8   | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
 | 9   | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
 | 10 | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
-| 11 | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
-| 12 | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
-| 13 | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
-| 14 | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
-| 15 | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
-| 16 | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
-| 17 | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
-| 18 | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
-| 19 | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
-| 20 | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
-| 21 | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
-| 22 | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
-| 23 | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
-| 24 | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
-| 25 | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
-| 26 | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
-| 27 | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
-| 28 | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
-| 29 | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
-| 30 | 8           | 0            | 0           | 0       | 0        | 7     | 35         |
 
+### Para 100 agentes en un rango de 15 dias estos fueron los resultados
+
+| Día | Susceptible | Asintomático | Sintomático | Crítico | Terminal | Muerto | Recuperado |
+|-----|-------------|--------------|-------------|---------|----------|-------|------------|
+| 0   | 87          | 8            | 2           | 0       | 0        | 0     | 3          |
+| 1   | 10          | 1            | 4           | 0       | 2        | 1     | 82         |
+| 2   | 4           | 0            | 2           | 3       | 1        | 5     | 85         |
+| 3   | 2           | 0            | 1           | 1       | 0        | 8     | 88         |
+| 4   | 2           | 0            | 0           | 1       | 0        | 9     | 88         |
+| 5   | 2           | 0            | 0           | 0       | 0        | 10    | 88         |
+| 6   | 2           | 0            | 0           | 0       | 0        | 10    | 88         |
+| 7   | 2           | 0            | 0           | 0       | 0        | 10    | 88         |
+| 8   | 2           | 0            | 0           | 0       | 0        | 10    | 88         |
+| 9   | 2           | 0            | 0           | 0       | 0        | 10    | 88         |
+| 10 | 2           | 0            | 0           | 0       | 0        | 10    | 88         |
+| 11 | 2           | 0            | 0           | 0       | 0        | 10    | 88         |
+| 12 | 2           | 0            | 0           | 0       | 0        | 10    | 88         |
+| 13 | 2           | 0            | 0           | 0       | 0        | 10    | 88         |
+| 14 | 2           | 0            | 0           | 0       | 0        | 10    | 88         |
+| 15 | 2           | 0            | 0           | 0       | 0        | 10    | 88         |
+
+### Para 150 agentes en un rango de 15 dias estos fueron los resultados
+
+| Día | Susceptible | Asintomático | Sintomático | Crítico | Terminal | Muerto | Recuperado |
+|-----|-------------|--------------|-------------|---------|----------|-------|------------|
+| 0   | 108         | 15           | 0           | 0       | 0        | 0     | 27         |
+| 1   | 0           | 4            | 7           | 4       | 2        | 4     | 129        |
+| 2   | 0           | 0            | 1           | 3       | 1        | 12    | 133        |
+| 3   | 0           | 0            | 0           | 2       | 1        | 13    | 134        |
+| 4   | 0           | 0            | 2           | 1       | 0        | 13    | 134        |
+| 5   | 0           | 0            | 1           | 1       | 0        | 13    | 135        |
+| 6   | 0           | 0            | 0           | 1       | 0        | 14    | 135        |
+| 7   | 0           | 0            | 0           | 1       | 0        | 14    | 135        |
+| 8   | 0           | 0            | 0           | 0       | 0        | 14    | 136        |
+| 9   | 0           | 0            | 0           | 0       | 0        | 14    | 136        |
+| 10 | 0           | 0            | 0           | 0       | 0        | 14    | 136        |
+| 11 | 0           | 0            | 0           | 0       | 0        | 14    | 136        |
+| 12 | 0           | 0            | 0           | 0       | 0        | 14    | 136        |
+| 13 | 0           | 0            | 0           | 0       | 0        | 14    | 136        |
+| 14 | 0           | 0            | 0           | 0       | 0        | 14    | 136        |
+
+### Para 200 agentes en un rango de 15 dias estos fueron los resultados
+
+| Día | Susceptible | Asintomático | Sintomático | Crítico | Terminal | Muerto | Recuperado |
+|-----|-------------|--------------|-------------|---------|----------|-------|------------|
+| 0   | 156         | 29           | 4           | 0       | 0        | 0     | 11         |
+| 1   | 0           | 2            | 11          | 3       | 2        | 11    | 171        |
+| 2   | 0           | 1            | 3           | 2       | 0        | 17    | 177        |
+| 3   | 0           | 1            | 3           | 0       | 1        | 17    | 178        |
+| 4   | 0           | 0            | 0           | 2       | 0        | 18    | 180        |
+| 5   | 0           | 0            | 0           | 1       | 1        | 18    | 180        |
+| 6   | 0           | 0            | 1           | 0       | 0        | 19    | 180        |
+| 7   | 0           | 0            | 1           | 0       | 0        | 19    | 180        |
+| 8   | 0           | 0            | 0           | 1       | 0        | 19    | 180        |
+| 9   | 0           | 0            | 0           | 1       | 0        | 19    | 180        |
+| 10 | 0           | 0            | 0           | 0       | 0        | 20    | 180        |
+| 11 | 0           | 0            | 0           | 0       | 0        | 20    | 180        |
+| 12 | 0           | 0            | 0           | 0       | 0        | 20    | 180        |
+| 13 | 0           | 0            | 0           | 0       | 0        | 20    | 180        |
+| 14 | 0           | 0            | 0           | 0       | 0        | 20    | 180        |
+
+### Para 250 agentes en un rango de 15 dias estos fueron los resultados
+
+| Día | Susceptible | Asintomático | Sintomático | Crítico | Terminal | Muerto | Recuperado |
+|-----|-------------|--------------|-------------|---------|----------|-------|------------|
+| 0   | 221         | 10           | 3           | 0       | 0        | 0     | 16         |
+| 1   | 0           | 0            | 9           | 1       | 0        | 13    | 227        |
+| 2   | 0           | 0            | 5           | 2       | 0        | 14    | 229        |
+| 3   | 0           | 0            | 0           | 1       | 1        | 15    | 233        |
+| 4   | 0           | 0            | 0           | 2       | 0        | 15    | 233        |
+| 5   | 0           | 0            | 0           | 1       | 0        | 16    | 233        |
+| 6   | 0           | 0            | 1           | 0       | 0        | 16    | 233        |
+| 7   | 0           | 0            | 0           | 0       | 0        | 16    | 234        |
+| 8   | 0           | 0            | 0           | 0       | 0        | 16    | 234        |
+| 9   | 0           | 0            | 0           | 0       | 0        | 16    | 234        |
+| 10 | 0           | 0            | 0           | 0       | 0        | 16    | 234        |
+| 11 | 0           | 0            | 0           | 0       | 0        | 16    | 234        |
+| 12 | 0           | 0            | 0           | 0       | 0        | 16    | 234        |
+| 13 | 0           | 0            | 0           | 0       | 0        | 16    | 234        |
+| 14 | 0           | 0            | 0           | 0       | 0        | 16    | 234        |
+
+Los resultados experimentales presentados en la simulación muestran una serie de patrones y tendencias que son relevantes para entender la dinámica de la propagación de enfermedades en diferentes contextos y poblaciones. A continuación, se ofrece una opinión basada en la interpretación de estos datos:
+
+1. **Escalabilidad y Efectividad de las Intervenciones**: A medida que el número de agentes aumenta, se observa una tendencia general hacia una mayor efectividad de las intervenciones en la reducción de la propagación de la enfermedad. Esto sugiere que las estrategias de control de epidemias pueden ser más efectivas en poblaciones más grandes, lo cual es crucial para la gestión de brotes de enfermedades en contextos reales.
+
+2. **Impacto de la Inicialización de la Enfermedad**: Los resultados muestran que el número inicial de agentes infectados (sintomáticos o asintomáticos) tiene un impacto significativo en la evolución de la epidemia. En los casos con menos agentes (20 y 50), el impacto inicial es más pronunciado, mientras que en los casos con más agentes (100, 150, 200, 250), la epidemia parece alcanzar un estado estacionario más rápidamente, posiblemente debido a la mayor capacidad de la población para difundir la enfermedad.
+
+3. **Duración de la Epidemia**: La duración de la epidemia parece estar influenciada por el número de agentes y la efectividad de las intervenciones. Esta epidemia en particular tiene una duracion de pocos dias por su letalidad, la epidemia alcanza un estado estacionario rápidamente.
+
+4. **Recuperación y Mortalidad**: A medida que el número de agentes aumenta, la proporción de agentes recuperados y la tasa de mortalidad parecen disminuir. Esto podría indicar que las intervenciones son más efectivas en poblaciones más grandes, permitiendo una recuperación más rápida y una menor tasa de mortalidad.
 
 # Conclusiones
+
+k
+
+# Recomendaciones y futuros cambios
+
+Se recomienda realizar un estudio más profundo de Prolog para comprender mejor el funcionamiento de este lenguaje de programación. Originalmente, se utilizó Prolog para la base de conocimientos de los agentes, sin embargo, debido a su limitada capacidad de memoria, se optó por una base de conocimientos implementada en Python. A pesar de esto, se decidió mantener Prolog para la simulación de la propagación de la epidemia. Sin embargo, es importante tener en cuenta que existen limitaciones en cuanto a la cantidad de agentes que pueden ser manejados, ya que no se puede superar el límite de 300 agentes.
 
 # Bibliografía
 
