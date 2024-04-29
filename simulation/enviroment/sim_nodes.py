@@ -29,6 +29,7 @@ class CitizenPerceptionNode(PerceptionNode):
         self.capacity_status = capacity_status
         self.information_source = information_source
         self.node_type = node_type
+        self.mask_required = False
 
 class SimNode(Node):
     """
@@ -45,6 +46,7 @@ class SimNode(Node):
         self.capacity = capacity
         self.agent_list = []
         self.addr = addr
+        self.mask_required = False
 
     def __str__(self):
         agents = '\n\t'.join(str(self.agent_list))
@@ -126,8 +128,11 @@ class Hospital(Workspace):
         id (Hashable): The identifier of the node.
         addr (Tuple[int, int]): The address of the node.
     """
-    def __init__(self, capacity: int, id: Hashable, addr: Tuple[int, int]):
+    def __init__(self, capacity: int, id: Hashable, addr: Tuple[int, int], opening_hours = 8, closing_hours = 16):
         super().__init__(capacity, id, addr)
+        self.opening_hours = opening_hours
+        self.closing_hours = closing_hours
+        self.is_open = True
 
 class BusStop(PublicPlace):
     """
