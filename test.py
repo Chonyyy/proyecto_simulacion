@@ -19,7 +19,7 @@ class SimulationParameters(BaseModel):
     simulation_days: int = 31
     grid_size: int = 10
     block_capacity: int = 100
-    house_amount: int = 10
+    house_amount: int = 5
     house_capacity: int = 5
     hospital_amount: int = 4
     hospital_capacity: int = 50
@@ -30,7 +30,7 @@ class SimulationParameters(BaseModel):
     works_amount: int = 4
     works_capacity: int = 10
     work_hours: tuple = (8, 20)
-    amount_of_agents: int = 10
+    amount_of_agents: int = 5
 
 a = SimulationParameters()
 simulation = Simulation(**a.model_dump())

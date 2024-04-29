@@ -349,6 +349,10 @@ class WorldInterface:
             
         elif action == 'nothing':
             logger.info(f'Agent {agent.unique_id} is doing nothing')
+
+        elif action == 'send_message':
+            logger.info(f'Agent {agent.unique_id} is sending to agent {parameters[1]} the following message:\n\t{parameters[0]} ')
+            self.comunicate(agent.unique_id, parameters[0], parameters[1])
         
         elif action == 'work':
             logger.info(f'Agent {agent.unique_id} is working')
@@ -427,11 +431,8 @@ class WorldInterface:
         agent.location = pos
         logger.info(f'Agent moved to {pos}')
         self.map.graph.nodes[pos].agent_list.append(agent.unique_id)
-        
-    def send_message(self, agent, message):
-        pass
     
-    def comunicate(self, sender: Agent, message, Id = None) -> None:
+    def comunicate(self, sender: Agent, message: str, reciever_id: int) -> None:
         """
         Communicate a message from one agent to another.
         
@@ -440,13 +441,7 @@ class WorldInterface:
             reciever (Agent): The agent receiving the message.
             message (str): The message to send.
         """
-        home_id = self.agent_kb.query('home(X)')[0]['X']
-        house = self.map[home_id]
-        list_family = house.persons
-        
-        for agent_id in list_family:
-            agent = self.eviroment.agents[agent_id]
-            self.send_message(agent, message)
+        pass
 
 class WorldInterfaceCanelo:
     """

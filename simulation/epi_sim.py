@@ -76,13 +76,10 @@ class Simulation:
     
     def fitness_func(self):
         def minimize_infected(ga_instance, solution = None, solution_idx = None):
-
-            map = self.terrain
-            epidemic_model = EpidemicModel()
-            env = Environment(5, epidemic_model, map, solution)
-            self.simulate(env)
+            self.initialize_simulation()
+            self.simulate()
             sum = 0
-            a = env.dissease_step_progression[-1]
+            a = self.environment.dissease_step_progression[-1]
 
             for x in a:
                 if x == 'susceptible':
@@ -90,6 +87,8 @@ class Simulation:
                 if x == 'recovered':
                     continue
                 sum += a[x]
+
+            self.reset_sim()
 
             return sum
 
@@ -117,7 +116,6 @@ class Simulation:
         self.genetic_a = GA(self.num_generations, self.num_parents_mating, self.sol_per_pop, self.mutation_percent_genes)
 
     def simulate(self):
-        self.initialize_simulation()
         for step in range(self.steps):
             date = self._format_day(step)
             logger.info(f'=== Date: {date} ===')
@@ -129,10 +127,10 @@ class Simulation:
         self.genetic_a(self.fitness_func())
         self.canelo_parameters = self.genetic_a
 
-    def initialize_simulation(self):
+    def initialize_simulation(self, solution = None):
         self._initialize_terrain()
         self.epidemic_model = EpidemicModel()
-        self.environment = Environment(self.amount_of_agents, self.epidemic_model, self.terrain)
+        self.environment = Environment(self.amount_of_agents, self.epidemic_model, self.terrain, solution)
         #TODO: Initialize the Canelo Agent from this class
 
     def _initialize_terrain(self):
