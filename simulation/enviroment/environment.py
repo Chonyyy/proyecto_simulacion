@@ -241,7 +241,7 @@ class Environment:
             self._debug_agent_k(agent.knowledge_base)
         
         infected_agents = self._count_infected_agents()
-        # self.canelo.step(infected_agents)
+        self.canelo.step(infected_agents)
         
         ocupied_nodes = [([self.agents[agent_id] for agent_id in node.agent_list], node.contact_rate) for node in self.map.graph.nodes.values() if node.agent_list]
         self.epidemic_model.step(ocupied_nodes)
@@ -529,7 +529,10 @@ class WorldInterfaceCanelo:
         
         
         elif action == 'nothing':
-            logger.info(f'Agent {agent.unique_id} is doing nothing')
+            try:
+                logger.info(f'Agent {agent.unique_id} is doing nothing')
+            except:
+                logger.info(f'Agent canelo is doing nothing')
 
         else:
             logger.error(f'Action {action} not recognized')

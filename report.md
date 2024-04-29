@@ -109,7 +109,6 @@ Se utiliza la biblioteca Streamlit para crear una aplicación web interactiva ll
 
 ![Descripción de la imagen](/home/chony/Descargas/Telegram Desktop/photo_2024-04-28_17-51-04.jpg "Leyenda de la imagen")
 
-
 ### Sistema Experto
 
 Se implementa un sistema experto para guiar las decisiones del agente institucional en la implementación de medidas para contener la enfermedad. El sistema experto se basa en reglas lógicas que reflejan las recomendaciones de salud pública y epidemiología.
