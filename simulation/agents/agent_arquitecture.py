@@ -104,6 +104,9 @@ class Knowledge:
             'is_open': node.is_open
         }
 
+    def add_message(self, remitent, message):
+        pass
+
     def add_open_place(self, id: int, open: bool):
         """
         Add an open place to the knowledge base.
@@ -225,7 +228,8 @@ class Knowledge:
         self.facts['too_sick'] = False
         self.facts['mask_necessity'] = False
         self.facts['medical_check'] = False
-        self.facts['social_distancing'] = False     
+        self.facts['social_distancing'] = False
+        self.facts['messages'] = []
 
     def update_goals(self):
         # removes already achieved goals
@@ -334,11 +338,9 @@ class BehaviorLayer:
             return 'medical_check', []
         if (kb['goal'] == 'move' and kb['location'] != kb['goal_parameters'][0]):
             return 'move', (kb['goal_parameters'][0], kb['social_distancing'])
+        if (kb['goal'] == 'send_message'):
+            return 'send_message', kb['goal_parameters'][0]
         return 'idle', []
-
-    def search_friend(self, agent, plan):
-        message, place = self._split_string(plan) if plan else None, None
-        self.world_model.comunicate(agent, message, place)
 
     def _split_string(self, s):
         parts = s.split('(', 1)
@@ -346,6 +348,7 @@ class BehaviorLayer:
         inside_parentheses = parts[1].split(')', 1)[0] if len(parts) > 1 else ''
         return outside_parentheses, inside_parentheses
     
+
 class LocalPlanningLayer:
     """
     Class representing the local planning layer of an agent.
@@ -378,7 +381,7 @@ class LocalPlanningLayer:
         mm = self.mind_map
         date = kb['date']
         kb.update_goals()
-        if (kb['too_sick']):#(too_sick(true), hospital(Id,_), open_place(Id, true), hospital_overrun(Id, false)
+        if (kb['too_sick']):
             self.hospital_routine()
         elif (self._work_is_open(kb['work_place'], date['week_day'], date['hour']) and (not kb['too_sick'])):# -> work_day_routine(WorkId), Plan = work_day_routine(WorkId));
             self.work_day_routine(kb['work_place'])
@@ -387,7 +390,12 @@ class LocalPlanningLayer:
         elif (kb['location'] != kb['home']):
             kb.facts['goal'] = 'move'
             kb.facts['goal_parameters'] = [kb['home']]
-
+        # Get Open Public Places
+        # Get Friends
+        # Invite Friends
+        # Go To Place
+        elif (True):
+            self.cooperative_entertainment_routine()
 
     def entertainment_routine(self):
         kb = self.knowledge
@@ -475,12 +483,13 @@ class CooperativeLayer:
         Args:
             queryString (str): The query string.
         """
-        return ('idle', [])
-    
-    def generate_plan(self):
-        plan = self.local_planning_layer.plan('planification_step(X)')
-        return plan
-    
-    def evaluate_plan():
-        pass
+        kb = self.knowledge
+        mm = self.mind_map
+        
+        if not 'friends' in kb.facts:
+            return
+
+        friends = kb['friends']
+
+        public_places = self._get_public_places()
 

@@ -76,6 +76,9 @@ class Agent:
         self.wi.act(self, action, arguments)
         self.knowledge_base.feedback(self.location, self.masked)
         
+    def recieve_message(self, remitent: id, message: str):
+        self.knowledge_base.add_message(remitent, message)
+
 class Canelo:
     """Class representing the president."""
     def __init__(self, 
