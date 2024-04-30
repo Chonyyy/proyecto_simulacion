@@ -467,36 +467,42 @@ class WorldInterfaceCanelo:
             action (str): The action to perform.
             parameters (list): The parameters for the action.
         """
-        if action == 'use_mask_pp':
-            logger.info(f'Canelo is transmitting use mask in public places')
-            for agent in self.list_agents:
-                self.comunicate( agent, action)
         
-        elif action == 'temporary_closure_pp':
+        if action == 'temporary_closure_pp':
             logger.info(f'Canelo is transmitting temporaly closure in public places')
             for agent in self.list_agents:
-                self.comunicate( agent, action)
+                for node in self.map.graph.nodes:
+                    if node.is_open:
+                        self.comunicate( agent, action,node)
         
-        elif action == 'use_mask_work':
-            logger.info(f'Canelo is transmitting use mask in work')
-            for agent in self.list_agents:
-                self.comunicate( agent, action, list(agent.knowledge_base.query('work_place(X,_)'))[0]['X'])
         
         elif action == 'temporary_closure_work':
             logger.info(f'Canelo is transmitting temporaly closure in work')
             for agent in self.list_agents:
-                self.comunicate( agent, action, list(agent.knowledge_base.query('work_place(X,_)'))[0]['X'])
+                for node in self.map.graph.nodes:
+                    if node.is_open:
+                        self.comunicate( agent, action,node)
         
         
         if action == 'mask_use':
             logger.info(f'Canelo is transmitting use mask')
             for agent in self.list_agents:
                 self.comunicate( agent, action)
+            
+            for node in self.map.graph.nodes.values():
+                if isinstance(node, HouseNode):
+                    continue
+                node.mask_required = True
         
         elif action == 'remove_mask':
             logger.info(f'Canelo is transmitting not use mask')
             for agent in self.list_agents:
                 self.comunicate( agent, action)
+            
+            for node in self.map.graph.nodes.values():
+                if isinstance(node, HouseNode):
+                    continue
+                node.mask_required = False
         
         elif action == 'quarantine':
             logger.info(f'Canelo is transmitting go quarantine')
@@ -548,48 +554,74 @@ class WorldInterfaceCanelo:
         """
         # reciever.cc.comunicate(reciever, message) 
         
-        if message == 'use_mask_pp':
-            reciever.knowledge_base.add_mask_requirement('_', False)
-        
-        # elif message == 'temporary_closure_pp':
-        #     reciever.knowledge_base.add_open_place('_', 'false')
-        
-        elif message == 'use_mask_work':
-            reciever.knowledge_base.add_mask_requirement(Id,True)
+        if message == 'temporary_closure_pp':
+            message1 = {
+                'info': 'is_open' , 
+                'value': False,
+                'location': Id
+            }
+            reciever.recieve_message(self, -1, message1, 'map')
         
         elif message == 'temporary_closure_work': 
-            reciever.knowledge_base.add_open_place(Id, False)
+            message1 = {
+                'info': 'is_open' , 
+                'value': False,
+                'location': Id
+            }
+            reciever.recieve_message(self, -1, message1, 'map')
         
         if message == 'mask_use':
-            reciever.knowledge_base.add_mask_necessity(True)
+            message1 = {
+                'info': 'mask_necessity' , 
+                'value': True
+            }
+            reciever.recieve_message(self, -1, message1, 'measure')
             
-            for node in self.map.graph.nodes.values():
-                if isinstance(node, HouseNode):
-                    continue
-                node.mask_required = True
             
         elif message == 'remove_mask':
-            reciever.knowledge_base.add_mask_necessity(False)
-            
-            for node in self.map.graph.nodes:
-                if isinstance(node, HouseNode):
-                    continue
-                node.mask_required = False
+            message1 = {
+                'info': 'mask_necessity' , 
+                'value': False
+            }
+            reciever.recieve_message(self, -1, message1, 'measure')
         
         elif message == 'quarantine':
-            reciever.knowledge_base.add_quarantine(True)
+            message1 = {
+                'info': 'quarantine_necessity' , 
+                'value': True
+            }
+            reciever.recieve_message(self, -1, message1, 'measure')
               
         elif message == 'tests_and_diagnosis':
-            reciever.knowledge_base.add_tests_and_diagnosis(True)
+            message1 = {
+                'info': 'tests_and_diagnosis_necessity' , 
+                'value': True
+            }
+            reciever.recieve_message(self, -1, message1, 'measure')
         
-        elif message == 'contact_tracing':
-            reciever.knowledge_base.add_contact_tracing(True)
-        
+        # elif message == 'contact_tracing':
+        #     reciever.knowledge_base.add_contact_tracing(True)
+        #     message1 = {
+        #         'info': 'mask_necessity' , 
+        #         'value': True
+        #     }
+        #     reciever.recieve_message(self, -1, message1, 'measure')
+
         elif message == 'isolation':
             reciever.knowledge_base.add_isolation(True)
+            message1 = {
+                'info': 'isolation_necessity' , 
+                'value': True
+            }
+            reciever.recieve_message(self, -1, message1, 'measure')
             
         elif message == 'vaccination':
             reciever.knowledge_base.add(True)
+            message1 = {
+                'info': 'vaccination_necessity' , 
+                'value': True
+            }
+            reciever.recieve_message(self, -1, message1, 'measure')
 
     def percieve(self, agent: Agent, step_num: int) -> dict:
         """

@@ -3,7 +3,7 @@ import numpy as np
 
 class GA: 
     def __init__(self,num_generations, num_parents_mating, sol_per_pop, mutation_percent_genes):
-        self.elements = ['mask_use', 'social_distancing', 'tests_and_diagnosis', 'contact_tracing', 'vaccination', 'quarantine', 'isolation']
+        self.elements = ['mask_use', 'social_distancing', 'tests_and_diagnosis', 'contact_tracing', 'vaccination', 'quarantine', 'isolation', 'temporary_closure_pp', 'temporary_closure_work']
         self.num_generations = num_generations
         self.num_parents_mating = num_parents_mating
         self.sol_per_pop = sol_per_pop

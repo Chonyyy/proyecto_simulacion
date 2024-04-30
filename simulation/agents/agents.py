@@ -90,14 +90,14 @@ class Canelo:
                  knowledge_base: KnowledgeCanelo = None,
                  solution: list = [0]*7
                  ):
+        self.unique_id = -1
 
         # Hierarchical Knowlege Base
         self.knowledge_base = knowledge_base
         self.mind_map = mind_map if mind_map is not None else {}
         
-        self.measures = ['mask_use', 'social_distancing', 'tests_and_diagnosis', 'contact_tracing', 'vaccination', 'isolation', 'quarantine']
-        self.measures_places = ['use_mask_pp', 'temporary_closure_pp', 'use_mask_work', 'temporary_closure_work']
-        
+        self.measures = ['mask_use', 'social_distancing', 'tests_and_diagnosis', 'contact_tracing', 'vaccination', 'isolation', 'quarantine', 'temporary_closure_pp', 'temporary_closure_work']
+
         # Agent Control Unit
         self.bbc = bb_component
         self.pbc = lp_component
@@ -121,7 +121,7 @@ class Canelo:
 
         x = infected_agents * 0.1
         
-        action = self.recommendation_based_on_severity(x, self.solution )
+        action = self.recommendation_based_on_severity(x, self.solution)
         self.wi.act(self,action)
         
     def recommendation_based_on_severity(self,people_sick, solution:list):
@@ -145,18 +145,15 @@ class Canelo:
             return 'isolation'
         elif people_sick < solution[6]:
             return 'quarantine'
+        elif people_sick < solution[7]:
+            return 'temporary_closure_pp'
+        elif people_sick < solution[8]:
+            return 'temporary_closure_work'
         else:
             return 'nothing'
       
         
-        # elif people_sick < solution[7]:
-        #     return 'use_mask_pp'
-        # elif people_sick < solution[8]:
-        #     return 'temporary_closure_pp'
-        # elif people_sick < solution[9]:
-        #     return 'use_mask_work'
-        # elif people_sick < solution[10]:
-        #     return 'temporary_closure_work'
+
         
         
         
