@@ -65,10 +65,10 @@ class Agent:
         if action == 'idle':
             self.pbc.plan()
             action, arguments = self.bbc.react()
-        if action == 'idle':
-            self.cc.cooperate(self, "coperate()")
-            self.pbc.plan()
-            action, arguments = self.bbc.react()
+        # if action == 'idle':
+        #     self.cc.cooperate(self, "coperate()")
+        #     self.pbc.plan()
+        #     action, arguments = self.bbc.react()
         # if (not action)  :
         #     coperate = self.cc.cooperate(self, "coperate()")
 

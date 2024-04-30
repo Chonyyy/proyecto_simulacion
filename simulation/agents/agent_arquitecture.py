@@ -15,8 +15,6 @@ class Knowledge:
         """
         Initialize the knowledge base.
         """
-        # self.prolog = Prolog()
-        # self.prolog.consult('./simulation/agents/hierarchical_agent_KB.pl')
         self.facts = {}
         self.initializing_k()
 
@@ -129,7 +127,6 @@ class Knowledge:
             opening_hours (int): The opening hours of the place.
             closing_hours (int): The closing hours of the place.
         """
-        # list(self.prolog.query(f'add_open_hours_place({id}, {opening_hours}, {closing_hours})'))
         self.facts['open_hours_place'] = {
             'id': id,
             'opening_hours': opening_hours,
@@ -153,7 +150,6 @@ class Knowledge:
         Args:
             location_id (int): The id of the node the agent is currently in
         """
-        # list(self.prolog.query(f'add_location({location_id})'))
         self.facts['location'] = location_id
 
     def add_is_medical_personnel(self, medical_personnel: bool):
@@ -163,8 +159,13 @@ class Knowledge:
         Args:
             medical_personnel (bool): Whether the agent is medical personnel.
         """
-        # list(self.prolog.query(f'add_if_is_medical_personal({str(medical_personnel).lower()})'))
         self.facts['is_medic'] = medical_personnel
+        
+    def vaccination_k(self, bool: bool):
+        """
+        Add vaccination to the knowledge base.
+        """
+        self.facts['vaccination_k'] = bool
 
     def add_mask_necessity(self, mask_necessity: bool):
         """
@@ -173,8 +174,7 @@ class Knowledge:
         Args:
             mask_necessity (bool): Whether a mask is necessary.
         """
-        # list(self.prolog.query(f'add_mask_necessity({mask_necessity})'))
-        self.facts['mask_necesity'] = mask_necessity
+        self.facts['mask_necessity'] = mask_necessity
 
     def add_mask_requirement(self, place_id: int, requirement: bool):
         """
@@ -233,6 +233,8 @@ class Knowledge:
 
     def update_goals(self):
         # removes already achieved goals
+        if self.facts['goal'] == 'vaccination':
+            self.facts['goal'] = 'none'
         if self.facts['goal'] == 'wear_mask' and self.facts['wearing_mask']:
             self.facts['goal'] = 'none'
         if self.facts['goal'] == 'remove_mask' and not self.facts['wearing_mask']:
@@ -332,7 +334,7 @@ class BehaviorLayer:
         kb.update_goals()
         if (kb['mask_necessity'] and mm[kb['location']].mask_required and (not kb['wearing_mask'])):
             return 'wear_mask', []
-        if (kb['goal'] == 'remove_mask'and kb['wearing_mask']):
+        if ((not mm[kb['location']].mask_required) and kb['wearing_mask']):
             return 'remove_mask', []
         if (kb['medical_check']):
             return 'medical_check', []
@@ -394,8 +396,8 @@ class LocalPlanningLayer:
         # Get Friends
         # Invite Friends
         # Go To Place
-        elif (True):
-            self.cooperative_entertainment_routine()
+        # elif (True):
+        #     self.cooperative_entertainment_routine()
 
     def entertainment_routine(self):
         kb = self.knowledge

@@ -115,11 +115,8 @@ async def stats():
 @app.get("/traincanelo")
 async def train_canelo():
     global simulation
-    global done
     if simulation is None:
         raise HTTPException(status_code=400, detail="Define a simulation first")
-    # if not done:
-    #     raise HTTPException(status_code=400, detail="Run the simulation first")
     solution = simulation.train_canelo()
     return solution
 

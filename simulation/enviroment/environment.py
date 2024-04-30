@@ -147,7 +147,7 @@ class Environment:
         kb = KnowledgeCanelo()
         mind_map = self.generate_citizen_mind_map()
         
-        agents_wi  = WorldInterfaceCanelo(self.map, self.agents, kb)
+        agents_wi  = WorldInterfaceCanelo(self.map, self.agents, kb, self)
         agents_bbc = BehaviorLayer(agents_wi, kb, mind_map)
         agents_pbc = LocalPlanningLayer(agents_bbc, kb, mind_map)
         agent_cc = CooperativeLayer(agents_pbc, kb, mind_map)
@@ -335,7 +335,7 @@ class WorldInterface:
                 self.move_agent(agent, agent._last_path.pop(0))
             pass
    
-        elif action == 'use_mask':
+        elif action == 'wear_mask':
             logger.info(f'Agent {agent.unique_id} is using mask')
             agent.masked = True 
             
@@ -452,10 +452,11 @@ class WorldInterfaceCanelo:
         agent_mind_map (Graph): The mind map of the agent.
         agent_kb (Knowledge): The knowledge base of the agent.
     """
-    def __init__(self, map: Terrain, list_agents:list[Agent], knowledge_base: KnowledgeCanelo) -> None:
+    def __init__(self, map: Terrain, list_agents:list[Agent], knowledge_base: KnowledgeCanelo, enviroment: Environment) -> None:
         self.map = map
         self.list_agents = list_agents
         self.agent_kb = knowledge_base
+        self.env = enviroment
 
     def act(self, agent: Canelo, action: str) -> None:
         """
@@ -522,6 +523,10 @@ class WorldInterfaceCanelo:
             for agent in self.list_agents:
                 self.comunicate( agent, action)
         
+        elif action == 'vaccination':
+            logger.info(f'Canelo is transmitting isolation')
+            for agent in self.list_agents:
+                self.comunicate( agent, action)
         
         elif action == 'nothing':
             try:
@@ -558,7 +563,7 @@ class WorldInterfaceCanelo:
         if message == 'mask_use':
             reciever.knowledge_base.add_mask_necessity(True)
             
-            for node in self.map.graph.nodes:
+            for node in self.map.graph.nodes.values():
                 if isinstance(node, HouseNode):
                     continue
                 node.mask_required = True
@@ -582,6 +587,9 @@ class WorldInterfaceCanelo:
         
         elif message == 'isolation':
             reciever.knowledge_base.add_isolation(True)
+            
+        elif message == 'vaccination':
+            reciever.knowledge_base.add(True)
 
     def percieve(self, agent: Agent, step_num: int) -> dict:
         """

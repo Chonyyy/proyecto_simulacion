@@ -48,7 +48,7 @@ def get_plot():
     return response
 
 #model and prompts
-model = GPT4All("C:/Users/sherl/.cache/lm-studio/models/TheBloke/Mistral-7B-Instruct-v0.2-GGUF/mistral-7b-instruct-v0.2.Q4_K_S.gguf")
+model = GPT4All("/home/chony/Documentos/GPT4All/mistral-7b-instruct-v0.1.Q4_0.gguf")
 
 
 #extrayendo todos los datos necesarios

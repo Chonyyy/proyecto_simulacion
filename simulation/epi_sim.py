@@ -77,6 +77,7 @@ class Simulation:
     
     def fitness_func(self):
         def minimize_infected(ga_instance, solution = None, solution_idx = None):
+            self.reset_sim()
             self.initialize_simulation()
             map = self.terrain
             epidemic_model = EpidemicModel()
@@ -92,9 +93,9 @@ class Simulation:
                 if x == 'recovered':
                     continue
                 sum += a[x]
-
+                
             self.reset_sim()
-
+            self.initialize_simulation()
             return sum
 
         if self.optimization_goal == 'minimize_infected':
