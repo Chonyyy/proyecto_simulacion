@@ -258,8 +258,6 @@ class KnowledgeCanelo:
         """
         Initialize the knowledge base.
         """
-        # self.knowledge = Prolog()
-        # self.knowledge.consult('./simulation/agents/canelo.pl')
         pass
         
     def query(self, queryString):
@@ -325,9 +323,9 @@ class BehaviorLayer:
         React to a query string.
 
         Args:
-            queryString (str): The query string.
+            queryString (str): The query string.   
 
-        Returns:
+        Returns:    
             tuple: The action and arguments to perform.
         """
         kb = self.knowledge
