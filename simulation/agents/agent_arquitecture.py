@@ -231,6 +231,7 @@ class Knowledge:
         self.facts['social_distancing'] = False
         self.facts['messages'] = []
         self.facts['vaccinated'] = False
+        self.facts['vaccination_necessity'] = False
 
     def update_goals(self, mind_map: Graph = None):
         # removes already achieved goals
@@ -240,9 +241,13 @@ class Knowledge:
             self.facts['goal'] = 'none'
         if self.facts['goal'] == 'remove_mask' and not self.facts['wearing_mask']:
             self.facts['goal'] = 'none'
-        if (self.facts['goal'] == 'move' and self.facts['location'] == self.facts['goal_parameters'][0]) or (not mind_map[self.fact['location']].is_open):
+        if (self.facts['goal'] == 'move' and self.facts['location'] == self.facts['goal_parameters'][0]):
             self.facts['goal'] = 'none'
             self.facts['goal_parameters'] = []
+        a = mind_map[self.facts['location']].node_type
+        if (mind_map[self.facts['location']].node_type not in  ['block', 'house'] and not mind_map[self.facts['location']].is_open):
+            self.facts['goal'] = 'move'
+            self.facts['goal_parameters'] = ['home']
     
     def __getitem__(self, index):
         return self.facts[index]

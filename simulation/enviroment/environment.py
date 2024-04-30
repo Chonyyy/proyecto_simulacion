@@ -203,7 +203,7 @@ class Environment:
                 raise ValueError(f'node of type unknown{type(old_node)}')
             
             new_node = CPNode(old_node.addr, old_node.id, node_type)
-            if node_type in ['hospital', 'works_space', 'bus_stop', 'public_space']:
+            if node_type in ['hospital', 'work_space', 'bus_stop', 'public_space']:
                 new_node.oppening_hours = old_node.opening_hours
                 new_node.closing_hours = old_node.closing_hours
                 new_node.is_open = old_node.is_open
@@ -560,7 +560,7 @@ class WorldInterfaceCanelo:
                 'value': False,
                 'location': Id
             }
-            reciever.recieve_message(self, -1, message1, 'map')
+            reciever.recieve_message( -1, message1, 'map')
         
         elif message == 'temporary_closure_work': 
             message1 = {
@@ -568,14 +568,14 @@ class WorldInterfaceCanelo:
                 'value': False,
                 'location': Id
             }
-            reciever.recieve_message(self, -1, message1, 'map')
+            reciever.recieve_message( -1, message1, 'map')
         
         if message == 'mask_use':
             message1 = {
                 'info': 'mask_necessity' , 
                 'value': True
             }
-            reciever.recieve_message(self, -1, message1, 'measure')
+            reciever.recieve_message(-1, message1, 'measure')
             
             
         elif message == 'remove_mask':
@@ -583,21 +583,21 @@ class WorldInterfaceCanelo:
                 'info': 'mask_necessity' , 
                 'value': False
             }
-            reciever.recieve_message(self, -1, message1, 'measure')
+            reciever.recieve_message(-1, message1, 'measure')
         
         elif message == 'quarantine':
             message1 = {
                 'info': 'quarantine_necessity' , 
                 'value': True
             }
-            reciever.recieve_message(self, -1, message1, 'measure')
+            reciever.recieve_message(-1, message1, 'measure')
               
         elif message == 'tests_and_diagnosis':
             message1 = {
                 'info': 'tests_and_diagnosis_necessity' , 
                 'value': True
             }
-            reciever.recieve_message(self, -1, message1, 'measure')
+            reciever.recieve_message(-1, message1, 'measure')
         
         # elif message == 'contact_tracing':
         #     reciever.knowledge_base.add_contact_tracing(True)
@@ -605,7 +605,7 @@ class WorldInterfaceCanelo:
         #         'info': 'mask_necessity' , 
         #         'value': True
         #     }
-        #     reciever.recieve_message(self, -1, message1, 'measure')
+        #     reciever.recieve_message(-1, message1, 'measure')
 
         elif message == 'isolation':
             reciever.knowledge_base.add_isolation(True)
@@ -613,7 +613,7 @@ class WorldInterfaceCanelo:
                 'info': 'isolation_necessity' , 
                 'value': True
             }
-            reciever.recieve_message(self, -1, message1, 'measure')
+            reciever.recieve_message(-1, message1, 'measure')
             
         elif message == 'vaccination':
             reciever.knowledge_base.add(True)
@@ -621,7 +621,7 @@ class WorldInterfaceCanelo:
                 'info': 'vaccination_necessity' , 
                 'value': True
             }
-            reciever.recieve_message(self, -1, message1, 'measure')
+            reciever.recieve_message(-1, message1, 'measure')
 
     def percieve(self, agent: Agent, step_num: int) -> dict:
         """
