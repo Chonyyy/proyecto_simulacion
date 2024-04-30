@@ -244,10 +244,9 @@ class Knowledge:
         if (self.facts['goal'] == 'move' and self.facts['location'] == self.facts['goal_parameters'][0]):
             self.facts['goal'] = 'none'
             self.facts['goal_parameters'] = []
-        a = mind_map[self.facts['location']].node_type
         if (mind_map[self.facts['location']].node_type not in  ['block', 'house'] and not mind_map[self.facts['location']].is_open):
-            self.facts['goal'] = 'move'
-            self.facts['goal_parameters'] = ['home']
+            self.facts['goal'] = 'none'
+            self.facts['goal_parameters'] = []
     
     def __getitem__(self, index):
         return self.facts[index]
@@ -393,7 +392,7 @@ class LocalPlanningLayer:
             self.vaccination_routine()
 
         # Dissease Checking Routine
-        if (kb['too_sick']):
+        elif (kb['too_sick']):
             self.hospital_routine()
 
         # Work Routine

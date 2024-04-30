@@ -470,17 +470,29 @@ class WorldInterfaceCanelo:
         
         if action == 'temporary_closure_pp':
             logger.info(f'Canelo is transmitting temporaly closure in public places')
+            for node in self.map.graph.nodes.values():
+                if isinstance(node, PublicPlace):
+                    node.is_open = False
+                else:
+                    continue
+            
             for agent in self.list_agents:
-                for node in self.map.graph.nodes:
-                    if node.is_open:
+                for node in self.map.graph.nodes.values():
+                    if isinstance(node, PublicPlace):
                         self.comunicate( agent, action,node)
         
         
         elif action == 'temporary_closure_work':
             logger.info(f'Canelo is transmitting temporaly closure in work')
+            for node in self.map.graph.nodes.values():
+                if isinstance(node, Workspace) and not isinstance(node, Hospital):
+                    node.is_open = False
+                else:
+                    continue
+            
             for agent in self.list_agents:
-                for node in self.map.graph.nodes:
-                    if node.is_open:
+                for node in self.map.graph.nodes.values():
+                    if isinstance(node, Workspace) and not isinstance(node, Hospital):
                         self.comunicate( agent, action,node)
         
         
@@ -543,7 +555,7 @@ class WorldInterfaceCanelo:
         else:
             logger.error(f'Action {action} not recognized')
 
-    def comunicate(self, reciever: Agent, message, Id = None) -> None:
+    def comunicate(self, reciever: Agent, message, node = None) -> None:
         """
         Communicate a message from one agent to another.
 
@@ -552,8 +564,10 @@ class WorldInterfaceCanelo:
             reciever (Agent): The agent receiving the message.
             message (str): The message to send.
         """
-        # reciever.cc.comunicate(reciever, message) 
-        
+        Id = None
+        if node:
+            Id = node.id
+            
         if message == 'temporary_closure_pp':
             message1 = {
                 'info': 'is_open' , 
@@ -616,7 +630,6 @@ class WorldInterfaceCanelo:
             reciever.recieve_message(-1, message1, 'measure')
             
         elif message == 'vaccination':
-            reciever.knowledge_base.add(True)
             message1 = {
                 'info': 'vaccination_necessity' , 
                 'value': True
