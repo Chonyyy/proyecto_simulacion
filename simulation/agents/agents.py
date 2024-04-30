@@ -76,8 +76,21 @@ class Agent:
         self.wi.act(self, action, arguments)
         self.knowledge_base.feedback(self.location, self.masked)
         
-    def recieve_message(self, remitent: id, message: str):
-        self.knowledge_base.add_message(remitent, message)
+    def recieve_message(self, sender: int, message: any, message_type: str):
+        
+        if sender != -1:
+            print("Other Agent Message")
+        
+        if message_type == 'map':
+            self._get_map_info(message['location'], message['info'], message['value'])
+        if message_type == 'measure':
+            self._get_measure_info(message['info'], message['value'])
+
+    def _get_map_info(self, location, info, value):
+        self.mind_map.nodes[location][info] = value
+
+    def _get_measure_info(self, measure, value):
+        self.knowledge_base.facts[measure] = value
 
 class Canelo:
     """Class representing the president."""
@@ -105,20 +118,8 @@ class Canelo:
         self.wi = wi_component
         
         self.solution = solution
- 
+
     def step(self, infected_agents):
-        # perception = self.wi.percieve(self, step_num)
-        # self.process_perception(perception, step_num)
-        # action, arguments = self.bbc.react("behavioral_step(Action, Arguments)")
-
-        # if not action:
-        #     plan = self.pbc.plan("planification_step()")
-        #     action, arguments = self.bbc.react("behavioral_step(Action, Arguments)")
-        # log_agent_intentions(self.knowledge_base)
-        
-        # self.wi.act(self, action, arguments)
-        # self.knowledge_base.feedback(self.location, self.masked)
-
         x = infected_agents * 0.1
         
         action = self.recommendation_based_on_severity(x, self.solution )
@@ -147,7 +148,6 @@ class Canelo:
             return 'quarantine'
         else:
             return 'nothing'
-      
         
         # elif people_sick < solution[7]:
         #     return 'use_mask_pp'
@@ -157,10 +157,6 @@ class Canelo:
         #     return 'use_mask_work'
         # elif people_sick < solution[10]:
         #     return 'temporary_closure_work'
-        
-        
-        
-        
  
 def log_agent_intentions(agent_k):
     logger.info(f'Agent Intent:')

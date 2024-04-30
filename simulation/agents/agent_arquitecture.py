@@ -165,7 +165,7 @@ class Knowledge:
         """
         Add vaccination to the knowledge base.
         """
-        self.facts['vaccination_k'] = bool
+        self.facts['vaccination_necessity'] = bool
 
     def add_mask_necessity(self, mask_necessity: bool):
         """
@@ -230,16 +230,17 @@ class Knowledge:
         self.facts['medical_check'] = False
         self.facts['social_distancing'] = False
         self.facts['messages'] = []
+        self.facts['vaccinated'] = False
 
-    def update_goals(self):
+    def update_goals(self, mind_map: Graph = None):
         # removes already achieved goals
-        if self.facts['goal'] == 'vaccination':
+        if self.facts['goal'] == 'vaccination' and self.facts['vaccinated']:
             self.facts['goal'] = 'none'
         if self.facts['goal'] == 'wear_mask' and self.facts['wearing_mask']:
             self.facts['goal'] = 'none'
         if self.facts['goal'] == 'remove_mask' and not self.facts['wearing_mask']:
             self.facts['goal'] = 'none'
-        if self.facts['goal'] == 'move' and self.facts['location'] == self.facts['goal_parameters'][0]:
+        if (self.facts['goal'] == 'move' and self.facts['location'] == self.facts['goal_parameters'][0]) or (not mind_map[self.fact['location']].is_open):
             self.facts['goal'] = 'none'
             self.facts['goal_parameters'] = []
     
@@ -331,7 +332,7 @@ class BehaviorLayer:
         """
         kb = self.knowledge
         mm = self.mind_map
-        kb.update_goals()
+        kb.update_goals(mm)
         if (kb['mask_necessity'] and mm[kb['location']].mask_required and (not kb['wearing_mask'])):
             return 'wear_mask', []
         if ((not mm[kb['location']].mask_required) and kb['wearing_mask']):
@@ -382,22 +383,47 @@ class LocalPlanningLayer:
         kb = self.knowledge
         mm = self.mind_map
         date = kb['date']
-        kb.update_goals()
+        kb.update_goals(mm)
+
+        # Get Vaccine Routine
+        if (kb['vaccination_necessity'] and (not kb['vaccinated'])):
+            self.vaccination_routine()
+
+        # Dissease Checking Routine
         if (kb['too_sick']):
             self.hospital_routine()
+
+        # Work Routine
         elif (self._work_is_open(kb['work_place'], date['week_day'], date['hour']) and (not kb['too_sick'])):# -> work_day_routine(WorkId), Plan = work_day_routine(WorkId));
             self.work_day_routine(kb['work_place'])
+
+        # Entertainment Routine
         elif (date['week_day'] in ['saturday', 'sunday']):#((public_space(Id, _),open_place(Id, true), go_public_place_rutine(Id));  Plan = no_pweek_day(W), (W == saturday; W == sunday)) -> go_public_place_rutine(Id), Plan = lan.
             self.entertainment_routine()
+
+        # Return Home
         elif (kb['location'] != kb['home']):
             kb.facts['goal'] = 'move'
             kb.facts['goal_parameters'] = [kb['home']]
+
         # Get Open Public Places
         # Get Friends
         # Invite Friends
         # Go To Place
         # elif (True):
         #     self.cooperative_entertainment_routine()
+
+    def vaccination_routine(self):
+        kb = self.knowledge
+        kb.facts['goal'] = 'move'
+        target_hospital = self._open_hospitals(self.mind_map)[0]
+        kb.facts['goal_parameters'] = [target_hospital]
+
+        if kb.facts['location'] == target_hospital:
+            kb.facts['goal'] = 'vaccination'
+            kb.facts['goal_parameters'] = []
+            
+
 
     def entertainment_routine(self):
         kb = self.knowledge
@@ -447,7 +473,11 @@ class LocalPlanningLayer:
             kb.facts['goal_parameters'] = [home]
 
     def _open_hospitals(self, mind_map):
-        raise NotImplementedError()
+        hospitals = []
+        for node in mind_map.nodes.values():
+            if node.node_type == 'hospital' and node.is_open:
+                hospitals.append(node.id)
+        return hospitals
 
     def _work_is_open(self, work_info, week_day, hour):
         return (not (week_day in ['saturday', 'sunday'])) and (work_info['opening_hours'] <= hour) and (hour <= work_info['closing_hours']) and work_info['is_open']
