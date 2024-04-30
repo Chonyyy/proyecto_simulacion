@@ -28,7 +28,7 @@ class GA:
         solution, solution_fitness, solution_idx = self.ga_instance.best_solution()
         print(f"Mejor solución: {solution}, con fitness: {solution_fitness}")
         
-        for i in self.elements:
+        for i in range(len(self.elements)):
             self.solution_dict[self.elements[i]] = solution[i]
         self.solution_list = solution
 

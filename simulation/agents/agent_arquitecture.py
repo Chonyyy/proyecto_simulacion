@@ -187,6 +187,7 @@ class Knowledge:
         # list(self.prolog.query(f'add_place_to_use_mask({place_id}, {requirement})'))
         if 'map' in self.facts and place_id in self.facts['map']:
             self.facts['maps'][place_id]['mask_required'] = requirement
+            
 
     def add_social_distancing(self, requirement: bool):
         self.facts['social_distancing'] = requirement
@@ -329,7 +330,7 @@ class BehaviorLayer:
         kb = self.knowledge
         mm = self.mind_map
         kb.update_goals()
-        if (kb['goal'] == 'wear_mask' and kb['mask_necessity'] and mm[kb['location']].mask_required and (not kb['wearing_mask'])):
+        if (kb['mask_necessity'] and mm[kb['location']].mask_required and (not kb['wearing_mask'])):
             return 'wear_mask', []
         if (kb['goal'] == 'remove_mask'and kb['wearing_mask']):
             return 'remove_mask', []

@@ -241,7 +241,7 @@ class Environment:
             self._debug_agent_k(agent.knowledge_base)
         
         infected_agents = self._count_infected_agents()
-        # self.canelo.step(infected_agents)
+        self.canelo.step(infected_agents)
         
         ocupied_nodes = [([self.agents[agent_id] for agent_id in node.agent_list], node.contact_rate) for node in self.map.graph.nodes.values() if node.agent_list]
         self.epidemic_model.step(ocupied_nodes)
@@ -452,7 +452,7 @@ class WorldInterfaceCanelo:
         agent_mind_map (Graph): The mind map of the agent.
         agent_kb (Knowledge): The knowledge base of the agent.
     """
-    def __init__(self, map: Graph, list_agents:list[Agent], knowledge_base: KnowledgeCanelo) -> None:
+    def __init__(self, map: Terrain, list_agents:list[Agent], knowledge_base: KnowledgeCanelo) -> None:
         self.map = map
         self.list_agents = list_agents
         self.agent_kb = knowledge_base
@@ -524,7 +524,10 @@ class WorldInterfaceCanelo:
         
         
         elif action == 'nothing':
-            logger.info(f'Agent {agent.unique_id} is doing nothing')
+            try:
+                logger.info(f'Agent {agent.unique_id} is doing nothing')
+            except:
+                logger.info(f'Agent canelo is doing nothing')
 
         else:
             logger.error(f'Action {action} not recognized')
@@ -541,37 +544,44 @@ class WorldInterfaceCanelo:
         # reciever.cc.comunicate(reciever, message) 
         
         if message == 'use_mask_pp':
-            reciever.knowledge_base.add_mask_requirement('_', 'true')
+            reciever.knowledge_base.add_mask_requirement('_', False)
         
-        elif message == 'temporary_closure_pp':
-            reciever.knowledge_base.add_open_place('_', 'false')
+        # elif message == 'temporary_closure_pp':
+        #     reciever.knowledge_base.add_open_place('_', 'false')
         
         elif message == 'use_mask_work':
-            reciever.knowledge_base.add_mask_requirement(Id,'true')
-        
-        elif message == 'social_distancing_work':
-            reciever.knowledge_base.add_mask_necessity('true')
+            reciever.knowledge_base.add_mask_requirement(Id,True)
         
         elif message == 'temporary_closure_work': 
-            reciever.knowledge_base.add_open_place(Id, 'false')
+            reciever.knowledge_base.add_open_place(Id, False)
         
         if message == 'mask_use':
-            reciever.knowledge_base.add_mask_necessity('true')
+            reciever.knowledge_base.add_mask_necessity(True)
+            
+            for node in self.map.graph.nodes:
+                if isinstance(node, HouseNode):
+                    continue
+                node.mask_required = True
             
         elif message == 'remove_mask':
-            reciever.knowledge_base.add_mask_necessity('false')
+            reciever.knowledge_base.add_mask_necessity(False)
+            
+            for node in self.map.graph.nodes:
+                if isinstance(node, HouseNode):
+                    continue
+                node.mask_required = False
         
         elif message == 'quarantine':
-            reciever.knowledge_base.add_quarantine('true')
+            reciever.knowledge_base.add_quarantine(True)
               
         elif message == 'tests_and_diagnosis':
-            reciever.knowledge_base.add_tests_and_diagnosis('true')
+            reciever.knowledge_base.add_tests_and_diagnosis(True)
         
         elif message == 'contact_tracing':
-            reciever.knowledge_base.add_contact_tracing('true')
+            reciever.knowledge_base.add_contact_tracing(True)
         
         elif message == 'isolation':
-            reciever.knowledge_base.add_isolation('true')
+            reciever.knowledge_base.add_isolation(True)
 
     def percieve(self, agent: Agent, step_num: int) -> dict:
         """

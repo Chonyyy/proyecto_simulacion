@@ -124,7 +124,12 @@ class Canelo:
         action = self.recommendation_based_on_severity(x, self.solution )
         self.wi.act(self,action)
         
-    def recommendation_based_on_severity(self,people_sick, solution):
+    def recommendation_based_on_severity(self,people_sick, solution:list):
+        try:
+            if not solution:
+                return 'nothing'
+        except:
+            pass
         
         if people_sick < solution[0]:
             return 'mask_use'
@@ -140,6 +145,9 @@ class Canelo:
             return 'isolation'
         elif people_sick < solution[6]:
             return 'quarantine'
+        else:
+            return 'nothing'
+      
         
         # elif people_sick < solution[7]:
         #     return 'use_mask_pp'
@@ -151,8 +159,7 @@ class Canelo:
         #     return 'temporary_closure_work'
         
         
-        else:
-            return 'none'
+        
         
  
 def log_agent_intentions(agent_k):

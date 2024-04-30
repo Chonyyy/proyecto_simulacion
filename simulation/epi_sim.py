@@ -71,12 +71,17 @@ class Simulation:
         self.num_parents_mating = num_parents_mating
         self.sol_per_pop = sol_per_pop
         self.mutation_percent_genes = mutation_percent_genes
+        self.solution = None
         
         self.genetic_a = GA(self.num_generations, self.num_parents_mating, self.sol_per_pop, self.mutation_percent_genes)
     
     def fitness_func(self):
         def minimize_infected(ga_instance, solution = None, solution_idx = None):
             self.initialize_simulation()
+            map = self.terrain
+            epidemic_model = EpidemicModel()
+            env = Environment(self.amount_of_agents, epidemic_model, map, solution)
+            self.environment = env
             self.simulate()
             sum = 0
             a = self.environment.dissease_step_progression[-1]
@@ -126,12 +131,13 @@ class Simulation:
     def train_canelo(self):
         self.genetic_a(self.fitness_func())
         self.canelo_parameters = self.genetic_a
+        self.solution = self.genetic_a.get_solution_list()
+        return self.genetic_a.get_solution_dict()
 
     def initialize_simulation(self, solution = None):
         self._initialize_terrain()
         self.epidemic_model = EpidemicModel()
-        self.environment = Environment(self.amount_of_agents, self.epidemic_model, self.terrain, solution)
-        #TODO: Initialize the Canelo Agent from this class
+        self.environment = Environment(self.amount_of_agents, self.epidemic_model, self.terrain, self.solution)
 
     def _initialize_terrain(self):
         '''
