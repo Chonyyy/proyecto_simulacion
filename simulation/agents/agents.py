@@ -78,8 +78,8 @@ class Agent:
         
     def recieve_message(self, sender: int, message: any, message_type: str):
         
-        if sender != -1:
-            print("Other Agent Message")
+        if (sender not in self.knowledge_base['friends']) and (sender != -1):
+            return
         
         if message_type == 'map':
             self._get_map_info(message['location'], message['info'], message['value'])
@@ -133,31 +133,32 @@ class Canelo:
         except:
             pass
         
-        if people_sick > solution[0] and not 'mask_use' in  self.taken_measures:
+        if people_sick >= solution[0] and not 'mask_use' in  self.taken_measures:
             self.taken_measures.append('mask_use')
             return 'mask_use'
-        elif people_sick > solution[1] and not 'social_distancing' in  self.taken_measures:
+        elif people_sick >= solution[1] and not 'social_distancing' in  self.taken_measures:
             self.taken_measures.append('social_distancing')
             return 'social_distancing'
-        elif people_sick > solution[2] and not 'tests_and_diagnosis' in  self.taken_measures:
+        elif people_sick >= solution[2] and not 'tests_and_diagnosis' in  self.taken_measures:
             self.taken_measures.append('tests_and_diagnosis')
             return 'tests_and_diagnosis'
-        elif people_sick > solution[3] and not 'contact_tracing' in  self.taken_measures:
+        elif people_sick >= solution[3] and not 'contact_tracing' in  self.taken_measures:
             self.taken_measures.append('contact_tracing')
             return 'contact_tracing'
-        elif people_sick > solution[4] and not 'vaccination' in  self.taken_measures:
+        elif people_sick >= solution[4] and not 'vaccination' in  self.taken_measures:
+            #TODO: Initiate vaccination campain in hospital nodes
             self.taken_measures.append('vaccination')
             return 'vaccination'
-        elif people_sick > solution[5] and not 'isolation' in  self.taken_measures:
+        elif people_sick >= solution[5] and not 'isolation' in  self.taken_measures:
             self.taken_measures.append('isolation')
             return 'isolation'
-        elif people_sick > solution[6] and not 'quarantine' in  self.taken_measures:
+        elif people_sick >= solution[6] and not 'quarantine' in  self.taken_measures:
             self.taken_measures.append('quarantine')
             return 'quarantine'
-        elif people_sick > solution[7] and not 'temporary_closure_pp' in  self.taken_measures:
+        elif people_sick >= solution[7] and not 'temporary_closure_pp' in  self.taken_measures:
             self.taken_measures.append('temporary_closure_pp')
             return 'temporary_closure_pp'
-        elif people_sick > solution[8] and not 'temporary_closure_work' in  self.taken_measures:
+        elif people_sick >= solution[8] and not 'temporary_closure_work' in  self.taken_measures:
             self.taken_measures.append('temporary_closure_work')
             return 'temporary_closure_work'
         else:

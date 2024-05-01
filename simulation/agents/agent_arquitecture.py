@@ -232,6 +232,7 @@ class Knowledge:
         self.facts['messages'] = []
         self.facts['vaccinated'] = False
         self.facts['vaccination_necessity'] = False
+        self.facts['friends'] = set()
 
     def update_goals(self, mind_map: Graph = None):
         # removes already achieved goals
@@ -337,12 +338,19 @@ class BehaviorLayer:
         kb.update_goals(mm)
         if (kb['mask_necessity'] and mm[kb['location']].mask_required and (not kb['wearing_mask'])):
             return 'wear_mask', []
+        
         if ((not mm[kb['location']].mask_required) and kb['wearing_mask']):
             return 'remove_mask', []
+        
+        if (kb['goal'] == 'vaccination' and mm[kb['location']].node_type == 'hospital'):
+            return 'get_vaccinated', [kb['location']]
+        
         if (kb['medical_check']):
             return 'medical_check', []
+        
         if (kb['goal'] == 'move' and kb['location'] != kb['goal_parameters'][0]):
             return 'move', (kb['goal_parameters'][0], kb['social_distancing'])
+        
         if (kb['goal'] == 'send_message'):
             return 'send_message', kb['goal_parameters'][0]
         return 'idle', []
@@ -408,13 +416,6 @@ class LocalPlanningLayer:
             kb.facts['goal'] = 'move'
             kb.facts['goal_parameters'] = [kb['home']]
 
-        # Get Open Public Places
-        # Get Friends
-        # Invite Friends
-        # Go To Place
-        # elif (True):
-        #     self.cooperative_entertainment_routine()
-
     def vaccination_routine(self):
         kb = self.knowledge
         kb.facts['goal'] = 'move'
@@ -425,8 +426,6 @@ class LocalPlanningLayer:
             kb.facts['goal'] = 'vaccination'
             kb.facts['goal_parameters'] = []
             
-
-
     def entertainment_routine(self):
         kb = self.knowledge
         
@@ -467,12 +466,6 @@ class LocalPlanningLayer:
         if kb.facts['location'] == hospital:
             kb.facts['goal'] = 'recibe_atencion_medica'
             kb.facts['goal_parameters'] = []
-        
-        time_to_go_home = self.mind_map[hospital].closing_hours
-        if time_to_go_home == kb.facts['date']['hour']:
-            home = kb.facts['home'] 
-            kb.facts['goal'] = 'move'
-            kb.facts['goal_parameters'] = [home]
 
     def _open_hospitals(self, mind_map):
         hospitals = []

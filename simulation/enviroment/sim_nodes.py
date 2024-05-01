@@ -133,6 +133,22 @@ class Hospital(Workspace):
         self.opening_hours = opening_hours
         self.closing_hours = closing_hours
         self.is_open = True
+        self.patients = []
+        self.vaccination_campain = False
+        
+    def add_patient_consult(self, patient):
+        self.patients.append(patient)
+    
+    def attend_patient(self, canelo):
+        patient = self.patients.pop(0)
+        
+        #TODO: Report patient status
+        patient_status = patient.status
+        
+        #TODO: if self.vaccination_campain:
+        patient.vaccinated = True
+        patient.knowledge_base.facts['vaccinated'] = True
+        return patient
 
 class BusStop(PublicPlace):
     """

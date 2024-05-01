@@ -81,6 +81,7 @@ class Simulation:
             self.initialize_simulation()
             map = self.terrain
             epidemic_model = EpidemicModel()
+            debug_epidemic_k(epidemic_model)
             env = Environment(self.amount_of_agents, epidemic_model, map, solution)
             self.environment = env
             self.simulate()
@@ -214,3 +215,6 @@ class Simulation:
         month_day = step_num // 6 // 24
         
         return week_day, month_day, hour, min
+
+def debug_epidemic_k(epidemic_model):
+    k = epidemic_model.disease_k

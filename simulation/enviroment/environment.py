@@ -42,6 +42,7 @@ class Environment:
         self.initialize_citizen_agents(num_agents)
         self.initialize_canelo_agent()
         self.initialize_relations()
+        self.hospitals_with_patients = []
 
         def kill_agent(agent):
             self.dead_agents.add(agent.unique_id)
@@ -58,7 +59,8 @@ class Environment:
         Args:
             num_agents (int): The number of agents to initialize.
         """
-        infected_agents = random.randint(1, int(num_agents/2))
+        # infected_agents = random.randint(1, int(num_agents/2))
+        infected_agents = int(num_agents/2)
 
         for i in range(num_agents):
             mind_map = self.generate_citizen_mind_map()
@@ -233,12 +235,17 @@ class Environment:
         Args:
             step_num (int): The current step number of the simulation.
         """
+        for i, hospital in enumerate(self.hospitals_with_patients.copy()):
+            hospital.attend_patient(self.canelo)
+            if len(hospital.patients) == 0:
+                self.hospitals_with_patients.pop(i)
+                
         for agent in random.sample(self.agents, len(self.agents)):
             if agent.unique_id in self.dead_agents:
                 continue
             logger.info(f'Step of agent {agent.unique_id}')
             agent.step(step_num)
-            self._debug_agent_k(agent.knowledge_base)
+            # self._debug_agent_k(agent.knowledge_base)
         
         infected_agents = self._count_infected_agents()
         self.canelo.step(infected_agents)
@@ -298,7 +305,7 @@ class WorldInterface:
         agent_kb (Knowledge): The knowledge base of the agent.
     """
     def __init__(self, enviroment: Environment, map: Graph, agent_mind_map: Graph, knowledge_base: Knowledge) -> None:
-        self.eviroment = enviroment
+        self.enviroment = enviroment
         self.map = map
         self.agent_mind_map = agent_mind_map
         self.agent_kb = knowledge_base
@@ -343,9 +350,11 @@ class WorldInterface:
             logger.info(f'Agent {agent.unique_id} is removing mask')
             agent.masked = False 
         
-        elif action == 'vaccinate':
-            logger.info(f'Agent {agent.unique_id} is vaccinated')
-            agent.vaccinated = True
+        elif action == 'get_vaccinated':
+            hospital = self.map[parameters[0]]
+            hospital.add_patient_consult(agent)
+            if hospital not in self.enviroment.hospitals_with_patients:
+                self.enviroment.hospitals_with_patients.append(hospital)
             
         elif action == 'nothing':
             logger.info(f'Agent {agent.unique_id} is doing nothing')
@@ -481,7 +490,6 @@ class WorldInterfaceCanelo:
                     if isinstance(node, PublicPlace):
                         self.comunicate( agent, action,node)
         
-        
         elif action == 'temporary_closure_work':
             logger.info(f'Canelo is transmitting temporaly closure in work')
             for node in self.map.graph.nodes.values():
@@ -494,7 +502,6 @@ class WorldInterfaceCanelo:
                 for node in self.map.graph.nodes.values():
                     if isinstance(node, Workspace) and not isinstance(node, Hospital):
                         self.comunicate( agent, action,node)
-        
         
         if action == 'mask_use':
             logger.info(f'Canelo is transmitting use mask')
