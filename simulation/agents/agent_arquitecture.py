@@ -195,9 +195,6 @@ class Knowledge:
     def add_tests_and_diagnosis(self, requirement: bool):
         self.facts['tests_and_diagnosis'] = requirement
 
-    def add_isolation(self, requirement: bool):
-        self.facts['isolation'] = requirement
-
     def add_friends(self, friend_list: list):
         # if friend_list:
         #     list(self.prolog.query(f'add_friends({friend_list})'))

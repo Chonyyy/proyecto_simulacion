@@ -16,7 +16,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
 class SimulationParameters(BaseModel):
-    simulation_days: int = 31
+    simulation_days: int = 10
     grid_size: int = 10
     block_capacity: int = 100
     house_amount: int = 5
@@ -36,6 +36,8 @@ a = SimulationParameters()
 simulation = Simulation(**a.model_dump())
 simulation.initialize_simulation()
 simulation.simulate()
+
+#region plotting
 
 # Generate some data for plotting
 
@@ -74,3 +76,11 @@ buf = io.BytesIO()
 plt.savefig(buf, format='png')
 buf.seek(0)
 
+#endregion
+
+#region Plotting GA
+
+simulation.genetic_a.get_plot_fitness()
+simulation.genetic_a.get_plot_genes()
+
+#endregion

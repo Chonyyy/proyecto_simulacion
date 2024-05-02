@@ -88,7 +88,7 @@ class Agent:
 
     def _get_map_info(self, location, info, value):
         self.mind_map.nodes[location].__dict__[info] = value
-
+        
     def _get_measure_info(self, measure, value):
         self.knowledge_base.facts[measure] = value
 
@@ -109,7 +109,7 @@ class Canelo:
         self.knowledge_base = knowledge_base
         self.mind_map = mind_map if mind_map is not None else {}
         
-        self.measures = ['mask_use', 'social_distancing', 'tests_and_diagnosis', 'contact_tracing', 'vaccination', 'isolation', 'quarantine', 'temporary_closure_pp', 'temporary_closure_work']
+        self.measures = ['mask_use', 'social_distancing', 'tests_and_diagnosis', 'contact_tracing', 'vaccination', 'quarantine', 'temporary_closure_pp', 'temporary_closure_work']
         self.taken_measures = []
 
         # Agent Control Unit
@@ -119,10 +119,24 @@ class Canelo:
         self.wi = wi_component
         
         self.solution = solution
+        self.budget = 100000
+        self.cost = {
+            'mask_use':1, 
+            'social_distancing':0.5, 
+            'tests_and_diagnosis':2, 
+            'contact_tracing':3, 
+            'vaccination':3, 
+            'quarantine':4, 
+            'temporary_closure_pp':5, 
+            'temporary_closure_work':5
+        }
 
     def step(self, infected_agents):
         x = infected_agents / len(self.wi.list_agents)
         
+        for i in self.taken_measures:
+            self.budget -= self.cost[i]
+            
         action = self.recommendation_based_on_severity(x, self.solution)
         self.wi.act(self,action)
         
@@ -132,7 +146,7 @@ class Canelo:
                 return 'nothing'
         except:
             pass
-        return 'nothing'
+        
         if people_sick >= solution[0] and not 'mask_use' in  self.taken_measures:
             self.taken_measures.append('mask_use')
             return 'mask_use'
@@ -146,20 +160,15 @@ class Canelo:
             self.taken_measures.append('contact_tracing')
             return 'contact_tracing'
         elif people_sick >= solution[4] and not 'vaccination' in  self.taken_measures:
-            #TODO: Initiate vaccination campain in hospital nodes
             self.taken_measures.append('vaccination')
             return 'vaccination'
-        elif people_sick >= solution[5] and not 'isolation' in  self.taken_measures:
-            self.taken_measures.append('isolation')
-            return 'isolation'
-        elif people_sick >= solution[6] and not 'quarantine' in  self.taken_measures:
+        elif people_sick >= solution[5] and not 'quarantine' in  self.taken_measures:
             self.taken_measures.append('quarantine')
             return 'quarantine'
-        elif people_sick >= solution[7] and not 'temporary_closure_pp' in  self.taken_measures:
+        elif people_sick >= solution[6] and not 'temporary_closure_pp' in  self.taken_measures:
             self.taken_measures.append('temporary_closure_pp')
             return 'temporary_closure_pp'
-            # return 'nothing'
-        elif people_sick >= solution[8] and not 'temporary_closure_work' in  self.taken_measures:
+        elif people_sick >= solution[7] and not 'temporary_closure_work' in  self.taken_measures:
             self.taken_measures.append('temporary_closure_work')
             return 'temporary_closure_work'
         else:

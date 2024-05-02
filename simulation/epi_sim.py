@@ -71,7 +71,7 @@ class Simulation:
         self.num_parents_mating = num_parents_mating
         self.sol_per_pop = sol_per_pop
         self.mutation_percent_genes = mutation_percent_genes
-        self.solution = [0]*9
+        self.solution = [0]*8
         
         self.genetic_a = GA(self.num_generations, self.num_parents_mating, self.sol_per_pop, self.mutation_percent_genes)
     
@@ -85,19 +85,25 @@ class Simulation:
             env = Environment(self.amount_of_agents, epidemic_model, map, solution)
             self.environment = env
             self.simulate()
+            budget = env.canelo.budget
+            if budget < 0:
+                budget = 0
+                
             sum = 0
             a = self.environment.dissease_step_progression[-1]
 
             for x in a:
                 if x == 'susceptible':
                     continue
-                if x == 'recovered':
+                if x == 'dead':
+                    sum += 2*a[x]
                     continue
+                
                 sum += a[x]
                 
             self.reset_sim()
             self.initialize_simulation()
-            return sum
+            return sum + (budget/100000)*len(env.agents)
 
         if self.optimization_goal == 'minimize_infected':
             return minimize_infected
@@ -131,7 +137,7 @@ class Simulation:
         self.dissease_progression = self.environment.dissease_step_progression
         
     def train_canelo(self):
-        self.genetic_a(self.fitness_func())
+        self.genetic_a.ga_instance = self.genetic_a(self.fitness_func())
         self.canelo_parameters = self.genetic_a
         self.solution = self.genetic_a.get_solution_list()
         return self.genetic_a.get_solution_dict()

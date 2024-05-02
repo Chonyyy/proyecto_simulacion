@@ -409,13 +409,13 @@ class WorldInterface:
         else:
             raise ValueError(f'node of type unknown{type(current_node)}')
         current_node_perception = CPNode(current_node.addr, current_node.id, node_type, density_classifier(len(current_node.agent_list), current_node.capacity))
+        new_perception[current_node.addr] = current_node_perception
         if node_type in ['hospital', 'works_space', 'bus_stop', 'public_space']:
             current_node_perception.oppening_hours = current_node.opening_hours
             current_node_perception.closing_hours = current_node.closing_hours
             current_node_perception.is_open = current_node.is_open
-            current_node_perception.mask_required = current_node.mask_required
+        current_node_perception.mask_required = current_node.mask_required
 
-        new_perception[current_node.addr] = current_node_perception
 
         return new_perception
 
@@ -503,7 +503,7 @@ class WorldInterfaceCanelo:
                     if isinstance(node, Workspace) and not isinstance(node, Hospital):
                         self.comunicate( agent, action,node)
         
-        if action == 'mask_use':
+        elif action == 'mask_use':
             logger.info(f'Canelo is transmitting use mask')
             for agent in self.list_agents:
                 self.comunicate( agent, action)
@@ -542,14 +542,9 @@ class WorldInterfaceCanelo:
             logger.info(f'Canelo is transmitting contact_tracing')
             for agent in self.list_agents:
                 self.comunicate( agent, action)
-        
-        elif action == 'isolation':
-            logger.info(f'Canelo is transmitting isolation')
-            for agent in self.list_agents:
-                self.comunicate( agent, action)
-        
+
         elif action == 'vaccination':
-            logger.info(f'Canelo is transmitting isolation')
+            logger.info(f'Canelo is transmitting vaccination')
             for agent in self.list_agents:
                 self.comunicate( agent, action)
         
@@ -627,14 +622,6 @@ class WorldInterfaceCanelo:
             }
             reciever.recieve_message(-1, message1, 'measure')
 
-        elif message == 'isolation':
-            reciever.knowledge_base.add_isolation(True)
-            message1 = {
-                'info': 'isolation_necessity' , 
-                'value': True
-            }
-            reciever.recieve_message(-1, message1, 'measure')
-            
         elif message == 'vaccination':
             message1 = {
                 'info': 'vaccination_necessity' , 

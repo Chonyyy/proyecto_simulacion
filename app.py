@@ -44,7 +44,7 @@ def get_statistics():
     return response.json()
 
 def get_plot():
-    response=requests.get(f"{base_url}/plots/test")
+    response=requests.get(f"{base_url}/plots/infection")
     return response
 
 #model and prompts

@@ -3,7 +3,7 @@ import numpy as np
 
 class GA: 
     def __init__(self,num_generations, num_parents_mating, sol_per_pop, mutation_percent_genes):
-        self.elements = ['mask_use', 'social_distancing', 'tests_and_diagnosis', 'contact_tracing', 'vaccination', 'quarantine', 'isolation', 'temporary_closure_pp', 'temporary_closure_work']
+        self.elements = ['mask_use', 'social_distancing', 'tests_and_diagnosis', 'contact_tracing', 'vaccination', 'quarantine',  'temporary_closure_pp', 'temporary_closure_work']
         self.num_generations = num_generations
         self.num_parents_mating = num_parents_mating
         self.sol_per_pop = sol_per_pop
@@ -11,6 +11,8 @@ class GA:
         self.solution_dict = {}
         self.solution_list = []
         self.ga_instance = None
+        self.fitness_plot = None
+        self.gene_plot = None
         
     def __call__(self, fitness_func):
         gene_space = [{'low': 0, 'high': 1}] * len(self.elements) 
@@ -21,7 +23,8 @@ class GA:
                             num_genes=len(self.elements),
                             gene_space=gene_space,
                             mutation_percent_genes=self.mutation_percent_genes,
-                            delay_after_gen=0)
+                            delay_after_gen=0,
+                            save_solutions=True)
 
         self.ga_instance.run()
         
@@ -31,8 +34,8 @@ class GA:
         for i in range(len(self.elements)):
             self.solution_dict[self.elements[i]] = solution[i]
         self.solution_list = solution
+        return self.ga_instance
 
-        
     def get_solution_dict(self):
         return self.solution_dict
     
@@ -43,7 +46,7 @@ class GA:
         return self.ga_instance.plot_fitness()
     
     def get_plot_genes(self):
-        self.ga_instance.plot_genes()
+        return self.ga_instance.plot_genes()
         
     
     

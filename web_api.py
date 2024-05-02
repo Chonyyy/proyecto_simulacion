@@ -17,7 +17,6 @@ simulation = None
 running = False
 done = False
 
-
 class SimulationParameters(BaseModel):
     simulation_days: int = 31
     grid_size: int = 10
@@ -57,7 +56,7 @@ async def delete_simulation():
     simulation = None
     done = False
     return {"message": "Simulation deleted"}
-    
+
 @app.get("/simulation/reset")
 async def reset_simulation():
     global simulation
@@ -70,7 +69,7 @@ async def reset_simulation():
     simulation.reset_sim()
     done = False
     return {"message": "Simulation reseted"}
-    
+
 @app.get("/simulate")
 async def start_simulation():
     global simulation
@@ -120,8 +119,8 @@ async def train_canelo():
     solution = simulation.train_canelo()
     return solution
 
-@app.get("/plots/test")
-async def test_plot():
+@app.get("/plots/infection")
+async def get_plot_infection():
     # Generate some data for plotting
     global simulation
     global done
@@ -129,7 +128,7 @@ async def test_plot():
         raise HTTPException(status_code=400, detail="Define a simulation first")
     if not done:
         raise HTTPException(status_code=400, detail="Run the simulation first")
-    
+
     sim_stats:dict = simulation.get_stats()['days_evolution']
     days = []
     infected_stats = []
@@ -167,6 +166,21 @@ async def test_plot():
     # Return the plot as a StreamingResponse
     return StreamingResponse(buf, media_type="image/png")
 
+@app.get("/plots/genetic/fitness")
+async def get_plot_fitness():
+    global simulation
+    asd = 1
+    genetic_algorythm = simulation.genetic_a
+    
+    return StreamingResponse(genetic_algorythm.get_plot_fitness(), media_type="image/png")
+
+@app.get("/plots/genetic/genes")
+async def get_plot_genes():
+    global simulation
+    asd  = 15
+    genetic_algorythm = simulation.genetic_a
+    
+    return StreamingResponse(genetic_algorythm.get_plot_genes(), media_type="image/png")
 
 def sum_infected(stage_dist):
     return sum([value for key, value in stage_dist.items() if key not in ['recovered', 'dead', 'susceptible']])
