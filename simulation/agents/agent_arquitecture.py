@@ -216,10 +216,8 @@ class Knowledge:
         self.facts['location'] = location
 
     def feedback(self, location, wearing_mask):
-        if location:
-            self.add_location(location)
-        if wearing_mask:
-            self.add_wearing_mask(wearing_mask)
+        self.add_location(location)
+        self.add_wearing_mask(wearing_mask)
 
     def initializing_k(self):
         self.facts['goal'] = 'none'
@@ -245,7 +243,7 @@ class Knowledge:
         if (self.facts['goal'] == 'move' and self.facts['location'] == self.facts['goal_parameters'][0]):
             self.facts['goal'] = 'none'
             self.facts['goal_parameters'] = []
-        if (mind_map[self.facts['location']].node_type not in  ['block', 'house'] and not mind_map[self.facts['location']].is_open):
+        if (self.facts['goal'] == 'move' and mind_map[self.facts['goal_parameters'][0]].node_type not in  ['block', 'house'] and not mind_map[self.facts['goal_parameters'][0]].is_open):
             self.facts['goal'] = 'none'
             self.facts['goal_parameters'] = []
     
@@ -393,6 +391,7 @@ class LocalPlanningLayer:
         kb = self.knowledge
         mm = self.mind_map
         date = kb['date']
+        open_place = self._pp_is_open(mm, kb['public_places'], date['week_day'], date['hour'])
         kb.update_goals(mm)
 
         # Get Vaccine Routine
@@ -404,12 +403,12 @@ class LocalPlanningLayer:
             self.hospital_routine()
 
         # Work Routine
-        elif (self._work_is_open(kb['work_place'], date['week_day'], date['hour']) and (not kb['too_sick'])):# -> work_day_routine(WorkId), Plan = work_day_routine(WorkId));
+        elif (self._work_is_open(mm, kb['work_place'], date['week_day'], date['hour']) and (not kb['too_sick'])):
             self.work_day_routine(kb['work_place'])
 
         # Entertainment Routine
-        elif (date['week_day'] in ['saturday', 'sunday']):#((public_space(Id, _),open_place(Id, true), go_public_place_rutine(Id));  Plan = no_pweek_day(W), (W == saturday; W == sunday)) -> go_public_place_rutine(Id), Plan = lan.
-            self.entertainment_routine()
+        elif (open_place and (not kb['too_sick'])):#((public_space(Id, _),open_place(Id, true), go_public_place_rutine(Id));  Plan = no_pweek_day(W), (W == saturday; W == sunday)) -> go_public_place_rutine(Id), Plan = lan.
+            self.entertainment_routine(open_place)
 
         # Return Home
         elif (kb['location'] != kb['home']):
@@ -426,10 +425,9 @@ class LocalPlanningLayer:
             kb.facts['goal'] = 'vaccination'
             kb.facts['goal_parameters'] = []
             
-    def entertainment_routine(self):
+    def entertainment_routine(self, public_place):# TODO: Fix agents moving all weekend
         kb = self.knowledge
         
-        public_place = random.choice(kb.facts['public_places'])
         kb.facts['goal'] = 'move'
         kb.facts['goal_parameters'] = [public_place]
         
@@ -474,8 +472,17 @@ class LocalPlanningLayer:
                 hospitals.append(node.id)
         return hospitals
 
-    def _work_is_open(self, work_info, week_day, hour):
-        return (not (week_day in ['saturday', 'sunday'])) and (work_info['opening_hours'] <= hour) and (hour <= work_info['closing_hours']) and work_info['is_open']
+    def _work_is_open(self, mm, work_info, week_day, hour):
+        return (not (week_day in ['saturday', 'sunday'])) and (work_info['opening_hours'] <= hour) and (hour <= work_info['closing_hours']) and mm[work_info['id']].is_open
+    
+    def _pp_is_open(self, mm, public_places, week_day, hour):
+        if not(week_day in ['saturday', 'sunday']):
+            return
+        open_places = [(mm[public_place].is_open, mm[public_place].id, mm[public_place].oppening_hours, mm[public_place].closing_hours) for public_place in public_places]
+        for is_open, public_place, opens, closes in random.sample(open_places, len(open_places)):
+            if is_open and opens <= hour and hour <= closes:
+                return public_place
+        return
     
     def _open_public_places(self, mind_map):
         raise NotImplementedError()

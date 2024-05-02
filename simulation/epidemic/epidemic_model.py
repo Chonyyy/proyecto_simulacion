@@ -181,9 +181,9 @@ def log_agent_symptoms_chages(old_symptoms, new_symptoms):
         if symptom not in old_symptoms:
             added_symptoms.append(symptom)
 
-    if removed_symptoms:
-        logger.debug(f'Removed Symptoms: {removed_symptoms}')
-    if added_symptoms:
-        logger.debug(f'Added Symptoms: {added_symptoms}')
-    else:
-        logger.debug(f'No Symptoms were modified')
+    # if removed_symptoms:
+    #     logger.debug(f'Removed Symptoms: {removed_symptoms}')
+    # if added_symptoms:
+    #     logger.debug(f'Added Symptoms: {added_symptoms}')
+    # else:
+    #     logger.debug(f'No Symptoms were modified')

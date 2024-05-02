@@ -245,7 +245,7 @@ class Environment:
                 continue
             logger.info(f'Step of agent {agent.unique_id}')
             agent.step(step_num)
-            # self._debug_agent_k(agent.knowledge_base)
+            self._debug_agent_k(agent.knowledge_base)
         
         infected_agents = self._count_infected_agents()
         self.canelo.step(infected_agents)
@@ -331,7 +331,7 @@ class WorldInterface:
                 path = agent._last_path
             else:
                 map = self.agent_mind_map
-                if parameters[1] == 'true':
+                if parameters[1]:
                     problem = AgentPathProblem(map[agent.location], map[parameters[0]], map, 'minimum_contact_path')          
                 else:
                     problem = AgentPathProblem(map[agent.location], map[parameters[0]], map)
@@ -620,13 +620,12 @@ class WorldInterfaceCanelo:
             }
             reciever.recieve_message(-1, message1, 'measure')
         
-        # elif message == 'contact_tracing':
-        #     reciever.knowledge_base.add_contact_tracing(True)
-        #     message1 = {
-        #         'info': 'mask_necessity' , 
-        #         'value': True
-        #     }
-        #     reciever.recieve_message(-1, message1, 'measure')
+        elif message == 'social_distancing':
+            message1 = {
+                'info': 'social_distancing' , 
+                'value': True
+            }
+            reciever.recieve_message(-1, message1, 'measure')
 
         elif message == 'isolation':
             reciever.knowledge_base.add_isolation(True)

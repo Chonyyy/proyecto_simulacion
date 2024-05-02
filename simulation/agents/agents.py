@@ -101,7 +101,7 @@ class Canelo:
                  c_component: CooperativeLayer = None,
                  wi_component: 'WorldInterfaceCanelo' = None,
                  knowledge_base: KnowledgeCanelo = None,
-                 solution: list = [0]*7
+                 solution: list = [0]*9
                  ):
         self.unique_id = -1
 
@@ -132,7 +132,7 @@ class Canelo:
                 return 'nothing'
         except:
             pass
-        
+        return 'nothing'
         if people_sick >= solution[0] and not 'mask_use' in  self.taken_measures:
             self.taken_measures.append('mask_use')
             return 'mask_use'
@@ -158,6 +158,7 @@ class Canelo:
         elif people_sick >= solution[7] and not 'temporary_closure_pp' in  self.taken_measures:
             self.taken_measures.append('temporary_closure_pp')
             return 'temporary_closure_pp'
+            # return 'nothing'
         elif people_sick >= solution[8] and not 'temporary_closure_work' in  self.taken_measures:
             self.taken_measures.append('temporary_closure_work')
             return 'temporary_closure_work'

@@ -71,7 +71,7 @@ class Simulation:
         self.num_parents_mating = num_parents_mating
         self.sol_per_pop = sol_per_pop
         self.mutation_percent_genes = mutation_percent_genes
-        self.solution = None
+        self.solution = [0]*9
         
         self.genetic_a = GA(self.num_generations, self.num_parents_mating, self.sol_per_pop, self.mutation_percent_genes)
     
