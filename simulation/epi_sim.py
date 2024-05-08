@@ -9,7 +9,7 @@ import logging
 import matplotlib
 import matplotlib.pyplot as plt
 
-matplotlib.use('TkAgg')
+#matplotlib.use('TkAgg')
 
 logger = logging.getLogger(__name__)
 

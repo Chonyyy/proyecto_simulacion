@@ -19,18 +19,18 @@ class EpidemicModel:
         mask_effectiveness (float): The effectiveness of masks in preventing disease transmission.
         transmission_mask (float): The transmission rate adjusted for mask effectiveness.
     """
-    def __init__(self, disease_description: str = './simulation/epidemic/chony_virus_progression.pl'):
+    def __init__(self):
         """
         Initialize the epidemic model.
 
         Args:
             disease_description (str, optional): Path to the Prolog file describing the disease progression. Defaults to './simulation/epidemic/chony_virus_progression.pl'.
         """
-        self.disease_k = Prolog()
-        self.disease_k.consult(disease_description)
-        self.transmission_rate: float = list(self.disease_k.query('base_transmition_rate(R)'))[0]['R']
-        self.infection_stages: List[str] = [atom.value for atom in list(self.disease_k.query('infection_stages(Stages)'))[0]['Stages']]
-        self.mask_effectiveness: float = list(self.disease_k.query('mask_effectiveness(E)'))[0]['E']
+        self.disease_k = PersonDatabase()
+        disease_description = self.disease_k.database
+        self.transmission_rate: float = disease_description["base_transmition_rate"]
+        self.infection_stages: List[str] = disease_description["infection_stages"]
+        self.mask_effectiveness: float = disease_description["mask_effectiveness"]
         self.transmission_mask: float = self.transmission_rate * self.mask_effectiveness
         self.kill_agent = None
 
