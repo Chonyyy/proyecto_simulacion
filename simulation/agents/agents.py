@@ -13,8 +13,8 @@ class Agent:
     def __init__(self, 
                  unique_id: int,
                  mind_map: Graph,
-                 trust_rate : float,
                  status: str = 'susceptible',
+                 trust_rate : float = 0.5,
                  bb_component: BehaviorLayer = None,
                  lp_component: LocalPlanningLayer = None,
                  c_component: CooperativeLayer = None,
@@ -30,7 +30,7 @@ class Agent:
         self.masked = False
         self.vaccinated = False
         self._last_path = []
-        self.trust_rate = 0.5
+        self.trust_rate = trust_rate
 
         # Hierarchical Knowlege Base
         # self.belief_system = belief_system if belief_system is not None else {}
@@ -84,7 +84,6 @@ class Agent:
             return
         
         random_number = random.random()
-        
         if sender == -1 and random_number > self.trust_rate:
             return
 

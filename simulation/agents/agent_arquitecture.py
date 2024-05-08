@@ -422,7 +422,7 @@ class LocalPlanningLayer:
             kb.facts['goal'] = 'vaccination'
             kb.facts['goal_parameters'] = []
             
-    def entertainment_routine(self, public_place):# TODO: Fix agents moving all weekend
+    def entertainment_routine(self, public_place):
         kb = self.knowledge
         
         kb.facts['goal'] = 'move'

@@ -22,7 +22,7 @@ class Environment:
         agents (List[Agent]): The list of agents in the environment.
         epidemic_model (EpidemicModel): The epidemic model for the simulation.
     """
-    def __init__(self, num_agents: int, epidemic_model: EpidemicModel, map: Terrain, solution:list =None ):
+    def __init__(self, num_agents: int, epidemic_model: EpidemicModel, map: Terrain, solution:list =None, agent_trust_mode: float = 0.95 ):
         """
         Initialize the environment.
 
@@ -38,6 +38,7 @@ class Environment:
         self.epidemic_model = epidemic_model
         self.dissease_step_progression = []
         logger.debug('=== Initializing Agents ===')
+        self.agent_trust_mode = agent_trust_mode
         self.solution = solution
         self.initialize_citizen_agents(num_agents)
         self.initialize_canelo_agent()
@@ -71,6 +72,8 @@ class Environment:
             agents_pbc = LocalPlanningLayer(agents_bbc, kb, mind_map)
             agent_cc = CooperativeLayer(agents_pbc, kb, mind_map)
 
+            agent_trust = random.triangular(0, 1, self.agent_trust_mode)
+
             agent = Agent(
                 unique_id=i, 
                 mind_map=mind_map,
@@ -78,7 +81,8 @@ class Environment:
                 bb_component=agents_bbc,
                 c_component=agent_cc,
                 wi_component=agents_wi,
-                knowledge_base=kb
+                knowledge_base=kb,
+                trust_rate= agent_trust
                 )
             
             if i < infected_agents:

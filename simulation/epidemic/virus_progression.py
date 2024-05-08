@@ -33,9 +33,9 @@ database = {
         "recovered": []
     },
     "age_influence": {
-        "young": {"gets_better": 0.005, "gets_worse": 0.003, "nothing_happens": 0.992},
-        "adult": {"gets_better": 0.005, "gets_worse": 0.005, "nothing_happens": 0.990},
-        "old": {"gets_better": 0.005, "gets_worse": 0.015, "nothing_happens": 0.980}
+        "young": {"gets_better": 0.0005, "gets_worse": 0.0003, "nothing_happens": 0.9992},
+        "adult": {"gets_better": 0.0005, "gets_worse": 0.0005, "nothing_happens": 0.9990},
+        "old": {"gets_better": 0.0005, "gets_worse": 0.0015, "nothing_happens": 0.9980}
     },
     "symptom_progression": {
         "normal_fever": "critical_fever",
@@ -45,6 +45,9 @@ database = {
         "critical_fever": "terminal_fever"
     }
 }
+
+reverse_progression = dict(zip(database["symptom_progression"].values(), database["symptom_progression"].keys()))
+database["reverse_progression"] = reverse_progression
 
 # Function to determine if the infection gets better
 def infection_gets_better(symptoms, current_stage):
@@ -70,7 +73,7 @@ def infection_gets_worse(symptoms, current_stage, possible_symptoms):
 
     if possible_symptoms:
         symptom = random.choice(possible_symptoms)
-        add_symptom(symptom, symptoms, next_symptoms)
+        next_symptoms = add_symptom(symptom, symptoms, next_symptoms)
 
     if current_stage == 'asymptomatic':
         next_stage = 'symptomatic'
@@ -85,15 +88,20 @@ def infection_gets_worse(symptoms, current_stage, possible_symptoms):
 
 # Function to add a symptom
 def add_symptom(symptom, symptoms, next_symptoms):
-    if database["symptom_progression"].get(symptoms[-1]) == symptom:
-        next_symptoms.append(symptom)
+    if symptom in database["symptom_progression"].values():
+        for key, value in database["symptom_progression"].items():
+            if value == symptom:
+                next_symptoms.remove(key)
+                next_symptoms.append(symptom)
+                return next_symptoms
     else:
-        next_symptoms.append(database["symptom_progression"].get(symptom))
+        next_symptoms.append(symptom)
+        return next_symptoms
 
-def remove_symptom(symptom, symptoms, next_symptoms):
-    if database["symptom_progression"].get(symptom):
+def remove_symptom(symptom, symptoms, next_symptoms):#FIXME
+    if symptom in database["reverse_progression"]:
         next_symptoms.remove(symptom)
-        next_symptoms.append(database["symptom_progression"].get(symptom))
+        next_symptoms.append(database["reverse_progression"][symptom])
     else:
         next_symptoms.remove(symptom)
 
@@ -162,28 +170,27 @@ class PersonDatabase:
     
     # Perform a step for a given person
     def step(self, person):
-        next_stage, new_symptoms, step_type = '', [], ''
 
         # Get the necessary information for the current agent
         vaccination_status = self.persons[person]['vaccination_status']
         current_stage = self.persons[person]['stage']
         age_group = self.persons[person]['age_group']
         current_symptoms = self.persons[person]['symptoms']
+        next_stage, new_symptoms = current_stage, current_symptoms
 
         # Determine if the infection will get worse, better, or remain the same
-        self.step_type(age_group, vaccination_status, step_type)
+        step_type = self.step_type(age_group, vaccination_status)
 
-        # Determine if there are any new symptoms to add
-        possible_symptoms = self.available_symptoms(current_stage, current_symptoms)
 
         # Changing the stage of the person if possible
         if step_type == 'gets_better':
-            self.infection_gets_better(current_symptoms, current_stage, next_stage, new_symptoms)
+            next_stage, new_symptoms = infection_gets_better(current_symptoms, current_stage)#TODO: return next stage and next symptoms list
         elif step_type == 'gets_worse':
-            self.infection_gets_worse(current_symptoms, current_stage, possible_symptoms, next_stage, new_symptoms)
+            # Determine if there are any new symptoms to add
+            possible_symptoms = self.available_symptoms(current_stage, current_symptoms)
+            next_stage, new_symptoms = infection_gets_worse(current_symptoms, current_stage, possible_symptoms)#TODO: return next stage and next symptoms list
         else:
-            next_stage = current_stage
-            new_symptoms = current_symptoms
+            return next_stage
 
         # Updating agent information
         if next_stage in ['recovered', 'dead']:
@@ -191,18 +198,20 @@ class PersonDatabase:
         else:
             self.update_stage(person, next_stage)
             self.update_symptoms(person, new_symptoms)
+
+        return next_stage
     
     # Determine the step type based on age group and vaccination status
-    def step_type(self, age_group, vaccination_status, step_type):
-        self.step_type_gen(age_group, vaccination_status, step_type)
+    def step_type(self, age_group, vaccination_status):
+        return self.step_type_gen(age_group, vaccination_status)
     
     # Generate the step type based on age group and vaccination status
-    def step_type_gen(self, age_group, vaccination_status, step_type):
-        vaccination_effect_better = 2 if vaccination_status else 1.0
-        vaccination_effect_worse = 0.5 if vaccination_status else 1.0
+    def step_type_gen(self, age_group, vaccination_status):
+        vaccination_effect_better = database["vaccination_effects"]["gets_better"] if vaccination_status else 1.0
+        vaccination_effect_worse = database["vaccination_effects"]["gets_worse"] if vaccination_status else 1.0
 
-        age_influence_better = 0.005
-        age_influence_worse = 0.015
+        age_influence_better = database["age_influence"][age_group]["gets_better"]
+        age_influence_worse = database["age_influence"][age_group]["gets_worse"]
 
         better = vaccination_effect_better * age_influence_better
         worse = vaccination_effect_worse * age_influence_worse
@@ -210,50 +219,53 @@ class PersonDatabase:
         random_value = random.uniform(0.0, 1.0)
 
         if random_value < better:
-            step_type = 'gets_better'
+            return 'gets_better'
         elif random_value < better + worse:
-            step_type = 'gets_worse'
+            return 'gets_worse'
         else:
-            step_type = 'nothing_happens'
+            return 'nothing_happens'
     
     # Get available symptoms for a given stage and current symptoms
     def available_symptoms(self, stage, symptoms):
-        possible_symptoms = []
-        if stage in ['symptomatic', 'critical', 'terminal']:
-            symp_symptoms = self.possible_symptoms_symptomatic()
-            valid_symptoms1 = self.get_new_evol(symptoms, symp_symptoms)
+        if stage == 'symptomatic':
+            symp_symptoms = database["possible_symptoms"]["symptomatic"]
+            return self.get_new_evol(symptoms, symp_symptoms)
 
-            crit_symptoms = self.possible_symptoms_critical()
-            valid_symptoms2 = self.get_new_evol(symptoms, crit_symptoms)
+        if stage == "critical":
+            crit_symptoms = database["possible_symptoms"]["critical"]
+            return self.get_new_evol(symptoms, crit_symptoms)
 
-            ter_symptoms = self.possible_symptoms_terminal()
-            valid_symptoms3 = self.get_new_evol(symptoms, ter_symptoms)
+        if stage == "terminal":
+            ter_symptoms = database["possible_symptoms"]["terminal"]
+            return self.get_new_evol(symptoms, ter_symptoms)
 
-            possible_symptoms = valid_symptoms1 + valid_symptoms2 + valid_symptoms3
-
-        return possible_symptoms
+        return []
     
     # Get new evolving symptoms based on current symptoms
     def get_new_evol(self, symptoms, stage_symptoms):
         new_symptoms = []
         for symptom in stage_symptoms:
-            if symptom not in symptoms and all(self.symptom_progression(old_symptom, symptom) for old_symptom in symptoms):
+            if symptom in symptoms:
+                continue
+            if symptom not in database["symptom_progression"].values():
+                new_symptoms.append(symptom)
+            elif database["reverse_progression"][symptom] in symptoms:
                 new_symptoms.append(symptom)
         return new_symptoms
     
     # Progress the infection for a given person
-    def infection_progression(self, person):
-        current_person = self.persons[person]
-        current_stage = current_person['stage']
-        current_symptoms = current_person['symptoms']
-        possible_symptoms = self.available_symptoms(current_stage, current_symptoms)
+    # def infection_progression(self, person):
+    #     current_person = self.persons[person]
+    #     current_stage = current_person['stage']
+    #     current_symptoms = current_person['symptoms']
+    #     possible_symptoms = self.available_symptoms(current_stage, current_symptoms)
 
-        if random.random() < 0.5:
-            next_stage, next_symptoms = self.infection_gets_worse(current_symptoms, current_stage, possible_symptoms)
-        else:
-            next_stage, next_symptoms = self.infection_gets_better(current_symptoms, current_stage)
-        if next_stage in ['recovered', 'dead']:
-            self.remove_agent(person)
-        else:
-            self.update_stage(person, next_stage)
-            self.update_symptoms(person, next_symptoms)
+    #     if random.random() < 0.5:
+    #         next_stage, next_symptoms = self.infection_gets_worse(current_symptoms, current_stage, possible_symptoms)
+    #     else:
+    #         next_stage, next_symptoms = infection_gets_better(current_symptoms, current_stage)
+    #     if next_stage in ['recovered', 'dead']:
+    #         self.remove_agent(person)
+    #     else:
+    #         self.update_stage(person, next_stage)
+    #         self.update_symptoms(person, next_symptoms)

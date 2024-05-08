@@ -1,5 +1,6 @@
 from simulation.agents.agents import Agent
 from simulation.enviroment.graph import Graph
+from simulation.epidemic.virus_progression import PersonDatabase
 from pyswip import Prolog
 
 from typing import List, Tuple
@@ -44,20 +45,9 @@ class EpidemicModel:
         Returns:
             str: The current stage of the agent's infection.
         """
-        stage = list(self.disease_k.query(f'stage({agent_id}, S)'))
-        return stage[0]['S'] if stage else None
-
-    def _query_age_group(self, agent_id: int) -> str:
-        """
-        Query the age group of an agent.
-
-        Args:
-            agent_id (int): The unique identifier of the agent.
-
-        Returns:
-            str: The age group of the agent.
-        """
-        return list(self.disease_k.query(f'age_group({agent_id}, A)'))[0]['A']
+        if agent_id in self.disease_k.persons:
+            return self.disease_k.persons[agent_id]["stage"]
+        return None
 
     def _query_symptoms(self, agent_id: int) -> List[str]:
         """
@@ -69,8 +59,11 @@ class EpidemicModel:
         Returns:
             List[str]: The symptoms of the agent.
         """
-        result = list(self.disease_k.query(f'symptoms({agent_id}, S)'))
-        return [atom.value for atom in result[0]['S']] #TODO errorna veces
+        if agent_id in self.disease_k.persons:
+            return self.disease_k.persons[agent_id]['symptoms']
+        return []
+        # result = list(self.disease_k.query(f'symptoms({agent_id}, S)'))
+        # return [atom.value for atom in result[0]['S']] #TODO
 
     def _step_dissease_query(self, agent: Agent) -> str:
         """
@@ -82,8 +75,9 @@ class EpidemicModel:
         Returns:
             str: The next stage of the agent's infection.
         """
-        next_stage = list(self.disease_k.query(f'step({agent.unique_id}, S, Sy, St)'))[0]
-        return next_stage['S']
+        # next_stage = list(self.disease_k.query(f'step({agent.unique_id}, S, Sy, St)'))[0]
+        # return next_stage['S']
+        return self.disease_k.step(agent.unique_id)
     
     def step_dissease(self, agent: Agent) -> None:
         """
@@ -107,8 +101,9 @@ class EpidemicModel:
         Args:
             agent (Agent): The agent to infect.
         """
-        query = f'add_agent({agent.unique_id}, {str(agent.vaccinated).lower()}, {agent.age_group})'
-        list(self.disease_k.query(query))
+        self.disease_k.add_agent(agent.unique_id, agent.vaccinated, agent.age_group)
+        # query = f'add_agent({agent.unique_id}, {str(agent.vaccinated).lower()}, {agent.age_group})'
+        # list(self.disease_k.query(query))
         self._update_agent(agent)
 
     def _update_agent(self, agent: Agent) -> None:
