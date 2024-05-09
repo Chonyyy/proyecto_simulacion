@@ -179,7 +179,52 @@ class Canelo:
             return 'temporary_closure_work'
         else:
             return 'nothing'
+
+
+class Bus:
+    """Class representing the bus"""
+    def __init__(self,
+                 unique_id : int,
+                 route_map: Graph,
+                 bb_component: BehaviorLayer = None,
+                 lp_component: LocalPlanningLayer = None,
+                 c_component: CooperativeLayer = None,
+                 wi_component: 'WorldInterfaceCanelo' = None,
+                 knowledge_base: KnowledgeCanelo = None,
+                 ):
         
+
+        self.unique_id = unique_id
+        self.route_map = route_map
+        self.bus_route = []
+        self.actual_stop = 0
+        self.capacity = 1000
+        self.actual_people_amount = 0
+        self.time = 10
+
+        # Agent Control Unit
+        self.bbc = bb_component
+        self.pbc = lp_component
+        self.cc = c_component
+        self.wi = wi_component
+        pass
+
+    def assign_route(self, bus_route: list):
+        self.bus_route = bus_route
+
+    def step(self, agent_amount_down, agent_amount_up):
+        amount = self.actual_people_amount + agent_amount_up - agent_amount_down
+
+        if amount > self.capacity:
+            self.actual_people_amount -= agent_amount_down
+            #poner que los agentes no pudieron coger la guagua
+
+        else:
+            self.actual_people_amount = amount
+
+        #ver como hacer que corra el tiempo de alguna manera
+            
+        self.actual_stop += 1
  
 def log_agent_intentions(agent_k):
     logger.info(f'Agent Intent:')

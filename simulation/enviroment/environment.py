@@ -1,4 +1,4 @@
-from simulation.agents.agents import Agent, Canelo
+from simulation.agents.agents import Agent, Canelo, Bus
 from simulation.agents.agent_arquitecture import BehaviorLayer, LocalPlanningLayer, CooperativeLayer, Knowledge, KnowledgeCanelo
 from simulation.epidemic.epidemic_model import EpidemicModel
 from simulation.enviroment.sim_nodes import CitizenPerceptionNode as CPNode
@@ -22,7 +22,7 @@ class Environment:
         agents (List[Agent]): The list of agents in the environment.
         epidemic_model (EpidemicModel): The epidemic model for the simulation.
     """
-    def __init__(self, num_agents: int, epidemic_model: EpidemicModel, map: Terrain, solution:list =None, agent_trust_mode: float = 0.95 ):
+    def __init__(self, num_agents: int, epidemic_model: EpidemicModel, map: Terrain, solution:list =None, agent_trust_mode: float = 0.95, num_busses: int = 0 ):
         """
         Initialize the environment.
 
@@ -37,6 +37,8 @@ class Environment:
         self.canelo = None
         self.epidemic_model = epidemic_model
         self.dissease_step_progression = []
+        self.busses: List[Bus] = []
+
         logger.debug('=== Initializing Agents ===')
         self.agent_trust_mode = agent_trust_mode
         self.solution = solution
@@ -44,6 +46,7 @@ class Environment:
         self.initialize_canelo_agent()
         self.initialize_relations()
         self.hospitals_with_patients = []
+        self.initialize_busses(num_busses)
 
         def kill_agent(agent):
             self.dead_agents.add(agent.unique_id)
@@ -111,7 +114,7 @@ class Environment:
         #TODO: Keep Initializing the KB
         
         return kb
-    
+
     def create_family(self, home):
         if len(home.persons) <= 1:
             return []
@@ -299,6 +302,38 @@ class Environment:
 
         return agent_dist
 
+    def initialize_busses(self, num_busses: int):
+        """
+        Initialize busses within the environment.
+
+        Args:
+            num_agents (int): The number of busses to initialize.
+        """
+
+        for i in range(num_busses):
+            kb = KnowledgeCanelo()
+            mind_map = self.generate_citizen_mind_map()
+
+            agents_wi  = WorldInterface(self, self.map, mind_map, kb)
+            agents_bbc = BehaviorLayer(agents_wi, kb, mind_map)
+            agents_pbc = LocalPlanningLayer(agents_bbc, kb, mind_map)
+            agent_cc = CooperativeLayer(agents_pbc, kb, mind_map)
+
+
+            bus = Bus(
+                unique_id=i, 
+                mind_map=mind_map,
+                lp_component=agents_pbc,
+                bb_component=agents_bbc,
+                c_component=agent_cc,
+                wi_component=agents_wi,
+                knowledge_base=kb
+                )
+            
+
+            #cambiar lugar de partida dependiendo de la ruta que se le asigne
+            location = random.choice(list(self.map.keys()))
+            self.add_agent(bus, location)
 class WorldInterface:
     """
     Class representing the world interface for an agent.
