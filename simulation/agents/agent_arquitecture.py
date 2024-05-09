@@ -273,6 +273,30 @@ class KnowledgeCanelo:
         action = list(self.knowledge.query(queryString))[0]
         return action['Recommendation'], action['RecomendationPlaces']
 
+class KnowledgeBus:
+    """
+    Class representing the knowledge base of an bus.
+    """
+#!Arreglar para bus 
+    def __init__(self):
+        """
+        Initialize the knowledge base.
+        """
+        self.facts = {}
+        self.initializing_k()
+
+    def initializing_k(self):
+        self.facts['goal'] = 'none'
+        self.facts['goal_parameters'] = []
+        self.facts['wearing_mask'] = False
+        self.facts['too_sick'] = False
+        self.facts['mask_necessity'] = False
+        self.facts['medical_check'] = False
+        self.facts['social_distancing'] = False
+        self.facts['messages'] = []
+        self.facts['vaccinated'] = False
+        self.facts['vaccination_necessity'] = False
+        self.facts['friends'] = set()
 class BehaviorLayer:
     """
     Class representing the behavior layer of an agent.
@@ -356,7 +380,6 @@ class BehaviorLayer:
         inside_parentheses = parts[1].split(')', 1)[0] if len(parts) > 1 else ''
         return outside_parentheses, inside_parentheses
     
-
 class LocalPlanningLayer:
     """
     Class representing the local planning layer of an agent.

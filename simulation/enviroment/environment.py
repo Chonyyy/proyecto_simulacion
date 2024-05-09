@@ -1,5 +1,5 @@
 from simulation.agents.agents import Agent, Canelo, Bus
-from simulation.agents.agent_arquitecture import BehaviorLayer, LocalPlanningLayer, CooperativeLayer, Knowledge, KnowledgeCanelo
+from simulation.agents.agent_arquitecture import BehaviorLayer, LocalPlanningLayer, CooperativeLayer, Knowledge, KnowledgeCanelo, KnowledgeBus
 from simulation.epidemic.epidemic_model import EpidemicModel
 from simulation.enviroment.sim_nodes import CitizenPerceptionNode as CPNode
 from simulation.enviroment.sim_nodes import BlockNode, Hospital, HouseNode, PublicPlace, BusStop, Workspace
@@ -404,6 +404,10 @@ class WorldInterface:
         
         elif action == 'work':
             logger.info(f'Agent {agent.unique_id} is working')
+
+        elif action == 'arraive_to_busstop':
+            busstop = self.map[]
+            busstop.
         
         elif not action:            
             logger.info(f'Agent {agent.unique_id} action is empty')
@@ -490,7 +494,6 @@ class WorldInterface:
             message (str): The message to send.
         """
         pass
-
 class WorldInterfaceCanelo:
     """
     Class representing the world interface for canelo.
@@ -718,3 +721,16 @@ class WorldInterfaceCanelo:
 
 
         return new_perception
+
+class WorldInterfaceBus:
+    """
+    Class representing the world interface for an agent.
+
+    Attributes:
+        map (Graph): The map of the simulation.
+        bus_kb (Knowledge): The knowledge base of the agent.
+    """
+    def __init__(self, enviroment: Environment, map: Graph, knowledge_base: KnowledgeBus) -> None:
+        self.enviroment = enviroment
+        self.map = map
+        self.bus_kb = knowledge_base

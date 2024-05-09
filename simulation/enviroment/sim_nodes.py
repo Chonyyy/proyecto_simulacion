@@ -161,6 +161,20 @@ class BusStop(PublicPlace):
     """
     def __init__(self, capacity: int, id: Hashable, addr: Tuple[int, int]):
         super().__init__(capacity, id, addr)
+        self.persons_in_bus = []
+        self.persons_waiting = []
+
+    def add_persons_to_busstop (self, persons: list[int]):
+        for person in persons:
+            self.persons_waiting.append(person)
+
+    def add_persons_to_bus(self, persons: list[int]):
+        for person in persons:
+            self.persons_waiting.pop(self.persons_waiting.index(person))
+
+    def remove_persons(self, persons: list[int]):
+        for person in persons:
+            self.persons_in_bus.pop(self.persons_in_bus.index(person))
 
 class HouseNode(SimNode):
     """
